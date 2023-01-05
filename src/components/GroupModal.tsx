@@ -16,7 +16,7 @@ const styles = {
     position: 'fixed',
     top: '50%',
     left: '50%',
-    transform: 'translate(-50%, -50%)',
+    transform: 'translate(-58%, -50%)',
     // backgroundColor: 'white',
     padding: '50px',
     zIndex: 1000,
@@ -27,15 +27,16 @@ interface Props {
   open?: boolean;
   onClose?: () => void;
   children?: React.ReactNode;
+  closeModal?: () => void;
 }
 
-export const Modal: React.FC<Props> = ({ open, children, onClose }) => {
+export const Modal: React.FC<Props> = ({ open, children, closeModal }) => {
   if (!open) return null;
   return ReactDOM.createPortal(
     <div>
-      <div style={styles.OVERLAY_STYLE} />
+      <div onClick={closeModal} style={styles.OVERLAY_STYLE} />
       <div style={styles.MODAL_STYLES}>
-        <div>{children}</div>
+        <div style={{ width: '100%' }}>{children}</div>
         {/* <button onClick={onClose}>Close Modal</button> */}
       </div>
     </div>,
