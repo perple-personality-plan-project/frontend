@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PostCard from '../components/MainPostCard';
-import SliderContainer from '../components/home/SliderContainer';
+import MainSlider from '../components/MainSlider';
 
 function MainPage() {
   return (
@@ -13,7 +13,7 @@ function MainPage() {
             <MbtiTitle>뭐하고 놀까?</MbtiTitle>
           </div>
           <div>
-            <SliderContainer />
+            <MainSlider />
           </div>
         </MbtiWrap>
       </Backgr>
@@ -27,7 +27,7 @@ function MainPage() {
 const Wrap = styled.div`
   position: relative;
   width: 100%;
-  margin-top: 20vh;
+  margin-top: 25vh;
 `;
 
 const Backgr = styled.div`
@@ -42,21 +42,21 @@ const Backgr = styled.div`
   right: 0;
 
   @media screen and (max-width: 800px) {
+    font-size: 1.5em;
     text-align: center;
     flex-direction: column;
-    font-size: 30px;
   }
 `;
 
 const MbtiWrap = styled.div`
   display: flex;
   margin: auto;
-  gap: 200px;
-
+  gap: 100px;
+  border: 1px solid;
   .gathered {
-    margin-top: 200px;
+    margin-top: 100px;
   }
-  @media screen and (max-width: 412px) {
+  @media screen and (max-width: 800px) {
     text-align: center;
     flex-direction: column;
     width: 100%;
@@ -79,7 +79,7 @@ const MbtiTag = styled.div`
   border-radius: 50px;
   background-color: #d2d1d1;
 
-  @media screen and (max-width: 412px) {
+  @media screen and (max-width: 800px) {
     justify-content: center;
     /* margin-left: 15%; */
     width: 120px;
