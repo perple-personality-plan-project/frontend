@@ -1,7 +1,114 @@
 import React from 'react';
+import styled from 'styled-components';
+import PostCard from '../components/MainPostCard';
+import SliderContainer from '../components/home/SliderContainer';
 
 function MainPage() {
-  return <div>MainPage</div>;
+  return (
+    <Wrap>
+      <Backgr>
+        <MbtiWrap>
+          <div className="gathered">
+            <MbtiTag>😀ENFP</MbtiTag>
+            <MbtiTitle>뭐하고 놀까?</MbtiTitle>
+          </div>
+          <div>
+            <SliderContainer />
+          </div>
+        </MbtiWrap>
+      </Backgr>
+      <CardListContainer>
+        <PostCard />
+      </CardListContainer>
+    </Wrap>
+  );
 }
+
+const Wrap = styled.div`
+  position: relative;
+  width: 100%;
+  margin-top: 20vh;
+`;
+
+const Backgr = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  height: 550px;
+  font-size: 60px;
+  justify-content: center;
+  left: 0;
+  right: 0;
+
+  @media screen and (max-width: 800px) {
+    text-align: center;
+    flex-direction: column;
+    font-size: 30px;
+  }
+`;
+
+const MbtiWrap = styled.div`
+  display: flex;
+  margin: auto;
+  gap: 200px;
+
+  .gathered {
+    margin-top: 200px;
+  }
+  @media screen and (max-width: 412px) {
+    text-align: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    font-size: 25px;
+    .gathered {
+      flex-direction: row;
+      margin: auto;
+    }
+  }
+`;
+
+const MbtiTag = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
+  height: 100px;
+  color: #474545;
+  border-radius: 50px;
+  background-color: #d2d1d1;
+
+  @media screen and (max-width: 412px) {
+    justify-content: center;
+    /* margin-left: 15%; */
+    width: 120px;
+    height: 50px;
+  }
+`;
+
+const MbtiTitle = styled.div`
+  color: black;
+  margin-left: 55px;
+  @media screen and (max-width: 412px) {
+    /* justify-content: center; */
+    /* margin-left: 5%; */
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+const CardListContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10vh;
+  justify-content: center;
+  gap: 5%;
+
+  @media screen and (max-width: 412px) {
+    flex-direction: column;
+    justify-content: center;
+  }
+`;
 
 export default MainPage;
