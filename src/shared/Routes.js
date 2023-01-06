@@ -2,11 +2,14 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import GroupPage from '../pages/GroupPage';
 import GroupDetail from '../pages/GroupDetail';
 import MbtiQuestionsPage from '../pages/MbtiQuestionsPage';
+import MbtiCheckPage from '../pages/MbtiCheckPage';
 import NaviBar from '../components/NaviBar';
 import MainPage from '../pages/MainPage';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
-import Signin from '../pages/SignInPage';
+import SignInPage from '../pages/SignInPage';
+import SignUpPage from '../pages/SignUpPage';
+
 const Router = () => {
   return (
     <BrowserRouter>
@@ -36,7 +39,23 @@ const Router = () => {
           path="/signin"
           element={
             <div>
-              <Signin />
+              <SignInPage />
+            </div>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <div>
+              <SignUpPage />
+            </div>
+          }
+        />
+        <Route
+          path="/mbti"
+          element={
+            <div>
+              <MbtiCheckPage />
             </div>
           }
         />
