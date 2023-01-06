@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import styled from 'styled-components';
 
 const styles = {
   OVERLAY_STYLE: {
@@ -16,7 +17,7 @@ const styles = {
     position: 'fixed',
     top: '50%',
     left: '50%',
-    transform: 'translate(-58%, -50%)',
+    transform: 'translate(-54%, -50%)',
     // backgroundColor: 'white',
     padding: '50px',
     zIndex: 1000,
@@ -36,10 +37,18 @@ export const Modal: React.FC<Props> = ({ open, children, closeModal }) => {
     <div>
       <div onClick={closeModal} style={styles.OVERLAY_STYLE} />
       <div style={styles.MODAL_STYLES}>
-        <div style={{ width: '100%' }}>{children}</div>
+        <StModalContainer>{children}</StModalContainer>
         {/* <button onClick={onClose}>Close Modal</button> */}
       </div>
     </div>,
     document.getElementById('portal')!,
   );
 };
+
+const StModalContainer = styled.div`
+  width: 350px;
+
+  @media screen and (max-width: 500px) {
+    width: 300px;
+  }
+`;
