@@ -9,7 +9,7 @@ import Header from '../components/Header';
 const Router = () => {
   return (
     <BrowserRouter>
-      <Layout>
+     
         <Routes>
           <Route path="/group" element={<GroupPage />} />
           <Route path="/:id" element={<GroupDetail />} />
@@ -33,7 +33,7 @@ const Router = () => {
             }
           />
         </Routes>
-      </Layout>
+    
     </BrowserRouter>
   );
 };
