@@ -2,12 +2,23 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Modal } from '../components/GroupModal';
 import { useNavigate } from 'react-router';
+import { nanoid } from 'nanoid';
+
+interface tagPreset {
+  tagSet: string[];
+  tag: {
+    id: string;
+    tag: string;
+  };
+}
 
 const GroupPage = () => {
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
   const [imageSrc, setImageSrc] = useState('');
+  const [tag, setTag] = useState('');
+  const [tagSet, setTagSet] = useState<tagPreset['tag'][]>([]);
   const [groups, setGroups] = useState([
     {
       groupId: 1,
@@ -40,11 +51,19 @@ const GroupPage = () => {
     });
   };
 
-  console.log(imageSrc);
-
   const closeModal = () => {
     setIsOpen(false);
     setImageSrc('');
+  };
+
+  const addTag = () => {
+    setTagSet([...tagSet, { id: nanoid(), tag: `#${tag}` }]);
+    setTag('');
+  };
+
+  const deleteTag = (id: number | string) => {
+    const filtered = tagSet.filter(tag => tag.id !== id);
+    setTagSet(filtered);
   };
 
   return (
@@ -96,6 +115,7 @@ const GroupPage = () => {
 
       <Modal closeModal={closeModal} open={isOpen}>
         <StModalContainer>
+          <StCloseIcon onClick={() => closeModal()}>X</StCloseIcon>
           <StFlexCentered>
             <StModalImgContainer>
               {imageSrc ? (
@@ -103,7 +123,7 @@ const GroupPage = () => {
                   <img src={imageSrc} alt="roomImg" />
                 </StModalImgLabel>
               ) : (
-                <StModalImgLabel htmlFor="roomImg">이미지 추가</StModalImgLabel>
+                <StModalImgLabel htmlFor="roomImg">사진 등록</StModalImgLabel>
               )}
               <StModalImgInput
                 onChange={e => handleImagePreview(e)}
@@ -112,21 +132,48 @@ const GroupPage = () => {
                 id="roomImg"
               />
             </StModalImgContainer>
-            <div style={{ width: '100%' }}>
-              <div>
-                <label style={{ display: 'block' }}>방 이름</label>
-                <StModalInput />
-              </div>
-              <div>
-                <label style={{ display: 'block' }}>방 설명</label>
-                <StModalTextArea />
-              </div>
-            </div>
+
+            <StModalInputComponent style={{ width: '100%' }}>
+              <label>그룹 이름</label>
+              <StModalInput />
+            </StModalInputComponent>
+            <StModalInputComponent style={{ width: '40%' }}>
+              <label>태그 작성</label>
+              <StModalTag>
+                <StModalInput
+                  value={tag}
+                  onChange={e => setTag(e.target.value)}
+                  style={{ width: '60%', margin: '0 10px 0 0' }}
+                />
+                <div className="tagBtn" onClick={addTag}>
+                  +
+                </div>
+              </StModalTag>
+            </StModalInputComponent>
+            <StModalTagLists>
+              {tagSet.map(tag => {
+                return (
+                  <div className="tag-lists" key={tag.id}>
+                    <div className="tag-list">{tag.tag}</div>
+                    <div
+                      onClick={() => deleteTag(tag.id)}
+                      className="tag-delete"
+                    >
+                      x
+                    </div>
+                  </div>
+                );
+              })}
+            </StModalTagLists>
+            <StModalInputComponent style={{ width: '100%' }}>
+              <label>내용 작성</label>
+              <StModalTextArea />
+            </StModalInputComponent>
           </StFlexCentered>
 
           <StModalButtonContainer style={{ marginTop: '10px' }}>
-            <StModalButton>생성하기</StModalButton>
-            <StModalButton onClick={() => closeModal()}>닫기</StModalButton>
+            <StModalButton>모두 작성했어요!</StModalButton>
+            {/* <StModalButton onClick={() => closeModal()}>닫기</StModalButton> */}
           </StModalButtonContainer>
         </StModalContainer>
       </Modal>
@@ -149,42 +196,118 @@ const StModalContainer = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: white;
+  /* min-width: 350px; */
   width: 100%;
   padding: 20px;
   border-radius: 10px;
 `;
 
+const StModalInputComponent = styled.div`
+  font-size: 13px;
+  color: #8e8e8e;
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+`;
+
+const StModalTagLists = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+
+  .tag-lists {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    background-color: gray;
+    border-radius: 10px;
+    padding: 5px;
+    margin: 0 5px 10px 0;
+
+    cursor: pointer;
+  }
+
+  .tag-list {
+    font-size: 13px;
+    color: white;
+  }
+
+  .tag-delete {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px;
+    /* background-color: white; */
+    border-radius: 100%;
+    width: 20px;
+    height: 20px;
+
+    font-size: 13px;
+
+    :hover {
+      background-color: white;
+    }
+  }
+`;
+
+const StModalTag = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+
+  .tagBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #d9d9d9;
+    border-radius: 40%;
+
+    cursor: pointer;
+  }
+`;
+
+const StCloseIcon = styled.button`
+  position: absolute;
+  border-radius: 50%;
+  border: 0;
+  width: 24px;
+  height: 24px;
+
+  top: 20px;
+  right: -15px;
+
+  cursor: pointer;
+`;
+
 const StFlexCentered = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
   width: 100%;
 
   @media screen and (max-width: 800px) {
     display: flex;
     flex-direction: column;
-    /* width: 100%; */
-
-    /* justify-content: center; */
-    /* align-items: center; */
   }
 `;
 
 const StModalButtonContainer = styled.div`
+  width: 100%;
   @media screen and (max-width: 800px) {
     width: 100%;
-
-    &:first-of-type {
-      margin: 0 0 5px 0;
-    }
   }
 `;
 
 const StModalButton = styled.button`
-  width: 100px;
+  width: 100%;
   padding: 10px;
 
-  border-radius: 10px;
+  border-radius: 20px;
   border: 0;
   color: gray;
   border: 1px solid gray;
@@ -196,25 +319,19 @@ const StModalButton = styled.button`
     color: white;
     background-color: gray;
   }
-  &:first-of-type {
-    margin-right: 5px;
-  }
 
   @media screen and (max-width: 800px) {
     width: 100%;
-
-    &:first-of-type {
-      margin: 0 0 5px 0;
-    }
   }
 `;
 
 const StModalImgContainer = styled.div`
   img {
-    width: 120px;
-    height: 120px;
+    width: 100%;
+
+    /* height: 120px; */
     border-radius: 10px;
-    /* margin-right: 10px; */
+    /* margin-bottom: 10px; */
   }
 `;
 
@@ -222,23 +339,32 @@ const StModalImgLabel = styled.label`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: gray;
+  color: #5b5b5b;
 
-  width: 120px;
+  box-sizing: border-box;
+  width: 350px;
   height: 120px;
-  background-color: white;
+  background-color: #f5f5f5;
   cursor: pointer;
 
-  margin-right: 10px;
-  border: 1px solid gray;
+  border: 1px solid #d9d9d9;
   border-radius: 10px;
 
-  @media screen and (max-width: 800px) {
-    margin: 0;
+  margin-bottom: 20px;
+
+  img {
+    height: 120px;
+    object-fit: contain;
+  }
+
+  @media screen and (max-width: 500px) {
+    width: 300px;
   }
 `;
 
 const StModalImgInput = styled.input`
+  width: 100%;
+  /* height: 100%; */
   display: none;
 `;
 
@@ -246,6 +372,7 @@ const StModalInput = styled.input`
   width: 100%;
   height: 20px;
   border-radius: 10px;
+  border: 1px solid #d9d9d9;
   box-sizing: border-box;
   margin-bottom: 10px;
   padding: 15px;
@@ -254,9 +381,11 @@ const StModalInput = styled.input`
 const StModalTextArea = styled.textarea`
   text-indent: 10px;
   width: 100%;
+  height: 150px;
   border-radius: 10px;
   box-sizing: border-box;
   resize: none;
+  border: 1px solid #d9d9d9;
 `;
 
 //원하는 그룹을 검색해 보세요!
@@ -377,4 +506,9 @@ const StModalIcon = styled.img`
   right: 100px;
 
   cursor: pointer;
+
+  @media screen and (max-width: 500px) {
+    bottom: 60px;
+    right: 60px;
+  }
 `;
