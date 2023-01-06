@@ -6,34 +6,41 @@ import NaviBar from '../components/NaviBar';
 import MainPage from '../pages/MainPage';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
+import Signin from '../pages/SignInPage';
 const Router = () => {
   return (
     <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/group" element={<GroupPage />} />
-          <Route path="/:id" element={<GroupDetail />} />
-          <Route
-            path="/"
-            element={
-              <div>
-                <NaviBar />
-                <GroupPage />
-              </div>
-            }
-          />
-          <Route path="/" element={<GroupPage />} />
-          <Route
-            path="/main"
-            element={
-              <div>
-                <Header />
-                <MainPage />
-              </div>
-            }
-          />
-        </Routes>
-      </Layout>
+      <Routes>
+        <Route path="/group" element={<GroupPage />} />
+        <Route path="/:id" element={<GroupDetail />} />
+        <Route
+          path="/"
+          element={
+            <div>
+              <NaviBar />
+              <GroupPage />
+            </div>
+          }
+        />
+        <Route path="/" element={<GroupPage />} />
+        <Route
+          path="/main"
+          element={
+            <div>
+              <Header />
+              <MainPage />
+            </div>
+          }
+        />
+        <Route
+          path="/signin"
+          element={
+            <div>
+              <Signin />
+            </div>
+          }
+        />
+      </Routes>
     </BrowserRouter>
   );
 };
