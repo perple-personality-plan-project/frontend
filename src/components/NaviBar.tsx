@@ -29,7 +29,7 @@ const NaviBar = () => {
             {NavArr.map((nav, index) => {
               return (
                 <li key={index}>
-                  <Link to={`/${nav}`}>{nav} </Link>
+                  <Link to={`/${nav}`}>{nav}</Link>
                 </li>
               );
             })}
@@ -53,7 +53,7 @@ const NaviBar = () => {
           <ul>
             {NavArr.map((nav, index) => {
               return (
-                <li key={index}>
+                <li key={index} onClick={() => setIsOpen(false)}>
                   <Link to={`/${nav}`}>{nav}</Link>
                 </li>
               );
