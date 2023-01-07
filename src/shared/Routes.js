@@ -6,6 +6,7 @@ import NaviBar from '../components/NaviBar';
 import MainPage from '../pages/MainPage';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
+import MbtiCheckPage from '../pages/MbtiCheckPage';
 import SignInPage from '../pages/SignInPage';
 import SignUpPage from '../pages/SignUpPage';
 
@@ -50,7 +51,23 @@ const Router = () => {
             </div>
           }
         />
-        
+        <Route
+          path="/mbti"
+          element={
+            <div>
+              <Header />
+              <MbtiCheckPage />
+            </div>
+          }
+        />
+        <Route
+          path="/mbtiquestion"
+          element={
+            <div>
+              <MbtiQuestionsPage />
+            </div>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
