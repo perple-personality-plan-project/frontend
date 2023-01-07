@@ -134,7 +134,7 @@ const StPostContainer = styled.div`
   /* align-items: center; */
   h2 {
     width: 150px;
-    margin-left: 10%;
+    margin-left: 50px;
     font-size: 13px;
     color: #a9a9a9;
   }
@@ -223,14 +223,15 @@ const StGroupInfo = styled.div`
 const StGroupPosts = styled.div`
   display: flex;
   /* flex-direction: column; */
-  justify-content: center;
+  /* justify-content: center; */
   flex-wrap: wrap;
   gap: 20px;
+  margin-left: 50px;
 
   .post-container {
     position: relative;
     /* margin: 20px; */
-    width: 400px;
+    width: 330px;
 
     /* height: 400px; */
 
@@ -327,12 +328,13 @@ const StGroupPosts = styled.div`
     }
 
     @media screen and (max-width: 900px) {
-      width: 380px;
+      width: 400px;
     }
   }
 
   @media screen and (max-width: 900px) {
     flex-direction: column;
     gap: 20px;
+    margin-left: 0px;
   }
 `;
