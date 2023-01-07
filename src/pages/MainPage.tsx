@@ -52,7 +52,6 @@ const MbtiWrap = styled.div`
   display: flex;
   margin: auto;
   gap: 100px;
-  border: 1px solid;
   .gathered {
     margin-top: 100px;
   }
