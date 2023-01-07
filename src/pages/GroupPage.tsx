@@ -54,6 +54,7 @@ const GroupPage = () => {
   const closeModal = () => {
     setIsOpen(false);
     setImageSrc('');
+    setTagSet([]);
   };
 
   const addTag = () => {
@@ -93,7 +94,7 @@ const GroupPage = () => {
               key={group.groupId}
               onClick={() => navigate(`/${group.groupId}`)}
             >
-              <img src={require('../빡빡이1.png')} />
+              <img src={require('../빡빡이1.png')} alt="group-img" />
               <div
                 style={{
                   display: 'flex',
@@ -159,7 +160,7 @@ const GroupPage = () => {
                       onClick={() => deleteTag(tag.id)}
                       className="tag-delete"
                     >
-                      x
+                      <p className="tag-X">x</p>
                     </div>
                   </div>
                 );
@@ -229,11 +230,13 @@ const StModalTagLists = styled.div`
   }
 
   .tag-list {
+    text-indent: 5px;
     font-size: 13px;
     color: white;
   }
 
   .tag-delete {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -248,6 +251,11 @@ const StModalTagLists = styled.div`
     :hover {
       background-color: white;
     }
+  }
+
+  .tag-X {
+    position: absolute;
+    bottom: -10px;
   }
 `;
 
