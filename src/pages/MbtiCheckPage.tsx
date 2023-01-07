@@ -136,5 +136,5 @@ const StGroupPosts = styled.div`
         font-size: 2ch;
       }
     }
-  }
+  
 `;
