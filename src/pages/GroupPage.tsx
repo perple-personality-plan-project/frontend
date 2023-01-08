@@ -1,24 +1,38 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Modal } from '../components/GroupModal';
 import { useNavigate } from 'react-router';
 import { nanoid } from 'nanoid';
+import AWS from 'aws-sdk';
 
 interface tagPreset {
-  tagSet: string[];
   tag: {
     id: string;
     tag: string;
   };
+  groupInfo: {
+    groupName: string;
+    groupTag: string;
+    groupDetail: string;
+    thumbnail: string;
+  };
 }
 
 const GroupPage = () => {
+  const BucketName = 'sblawsimage';
   const navigate = useNavigate();
-
   const [isOpen, setIsOpen] = useState(false);
   const [imageSrc, setImageSrc] = useState('');
   const [tag, setTag] = useState('');
   const [tagSet, setTagSet] = useState<tagPreset['tag'][]>([]);
+  const [thumbnail, setThumbnail] = useState('');
+  const [groupInfos, setgroupInfos] = useState<tagPreset['groupInfo']>({
+    groupName: '',
+    groupTag: '',
+    groupDetail: '',
+    thumbnail: '',
+  });
+  console.log(groupInfos);
   const [groups, setGroups] = useState([
     {
       groupId: 1,
@@ -37,6 +51,45 @@ const GroupPage = () => {
       title: '미친 텐션의 술집 정보',
     },
   ]);
+
+  const tagSetToString = tagSet.map(tag => tag.tag).join('');
+
+  AWS.config.update({
+    region: 'ap-northeast-2', // 버킷이 존재하는 리전을 문자열로 입력합니다. (Ex. "ap-northeast-2")
+    credentials: new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: 'ap-northeast-2:08c52685-346d-4362-9490-8617a791432f', // cognito 인증 풀에서 받아온 키를 문자열로 입력합니다. (Ex. "ap-northeast-2...")
+    }),
+  });
+
+  const handleFileAWS = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+
+    const file = e.target.files[0];
+    setThumbnail(
+      `https://sblawsimage.s3.ap-northeast-2.amazonaws.com/${file.name}`,
+    );
+
+    // S3 SDK에 내장된 업로드 함수
+    const upload = new AWS.S3.ManagedUpload({
+      params: {
+        Bucket: BucketName, // 업로드할 대상 버킷명
+        Body: file, // 업로드할 파일 객체
+        ContentType: file.type,
+        Key: file.name, // 업로드할 파일명 (* 확장자를 추가해야 합니다!)
+      },
+    });
+
+    const promise = upload.promise();
+
+    promise.then(
+      function (data) {
+        alert('이미지 업로드에 성공했습니다.');
+      },
+      function (err) {
+        return alert(`오류가 발생했습니다: ${err.message}`);
+      },
+    );
+  };
 
   const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -58,14 +111,42 @@ const GroupPage = () => {
   };
 
   const addTag = () => {
-    setTagSet([...tagSet, { id: nanoid(), tag: `#${tag}` }]);
-    setTag('');
+    if (tag.length > 0) {
+      setTagSet([...tagSet, { id: nanoid(), tag: `#${tag}` }]);
+      setTag('');
+    }
   };
 
   const deleteTag = (id: number | string) => {
     const filtered = tagSet.filter(tag => tag.id !== id);
     setTagSet(filtered);
   };
+
+  const handleGroupInfo = (e: any) => {
+    const { name, value } = e.target;
+    setgroupInfos({ ...groupInfos, [name]: value });
+  };
+
+  const sendData = () => {
+    if (
+      tagSet.length > 0 &&
+      thumbnail !== '' &&
+      groupInfos.groupName &&
+      groupInfos.groupDetail
+    ) {
+      setgroupInfos({
+        ...groupInfos,
+        groupTag: tagSetToString,
+        thumbnail: thumbnail,
+      });
+      setIsOpen(false);
+      alert('그룹 작성 완료!');
+    } else {
+      alert('형식을 모두 작성해주세요');
+    }
+  };
+
+  console.log(groupInfos);
 
   return (
     <StContainer>
@@ -116,27 +197,39 @@ const GroupPage = () => {
 
       <Modal closeModal={closeModal} open={isOpen}>
         <StModalContainer>
+          <h1>그룹 생성하기</h1>
           <StCloseIcon onClick={() => closeModal()}>X</StCloseIcon>
           <StFlexCentered>
             <StModalImgContainer>
               {imageSrc ? (
                 <StModalImgLabel htmlFor="roomImg">
                   <img src={imageSrc} alt="roomImg" />
+                  {/* <video
+                    style={{ width: '200px', height: '200px' }}
+                    src={imageSrc}
+                    autoPlay
+                  /> */}
                 </StModalImgLabel>
               ) : (
                 <StModalImgLabel htmlFor="roomImg">사진 등록</StModalImgLabel>
               )}
               <StModalImgInput
-                onChange={e => handleImagePreview(e)}
+                onChange={e => {
+                  handleImagePreview(e);
+                  handleFileAWS(e);
+                }}
                 type="file"
-                accept="image/*"
+                // accept="image/*"
                 id="roomImg"
               />
             </StModalImgContainer>
 
             <StModalInputComponent style={{ width: '100%' }}>
               <label>그룹 이름</label>
-              <StModalInput />
+              <StModalInput
+                name="groupName"
+                onChange={e => handleGroupInfo(e)}
+              />
             </StModalInputComponent>
             <StModalInputComponent style={{ width: '40%' }}>
               <label>태그 작성</label>
@@ -168,12 +261,15 @@ const GroupPage = () => {
             </StModalTagLists>
             <StModalInputComponent style={{ width: '100%' }}>
               <label>내용 작성</label>
-              <StModalTextArea />
+              <StModalTextArea
+                name="groupDetail"
+                onChange={e => handleGroupInfo(e)}
+              />
             </StModalInputComponent>
           </StFlexCentered>
 
           <StModalButtonContainer style={{ marginTop: '10px' }}>
-            <StModalButton>모두 작성했어요!</StModalButton>
+            <StModalButton onClick={sendData}>모두 작성했어요!</StModalButton>
             {/* <StModalButton onClick={() => closeModal()}>닫기</StModalButton> */}
           </StModalButtonContainer>
         </StModalContainer>
@@ -201,6 +297,12 @@ const StModalContainer = styled.div`
   width: 100%;
   padding: 20px;
   border-radius: 10px;
+
+  h1 {
+    font-size: 15px;
+    color: #5b5b5b;
+    margin: 0 0 20px 0;
+  }
 `;
 
 const StModalInputComponent = styled.div`
