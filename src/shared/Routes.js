@@ -8,6 +8,7 @@ import Layout from '../components/Layout';
 import Header from '../components/Header';
 import SignInPage from '../pages/SignInPage';
 import SignUpPage from '../pages/SignUpPage';
+import MapPage from '../pages/MapPage';
 
 const Router = () => {
   return (
@@ -50,7 +51,7 @@ const Router = () => {
             </div>
           }
         />
-        
+        <Route path="/map" element={<MapPage />} />
       </Routes>
     </BrowserRouter>
   );
