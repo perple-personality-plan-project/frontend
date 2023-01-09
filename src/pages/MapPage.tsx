@@ -6,9 +6,9 @@ import MapList from '../components/MapList';
 // @webius - Window 인터페이스에 Kakao API를 위한 kakao 객체 정의
 declare global {
   interface Window {
-    kakao: any
+    kakao: any;
   }
-};
+}
 const { kakao } = window;
 
 // @webius - 기본 마커 이미지
@@ -21,7 +21,6 @@ const defaultMarkerImage = {
     offset: new kakao.maps.Point(13, 37), // 마커 이미지 내 좌표
   },
 };
-
 
 // @webius - Kakao Map API를 위한 타입이 별도로 없기 때문에 지정하여 관리
 export type KakaoMap = any;
@@ -73,9 +72,10 @@ const MapPage = () => {
   const mapInfoWindow = useRef<KakaoInfoWindow>(null);
 
   // @webius - 렌더링에 필요한 데이터
-  const [ kakaoPlaces, setKakaoPlaces ] = useState<KakaoPlace[]>([]);
-  const [ kakaoPagination, setKakaoPagination ] = useState<KakaoPagination | null>(null);
-  const [ kakaoMarkers, setKakaoMarkers ] = useState<KakaoMarker[]>([]);
+  const [kakaoPlaces, setKakaoPlaces] = useState<KakaoPlace[]>([]);
+  const [kakaoPagination, setKakaoPagination] =
+    useState<KakaoPagination | null>(null);
+  const [kakaoMarkers, setKakaoMarkers] = useState<KakaoMarker[]>([]);
 
   useEffect(() => {
     if (mapContainer.current === null) {
@@ -96,15 +96,18 @@ const MapPage = () => {
   }, []);
 
   // @webius - 인포 윈도우 등록
-  const handleVisiblePlace = useCallback((kakaoMarker: KakaoMarker, title: string) => {
-    // @webius - 장소를 지도 중앙으로 설정
-    map.current.setCenter(kakaoMarker.getPosition());
+  const handleVisiblePlace = useCallback(
+    (kakaoMarker: KakaoMarker, title: string) => {
+      // @webius - 장소를 지도 중앙으로 설정
+      map.current.setCenter(kakaoMarker.getPosition());
 
-    const content = `<div style="padding: 5px; z-index: 1;">${title}</div>`;
+      const content = `<div style="padding: 5px; z-index: 1;">${title}</div>`;
 
-    mapInfoWindow.current.setContent(content);
-    mapInfoWindow.current.open(map.current, kakaoMarker);
-  }, [mapInfoWindow]);
+      mapInfoWindow.current.setContent(content);
+      mapInfoWindow.current.open(map.current, kakaoMarker);
+    },
+    [mapInfoWindow],
+  );
 
   // @webius - 인포 윈도우 비우기
   const handleHiddenPlace = useCallback(() => {
@@ -112,93 +115,115 @@ const MapPage = () => {
   }, [mapInfoWindow]);
 
   // @webius - 키워드 검색 콜백 함수
-  const searchPlaceCallback = useCallback((places: KakaoPlace[], status: KakaoServiceStatus, pagination: KakaoPagination) => {
-    if (status === kakao.maps.services.Status.ERROR) {
-      alert('검색 중 오류가 발생했습니다.');
-      return;
-    }
-    
-    if (status === kakao.maps.services.Status.ZERO_RESULT) {
-      alert('검색 결과가 존재하지 않습니다.');
-      return;
-    }
-    
-    if (status === kakao.maps.services.Status.OK) {
-      // @webius - 검색 결과 표시
-      places = places.map((kakaoPlace, index): KakaoPlace => {
-        // @webius - LatLng 포지션 생성
-        const position = new kakao.maps.LatLng(kakaoPlace.y, kakaoPlace.x);
-        
-        // @webius - 기존 마커 이미지에서 필요한 부분만 Overwrite 하여 사용
-        const markerImageOptions = Object.assign({}, defaultMarkerImage.options, {
-          spriteOrigin: new kakao.maps.Point(0, index * 46 + 10),
+  const searchPlaceCallback = useCallback(
+    (
+      places: KakaoPlace[],
+      status: KakaoServiceStatus,
+      pagination: KakaoPagination,
+    ) => {
+      if (status === kakao.maps.services.Status.ERROR) {
+        alert('검색 중 오류가 발생했습니다.');
+        return;
+      }
+
+      if (status === kakao.maps.services.Status.ZERO_RESULT) {
+        alert('검색 결과가 존재하지 않습니다.');
+        return;
+      }
+
+      if (status === kakao.maps.services.Status.OK) {
+        // @webius - 검색 결과 표시
+        places = places.map((kakaoPlace, index): KakaoPlace => {
+          // @webius - LatLng 포지션 생성
+          const position = new kakao.maps.LatLng(kakaoPlace.y, kakaoPlace.x);
+
+          // @webius - 기존 마커 이미지에서 필요한 부분만 Overwrite 하여 사용
+          const markerImageOptions = Object.assign(
+            {},
+            defaultMarkerImage.options,
+            {
+              spriteOrigin: new kakao.maps.Point(0, index * 46 + 10),
+            },
+          );
+          const image = new kakao.maps.MarkerImage(
+            defaultMarkerImage.src,
+            defaultMarkerImage.size,
+            markerImageOptions,
+          );
+
+          // @webius - 마커 오브젝트 생성
+          const marker = new kakao.maps.Marker({
+            position,
+            image,
+          });
+
+          const handleMouseOver = () =>
+            handleVisiblePlace(marker, kakaoPlace.place_name);
+          const handleMouseOut = () => handleHiddenPlace();
+
+          // @webius - 마커 인포 표시/비표시 이벤트 등록
+          kakao.maps.event.addListener(marker, 'mouseover', handleMouseOver);
+          kakao.maps.event.addListener(marker, 'mouseout', handleMouseOut);
+
+          return {
+            ...kakaoPlace,
+            marker,
+            handleMouseOver,
+            handleMouseOut,
+          };
         });
-        const image = new kakao.maps.MarkerImage(defaultMarkerImage.src, defaultMarkerImage.size, markerImageOptions);
+        setKakaoPlaces(places);
 
-        // @webius - 마커 오브젝트 생성
-        const marker = new kakao.maps.Marker({
-          position,
-          image,
-        });
+        // @webius - 페이지 번호 표시
+        setKakaoPagination(pagination);
 
-        const handleMouseOver = () => handleVisiblePlace(marker, kakaoPlace.place_name);
-        const handleMouseOut = () => handleHiddenPlace();
-
-        // @webius - 마커 인포 표시/비표시 이벤트 등록
-        kakao.maps.event.addListener(marker, 'mouseover', handleMouseOver);
-        kakao.maps.event.addListener(marker, 'mouseout', handleMouseOut);
-
-        return {
-          ...kakaoPlace,
-          marker,
-          handleMouseOver,
-          handleMouseOut,
-        };
-      });
-      setKakaoPlaces(places);
-
-      // @webius - 페이지 번호 표시
-      setKakaoPagination(pagination);
-
-      // @wbeius - 마킹 데이터 적용
-      const markers = places.map((kakaoPlace) => kakaoPlace.marker);
-      setKakaoMarkers(markers);
-    }
-  }, [handleVisiblePlace, handleHiddenPlace]);
+        // @wbeius - 마킹 데이터 적용
+        const markers = places.map(kakaoPlace => kakaoPlace.marker);
+        setKakaoMarkers(markers);
+      }
+    },
+    [handleVisiblePlace, handleHiddenPlace],
+  );
 
   // @webius - 키워드 검색
-  const searchPlace = useCallback((keyword: string) => {
-    // @webius - 키워드가 공백인 경우
-    if (!keyword.replace(/\s/g, '')) {
-      alert('키워드를 입력해주세요!');
-      return;
-    }
-    
-    // @webius - 카카오 키워드 검색
-    mapSearchPlace.current.keywordSearch(keyword, searchPlaceCallback);
-  }, [searchPlaceCallback]);
+  const searchPlace = useCallback(
+    (keyword: string) => {
+      // @webius - 키워드가 공백인 경우
+      if (!keyword.replace(/\s/g, '')) {
+        alert('키워드를 입력해주세요!');
+        return;
+      }
+
+      // @webius - 카카오 키워드 검색
+      mapSearchPlace.current.keywordSearch(keyword, searchPlaceCallback);
+    },
+    [searchPlaceCallback],
+  );
 
   // @webius - 키워드 검색 Submit 핸들러
-  const handleSearchPlaceSubmit = useCallback((event: React.FormEvent) => {
-    // @webius - 화면 전환 방지
-    event.preventDefault();
+  const handleSearchPlaceSubmit = useCallback(
+    (event: React.FormEvent) => {
+      // @webius - 화면 전환 방지
+      event.preventDefault();
 
-    // @webius - EventTarget -> HTMLFormElement 타입으로 변환 (JSX 형식으로 인해 <> 형변환 대신 as 사용)
-    const form = event.target as HTMLFormElement;
+      // @webius - EventTarget -> HTMLFormElement 타입으로 변환 (JSX 형식으로 인해 <> 형변환 대신 as 사용)
+      const form = event.target as HTMLFormElement;
 
-    // @webius - HTMLFormElement 타입으로 지정
-    const keyword: HTMLInputElement = form.keyword;
+      // @webius - HTMLFormElement 타입으로 지정
+      const keyword: HTMLInputElement = form.keyword;
 
-    // @webius - 검색 핸들러 실행
-    searchPlace(keyword.value);
-  }, [searchPlace]);
+      // @webius - 검색 핸들러 실행
+      searchPlace(keyword.value);
+    },
+    [searchPlace],
+  );
 
   // @webius - 마커 작성
   useEffect(() => {
     if (kakaoMarkers.length) {
       const bounds = new kakao.maps.LatLngBounds();
 
-      kakaoMarkers.forEach((kakaoMarker) => {
+      kakaoMarkers.forEach(kakaoMarker => {
         // @webius - 지도에 마커 표시
         kakaoMarker.setMap(map.current);
 
@@ -210,7 +235,7 @@ const MapPage = () => {
       map.current.setBounds(bounds);
 
       return () => {
-        kakaoMarkers.forEach((kakaoMarker) => {
+        kakaoMarkers.forEach(kakaoMarker => {
           // @webius - 마커 표시 제거
           kakaoMarker.setMap(null);
         });
@@ -221,12 +246,21 @@ const MapPage = () => {
   return (
     <div className="map-page">
       <Map forwardRef={mapContainer} />
-      <div className="map-control" style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%' }}>
+      <div
+        className="map-control"
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          width: '100%',
+          height: '100%',
+        }}
+      >
         <MapForm handleSubmit={handleSearchPlaceSubmit} />
         <MapList places={kakaoPlaces} pagination={kakaoPagination} />
       </div>
     </div>
   );
-}
+};
 
 export default MapPage;
