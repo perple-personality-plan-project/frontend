@@ -9,6 +9,8 @@ import Header from '../components/Header';
 import MbtiCheckPage from '../pages/MbtiCheckPage';
 import SignInPage from '../pages/SignInPage';
 import SignUpPage from '../pages/SignUpPage';
+import MapPage from '../pages/MapPage';
+import MyPage from '../pages/MyPage';
 
 const Router = () => {
   return (
@@ -68,6 +70,8 @@ const Router = () => {
             </div>
           }
         />
+        <Route path="/map" element={<MapPage />} />
+        <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </BrowserRouter>
   );
