@@ -1,0 +1,31 @@
+.map-form {
+  position: relative;
+  z-index: 1;
+  
+  form {
+    position: absolute;
+    left: 50px;
+    top: 100px;
+    
+    i {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 10px;
+      width: 16px;
+      height: 16px;
+      background: url(../assets/icon/geo-alt-fill.svg) no-repeat center/contain;
+    }
+
+    input[name="keyword"] {
+      font: inherit;
+      font-size: 12px;
+      line-height: 1.25;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 100px;
+      padding: 10px 30px;
+      box-shadow: 0 0 20px #888;
+    }
+  }
+}
