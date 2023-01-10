@@ -6,32 +6,16 @@ import styled from 'styled-components';
 import GroupModalTemplate from './GroupModalTemplate';
 import { nanoid } from 'nanoid';
 
-interface tagPreset {
-  tag: {
-    id: string;
-    tag: string;
-  };
-}
+import { groupPreset } from '../../pages/GroupPage';
 
-interface groupPreset {
-  groupInfo: {
-    groupId: string;
-    groupName: string;
-    groupTag: string;
-    groupDetail: string;
-    thumbnail: string;
-  };
+interface tagPreset {
+  id: string;
+  tag: string;
 }
 
 interface Props {
   setGroups: React.Dispatch<any>;
-  groups: {
-    groupId: number;
-    groupName: string;
-    groupTag: string;
-    groupDetail: string;
-    thumbnail: string;
-  }[];
+  groups: groupPreset[];
 }
 
 const GroupCreateModal: React.FC<Props> = ({ setGroups, groups }) => {
@@ -40,9 +24,9 @@ const GroupCreateModal: React.FC<Props> = ({ setGroups, groups }) => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [tag, setTag] = useState('');
-  const [tagSet, setTagSet] = useState<tagPreset['tag'][]>([]);
-  const [groupInfos, setgroupInfos] = useState<groupPreset['groupInfo']>({
-    groupId: nanoid(),
+  const [tagSet, setTagSet] = useState<tagPreset[]>([]);
+  const [groupInfos, setgroupInfos] = useState<groupPreset>({
+    groupId: 5,
     groupName: '',
     groupTag: '',
     groupDetail: '',
