@@ -3,10 +3,18 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 import GroupCreateModal from '../components/modal/GroupCreateModal';
 
+export interface groupPreset {
+  groupId: number;
+  groupName: string;
+  groupTag: string;
+  groupDetail: string;
+  thumbnail: string;
+}
+
 const GroupPage = () => {
   const navigate = useNavigate();
   const [toggle, setToggle] = useState(false);
-  const [groups, setGroups] = useState([
+  const [groups, setGroups] = useState<groupPreset[]>([
     {
       groupId: 1,
       groupName: '미친 텐션의 술집 정보',
