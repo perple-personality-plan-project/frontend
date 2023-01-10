@@ -53,39 +53,40 @@ const GroupPage = () => {
         <StRecommendList>카페</StRecommendList>
         <StRecommendList>카페</StRecommendList>
       </StRecommendLists>
-      {toggle ? (
-        <StCategoryGroup style={{ display: 'flex', flexDirection: 'column' }}>
-          <StCategory onClick={() => setToggle(prev => !prev)}>
-            click me ㅜ
-          </StCategory>
-          <StCategory
-            onClick={() => {
-              console.log('인기');
-              setToggle(prev => !prev);
-            }}
-          >
-            인기순
-          </StCategory>
-          <StCategory
-            onClick={() => {
-              console.log('날짜');
-              setToggle(prev => !prev);
-            }}
-          >
-            날짜순
-          </StCategory>
-        </StCategoryGroup>
-      ) : (
-        <StCategoryGroup style={{ display: 'flex', flexDirection: 'column' }}>
-          <StCategory onClick={() => setToggle(prev => !prev)}>
-            click me ㅜ
-          </StCategory>
-          <StCategory style={{ display: 'none' }}>인기순</StCategory>
-          <StCategory style={{ display: 'none' }}>날짜순</StCategory>
-        </StCategoryGroup>
-      )}
 
       <StGroups>
+        {toggle ? (
+          <StCategoryGroup style={{ display: 'flex', flexDirection: 'column' }}>
+            <StCategory onClick={() => setToggle(prev => !prev)}>
+              click me ㅜ
+            </StCategory>
+            <StCategory
+              onClick={() => {
+                console.log('인기');
+                setToggle(prev => !prev);
+              }}
+            >
+              인기순
+            </StCategory>
+            <StCategory
+              onClick={() => {
+                console.log('날짜');
+                setToggle(prev => !prev);
+              }}
+            >
+              날짜순
+            </StCategory>
+          </StCategoryGroup>
+        ) : (
+          <StCategoryGroup style={{ display: 'flex', flexDirection: 'column' }}>
+            <StCategory onClick={() => setToggle(prev => !prev)}>
+              click me ㅜ
+            </StCategory>
+            <StCategory style={{ display: 'none' }}>인기순</StCategory>
+            <StCategory style={{ display: 'none' }}>날짜순</StCategory>
+          </StCategoryGroup>
+        )}
+
         {groups.map(group => {
           return (
             <StGroup
@@ -142,6 +143,9 @@ const StCategoryGroup = styled.div`
   border: 1px solid gray;
   border-radius: 20px;
   overflow: hidden;
+  position: absolute;
+  top: -50px;
+  left: -10px;
 `;
 
 const StCategory = styled.button`
@@ -182,7 +186,7 @@ const StRecommend = styled.p`
   margin: 0;
 
   @media screen and (max-width: 800px) {
-    padding: 0;
+    padding-bottom: 10px;
     text-align: center;
   }
 `;
@@ -194,7 +198,6 @@ const StRecommendLists = styled.div`
   flex-wrap: wrap;
   padding-bottom: 20px;
   margin-bottom: 30px;
-
   div {
     &:first-of-type {
       margin-left: 45px;
@@ -221,17 +224,9 @@ const StGroups = styled.div`
   display: flex;
   flex-wrap: wrap;
 
-  margin: 0 15px;
+  margin: 70px 15px;
   gap: 15px;
-
-  @media screen and (max-width: 800px) {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  @media screen and (max-width: 500px) {
-    margin: 0 auto;
-  }
+  position: relative;
 `;
 
 //그룹
@@ -257,7 +252,7 @@ const StGroup = styled.div`
     margin: 0 0 20px 0;
   }
 
-  @media screen and (max-width: 500px) {
-    width: 350px;
+  @media screen and (max-width: 800px) {
+    width: 100%;
   }
 `;

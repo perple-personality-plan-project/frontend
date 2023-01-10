@@ -220,7 +220,7 @@ const StGroup = styled.div`
 `;
 
 const StGroupImg = styled.div`
-  position: relative;
+  /* position: relative; */
   width: 100%;
   max-width: 450px;
 
