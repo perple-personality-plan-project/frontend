@@ -1,9 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import styled from 'styled-components';
+import GroupDetailCreateModal from '../components/modal/GroupDetailCreateModal';
+import GroupDetailCard from './subpages/GroupDetailCard';
+
+interface groupPosts {
+  locationId: number;
+  locationName: string;
+  locationRoute: string;
+  postTag: string;
+  postDetail: string;
+  thumbnail: string;
+}
 
 const GroupDetail = () => {
   const id = useParams();
+  const [groupPosts, setGroupPosts] = useState<groupPosts[]>([
+    {
+      locationId: 1,
+      locationName: '닉네임',
+      locationRoute: '왕십리',
+      postTag: 'ENFP',
+      postDetail: '오랜만에 왕십리 곱창!! 왕십리 필수 코스!!',
+      thumbnail:
+        'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
+    },
+    {
+      locationId: 2,
+      locationName: '닉네임',
+      postTag: 'INTJ',
+      locationRoute: '왕십리',
+      postDetail: '오랜만에 왕십리 곱창!! 왕십리 필수 코스!!',
+      thumbnail:
+        'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
+    },
+    {
+      locationId: 3,
+      locationName: '닉네임',
+      postTag: 'INFP',
+      locationRoute: '왕십리',
+      postDetail: '오랜만에 왕십리 곱창!! 왕십리 필수 코스!!',
+      thumbnail:
+        'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
+    },
+    {
+      locationId: 4,
+      locationName: '닉네임',
+      postTag: 'ESFJ',
+      locationRoute: '왕십리',
+      postDetail: '오랜만에 왕십리 곱창!! 왕십리 필수 코스!!',
+      thumbnail:
+        'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
+    },
+  ]);
   return (
     <div>
       <StBgImages></StBgImages>
@@ -41,75 +90,17 @@ const GroupDetail = () => {
         <StPostContainer>
           <h2>그룹 게시글</h2>
           <StGroupPosts>
-            <div className="post-container">
-              <div className="post-header">
-                <div className="post-header-info">
-                  <img
-                    style={{ width: '40px', height: '40px' }}
-                    src={require('../빡빡이1.png')}
-                    alt="group-img"
-                  />
-                  <h3>닉네임10</h3>
-                  <p>ㅋ ENFP</p>
-                </div>
-                <div className="post-header-route">왕십리 ㅋ</div>
-              </div>
-
-              <img src={require('../빡빡이1.png')} alt="group-img" />
-              <div className="post-desc">
-                <p>
-                  오랜만에 왕십리 곱창!! 왕십리 필수 코스!!
-                  ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ
-                </p>
-                <div className="post-bottom">
-                  <p className="post-date">2022.12.29</p>
-                  <div className="post-bottom-right">
-                    <div className="post-bottom-icon">A</div>
-                    <div className="post-bottom-icon">B</div>
-                    <div className="post-bottom-icon">C</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="post-container">
-              <img src={require('../빡빡이1.png')} alt="group-img" />
-              <div className="post-desc">
-                <p>
-                  오랜만에 왕십리 곱창!! 왕십리 필수 코스!!
-                  ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ
-                </p>
-                <p className="post-date">2022.12.29</p>
-              </div>
-            </div>
-            <div className="post-container">
-              <img src={require('../빡빡이1.png')} alt="group-img" />
-              <div className="post-desc">
-                <p>
-                  오랜만에 왕십리 곱창!! 왕십리 필수 코스!!
-                  ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ
-                </p>
-                <p className="post-date">2022.12.29</p>
-              </div>
-            </div>
-            <div className="post-container">
-              <img src={require('../빡빡이1.png')} alt="group-img" />
-              <div className="post-desc">
-                <p>
-                  오랜만에 왕십리 곱창!! 왕십리 필수 코스!!
-                  ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ
-                </p>
-                <div className="post-bottom">
-                  <p className="post-date">2022.12.29</p>
-                  <div className="post-bottom-right">
-                    <div className="post-bottom-icon">A</div>
-                    <div className="post-bottom-icon">B</div>
-                    <div className="post-bottom-icon">C</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/* <div className="post-add-btn">+</div> */}
+            {groupPosts.map(post => (
+              <GroupDetailCard key={post.locationId} post={post} />
+            ))}
           </StGroupPosts>
         </StPostContainer>
+
+        <GroupDetailCreateModal
+          setGroupPosts={setGroupPosts}
+          groupPosts={groupPosts}
+        />
       </StContainer>
     </div>
   );
@@ -220,14 +211,7 @@ const StGroupInfo = styled.div`
   }
 `;
 
-const StGroupPosts = styled.div`
-  display: flex;
-  /* flex-direction: column; */
-  /* justify-content: center; */
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-left: 50px;
-
+const StGroupPost = styled.div`
   .post-container {
     position: relative;
     /* margin: 20px; */
@@ -239,6 +223,7 @@ const StGroupPosts = styled.div`
     border: 1px solid #d9d9d9;
     border-radius: 10px;
     overflow: hidden;
+    cursor: pointer;
 
     img {
       width: 100%;
@@ -330,6 +315,40 @@ const StGroupPosts = styled.div`
     @media screen and (max-width: 900px) {
       width: 400px;
     }
+  }
+
+  @media screen and (max-width: 900px) {
+    flex-direction: column;
+    gap: 20px;
+    margin-left: 0px;
+  }
+`;
+
+const StGroupPosts = styled.div`
+  display: flex;
+  /* flex-direction: column; */
+  /* justify-content: center; */
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-left: 50px;
+  position: relative;
+
+  .post-add-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    background-color: #565656;
+    color: white;
+    position: fixed;
+    z-index: 1;
+
+    bottom: 80px;
+    right: 60px;
+
+    cursor: pointer;
   }
 
   @media screen and (max-width: 900px) {
