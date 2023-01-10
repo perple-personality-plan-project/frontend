@@ -50,7 +50,6 @@ const GroupCreateModal: React.FC<Props> = ({ setGroups, groups }) => {
   });
 
   const tagSetToString = tagSet.map(tag => tag.tag).join('');
-  console.log(groupInfos, tagSet, imageSrc);
 
   const closeModal = () => {
     setIsOpen(false);
@@ -67,8 +66,6 @@ const GroupCreateModal: React.FC<Props> = ({ setGroups, groups }) => {
       setTag('');
     }
   };
-
-  console.log(tagSet);
 
   const deleteTag = (id: number | string) => {
     const filtered = tagSet.filter(tag => tag.id !== id);
