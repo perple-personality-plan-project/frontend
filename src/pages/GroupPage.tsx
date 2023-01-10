@@ -1,152 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Modal } from '../components/GroupModal';
 import { useNavigate } from 'react-router';
-import { nanoid } from 'nanoid';
-import AWS from 'aws-sdk';
-
-interface tagPreset {
-  tag: {
-    id: string;
-    tag: string;
-  };
-  groupInfo: {
-    groupName: string;
-    groupTag: string;
-    groupDetail: string;
-    thumbnail: string;
-  };
-}
+import GroupCreateModal from '../components/modal/GroupCreateModal';
 
 const GroupPage = () => {
-  const BucketName = 'sblawsimage';
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
-  const [imageSrc, setImageSrc] = useState('');
-  const [tag, setTag] = useState('');
-  const [tagSet, setTagSet] = useState<tagPreset['tag'][]>([]);
-  const [thumbnail, setThumbnail] = useState('');
-  const [groupInfos, setgroupInfos] = useState<tagPreset['groupInfo']>({
-    groupName: '',
-    groupTag: '',
-    groupDetail: '',
-    thumbnail: '',
-  });
-  console.log(groupInfos);
   const [groups, setGroups] = useState([
     {
       groupId: 1,
-      title: '미친 텐션의 술집 정보',
+      groupName: '미친 텐션의 술집 정보',
+      groupTag: 'ENFP',
+      groupDetail: '만화 카페 정보 공유하는 방입니다 :)',
+      thumbnail:
+        'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
     },
     {
       groupId: 2,
-      title: '미친 텐션의 술집 정보',
+      groupName: '미친 텐션의 술집 정보',
+      groupTag: 'ENFP',
+      groupDetail: '만화 카페 정보 공유하는 방입니다 :)',
+      thumbnail:
+        'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
     },
     {
       groupId: 3,
-      title: '미친 텐션의 술집 정보',
-    },
-    {
-      groupId: 4,
-      title: '미친 텐션의 술집 정보',
+      groupName: '미친 텐션의 술집 정보',
+      groupTag: 'ENFP',
+      groupDetail: '만화 카페 정보 공유하는 방입니다 :)',
+      thumbnail:
+        'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
     },
   ]);
-
-  const tagSetToString = tagSet.map(tag => tag.tag).join('');
-
-  AWS.config.update({
-    region: 'ap-northeast-2', // 버킷이 존재하는 리전을 문자열로 입력합니다. (Ex. "ap-northeast-2")
-    credentials: new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: 'ap-northeast-2:08c52685-346d-4362-9490-8617a791432f', // cognito 인증 풀에서 받아온 키를 문자열로 입력합니다. (Ex. "ap-northeast-2...")
-    }),
-  });
-
-  const handleFileAWS = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-
-    const file = e.target.files[0];
-    setThumbnail(
-      `https://sblawsimage.s3.ap-northeast-2.amazonaws.com/${file.name}`,
-    );
-
-    // S3 SDK에 내장된 업로드 함수
-    const upload = new AWS.S3.ManagedUpload({
-      params: {
-        Bucket: BucketName, // 업로드할 대상 버킷명
-        Body: file, // 업로드할 파일 객체
-        ContentType: file.type,
-        Key: file.name, // 업로드할 파일명 (* 확장자를 추가해야 합니다!)
-      },
-    });
-
-    const promise = upload.promise();
-
-    promise.then(
-      function (data) {
-        alert('이미지 업로드에 성공했습니다.');
-      },
-      function (err) {
-        return alert(`오류가 발생했습니다: ${err.message}`);
-      },
-    );
-  };
-
-  const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-
-    const reader: any = new FileReader();
-    reader.readAsDataURL(e.target.files[0]);
-    return new Promise((resolve: any) => {
-      reader.onload = () => {
-        setImageSrc(reader.result);
-        resolve();
-      };
-    });
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
-    setImageSrc('');
-    setTagSet([]);
-  };
-
-  const addTag = () => {
-    if (tag.length > 0) {
-      setTagSet([...tagSet, { id: nanoid(), tag: `#${tag}` }]);
-      setTag('');
-    }
-  };
-
-  const deleteTag = (id: number | string) => {
-    const filtered = tagSet.filter(tag => tag.id !== id);
-    setTagSet(filtered);
-  };
-
-  const handleGroupInfo = (e: any) => {
-    const { name, value } = e.target;
-    setgroupInfos({ ...groupInfos, [name]: value });
-  };
-
-  const sendData = () => {
-    if (
-      tagSet.length > 0 &&
-      thumbnail !== '' &&
-      groupInfos.groupName &&
-      groupInfos.groupDetail
-    ) {
-      setgroupInfos({
-        ...groupInfos,
-        groupTag: tagSetToString,
-        thumbnail: thumbnail,
-      });
-      setIsOpen(false);
-      alert('그룹 작성 완료!');
-    } else {
-      alert('형식을 모두 작성해주세요');
-    }
-  };
-
-  console.log(groupInfos);
 
   return (
     <StContainer>
@@ -170,12 +54,13 @@ const GroupPage = () => {
       </StRecommendLists>
       <StGroups>
         {groups.map(group => {
+          console.log(group);
           return (
             <StGroup
               key={group.groupId}
               onClick={() => navigate(`/${group.groupId}`)}
             >
-              <img src={require('../빡빡이1.png')} alt="group-img" />
+              <img src={group.thumbnail} alt="group-img" />
               <div
                 style={{
                   display: 'flex',
@@ -183,97 +68,18 @@ const GroupPage = () => {
                   justifyContent: 'center',
                 }}
               >
-                <h2>{group.title}</h2>
-                <p>{`만화 카페 정보 공유하는 방입니다 :)`}</p>
+                <h2>{group.groupName}</h2>
+                <p>{group.groupDetail}</p>
               </div>
             </StGroup>
           );
         })}
       </StGroups>
-      <StModalIcon
+      {/* <StModalIcon
         onClick={() => setIsOpen(true)}
         src={require('../빡빡이1.png')}
-      />
-
-      <Modal closeModal={closeModal} open={isOpen}>
-        <StModalContainer>
-          <h1>그룹 생성하기</h1>
-          <StCloseIcon onClick={() => closeModal()}>X</StCloseIcon>
-          <StFlexCentered>
-            <StModalImgContainer>
-              {imageSrc ? (
-                <StModalImgLabel htmlFor="roomImg">
-                  <img src={imageSrc} alt="roomImg" />
-                  {/* <video
-                    style={{ width: '200px', height: '200px' }}
-                    src={imageSrc}
-                    autoPlay
-                  /> */}
-                </StModalImgLabel>
-              ) : (
-                <StModalImgLabel htmlFor="roomImg">사진 등록</StModalImgLabel>
-              )}
-              <StModalImgInput
-                onChange={e => {
-                  handleImagePreview(e);
-                  handleFileAWS(e);
-                }}
-                type="file"
-                // accept="image/*"
-                id="roomImg"
-              />
-            </StModalImgContainer>
-
-            <StModalInputComponent style={{ width: '100%' }}>
-              <label>그룹 이름</label>
-              <StModalInput
-                name="groupName"
-                onChange={e => handleGroupInfo(e)}
-              />
-            </StModalInputComponent>
-            <StModalInputComponent style={{ width: '40%' }}>
-              <label>태그 작성</label>
-              <StModalTag>
-                <StModalInput
-                  value={tag}
-                  onChange={e => setTag(e.target.value)}
-                  style={{ width: '60%', margin: '0 10px 0 0' }}
-                />
-                <div className="tagBtn" onClick={addTag}>
-                  +
-                </div>
-              </StModalTag>
-            </StModalInputComponent>
-            <StModalTagLists>
-              {tagSet.map(tag => {
-                return (
-                  <div className="tag-lists" key={tag.id}>
-                    <div className="tag-list">{tag.tag}</div>
-                    <div
-                      onClick={() => deleteTag(tag.id)}
-                      className="tag-delete"
-                    >
-                      <p className="tag-X">x</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </StModalTagLists>
-            <StModalInputComponent style={{ width: '100%' }}>
-              <label>내용 작성</label>
-              <StModalTextArea
-                name="groupDetail"
-                onChange={e => handleGroupInfo(e)}
-              />
-            </StModalInputComponent>
-          </StFlexCentered>
-
-          <StModalButtonContainer style={{ marginTop: '10px' }}>
-            <StModalButton onClick={sendData}>모두 작성했어요!</StModalButton>
-            {/* <StModalButton onClick={() => closeModal()}>닫기</StModalButton> */}
-          </StModalButtonContainer>
-        </StModalContainer>
-      </Modal>
+      /> */}
+      <GroupCreateModal setGroups={setGroups} groups={groups} />
     </StContainer>
   );
 };
@@ -286,216 +92,6 @@ const StContainer = styled.div`
   /* height: 100vh; */
   /* padding: 10px; */
   margin: 0 auto;
-`;
-
-const StModalContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: white;
-  /* min-width: 350px; */
-  width: 100%;
-  padding: 20px;
-  border-radius: 10px;
-
-  h1 {
-    font-size: 15px;
-    color: #5b5b5b;
-    margin: 0 0 20px 0;
-  }
-`;
-
-const StModalInputComponent = styled.div`
-  font-size: 13px;
-  color: #8e8e8e;
-
-  label {
-    display: block;
-    margin-bottom: 5px;
-  }
-`;
-
-const StModalTagLists = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-
-  .tag-lists {
-    display: flex;
-    align-items: center;
-    margin-right: 10px;
-    background-color: gray;
-    border-radius: 10px;
-    padding: 5px;
-    margin: 0 5px 10px 0;
-
-    cursor: pointer;
-  }
-
-  .tag-list {
-    text-indent: 5px;
-    font-size: 13px;
-    color: white;
-  }
-
-  .tag-delete {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 5px;
-    /* background-color: white; */
-    border-radius: 100%;
-    width: 20px;
-    height: 20px;
-
-    font-size: 13px;
-
-    :hover {
-      background-color: white;
-    }
-  }
-
-  .tag-X {
-    position: absolute;
-    bottom: -10px;
-  }
-`;
-
-const StModalTag = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-
-  .tagBtn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-    width: 30px;
-    height: 30px;
-    border: 1px solid #d9d9d9;
-    border-radius: 40%;
-
-    cursor: pointer;
-  }
-`;
-
-const StCloseIcon = styled.button`
-  position: absolute;
-  border-radius: 50%;
-  border: 0;
-  width: 24px;
-  height: 24px;
-
-  top: 20px;
-  right: -15px;
-
-  cursor: pointer;
-`;
-
-const StFlexCentered = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  /* align-items: center; */
-  width: 100%;
-
-  @media screen and (max-width: 800px) {
-    display: flex;
-    flex-direction: column;
-  }
-`;
-
-const StModalButtonContainer = styled.div`
-  width: 100%;
-  @media screen and (max-width: 800px) {
-    width: 100%;
-  }
-`;
-
-const StModalButton = styled.button`
-  width: 100%;
-  padding: 10px;
-
-  border-radius: 20px;
-  border: 0;
-  color: gray;
-  border: 1px solid gray;
-  background-color: white;
-
-  cursor: pointer;
-
-  :hover {
-    color: white;
-    background-color: gray;
-  }
-
-  @media screen and (max-width: 800px) {
-    width: 100%;
-  }
-`;
-
-const StModalImgContainer = styled.div`
-  img {
-    width: 100%;
-
-    /* height: 120px; */
-    border-radius: 10px;
-    /* margin-bottom: 10px; */
-  }
-`;
-
-const StModalImgLabel = styled.label`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #5b5b5b;
-
-  box-sizing: border-box;
-  width: 350px;
-  height: 120px;
-  background-color: #f5f5f5;
-  cursor: pointer;
-
-  border: 1px solid #d9d9d9;
-  border-radius: 10px;
-
-  margin-bottom: 20px;
-
-  img {
-    height: 120px;
-    object-fit: contain;
-  }
-
-  @media screen and (max-width: 500px) {
-    width: 300px;
-  }
-`;
-
-const StModalImgInput = styled.input`
-  width: 100%;
-  /* height: 100%; */
-  display: none;
-`;
-
-const StModalInput = styled.input`
-  width: 100%;
-  height: 20px;
-  border-radius: 10px;
-  border: 1px solid #d9d9d9;
-  box-sizing: border-box;
-  margin-bottom: 10px;
-  padding: 15px;
-`;
-
-const StModalTextArea = styled.textarea`
-  text-indent: 10px;
-  width: 100%;
-  height: 150px;
-  border-radius: 10px;
-  box-sizing: border-box;
-  resize: none;
-  border: 1px solid #d9d9d9;
 `;
 
 //원하는 그룹을 검색해 보세요!
@@ -553,11 +149,6 @@ const StRecommendLists = styled.div`
       margin-left: 45px;
     }
   }
-  /* div {
-    &:last-of-type {
-      margin-right: 45px;
-    }
-  } */
 `;
 
 //해시태그
@@ -580,10 +171,15 @@ const StGroups = styled.div`
   flex-wrap: wrap;
 
   margin: 0 15px;
-  gap: 10px;
+  gap: 15px;
 
   @media screen and (max-width: 800px) {
     flex-direction: column;
+    align-items: center;
+  }
+
+  @media screen and (max-width: 500px) {
+    margin: 0 auto;
   }
 `;
 
@@ -594,9 +190,13 @@ const StGroup = styled.div`
   box-shadow: 0px 0px 13.6122px rgba(0, 0, 0, 0.14);
   border-radius: 10px;
   cursor: pointer;
+  width: 400px;
 
   img {
+    width: 100px;
+    height: 100px;
     border-radius: 10px;
+    margin-right: 20px;
   }
   h2 {
     margin: 20px 0 0 0;
@@ -604,6 +204,10 @@ const StGroup = styled.div`
 
   p {
     margin: 0 0 20px 0;
+  }
+
+  @media screen and (max-width: 500px) {
+    width: 350px;
   }
 `;
 
