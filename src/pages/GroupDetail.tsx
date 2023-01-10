@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import GroupDetailCreateModal from '../components/modal/GroupDetailCreateModal';
 import GroupDetailCard from './subpages/GroupDetailCard';
 
-interface groupPosts {
+export interface groupPostPreset {
   locationId: number;
   locationName: string;
   locationRoute: string;
@@ -15,7 +15,7 @@ interface groupPosts {
 
 const GroupDetail = () => {
   const id = useParams();
-  const [groupPosts, setGroupPosts] = useState<groupPosts[]>([
+  const [groupPosts, setGroupPosts] = useState<groupPostPreset[]>([
     {
       locationId: 1,
       locationName: '닉네임',

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-// import ImageServerHook from '../hooks/ImageServerHook';
 import ImageServerMultiHook from '../hooks/ImageServerMultiHook';
 import ImagePreviewMultiHook from '../hooks/ImagePreviewMultiHook';
-// import ImagePreviewHook from '../hooks/ImagePreviewHook';
 import styled from 'styled-components';
 
 import GroupModalTemplate from './GroupModalTemplate';
@@ -13,34 +11,16 @@ import { Navigation } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-interface tagPreset {
-  tag: {
-    id: string;
-    tag: string;
-  };
-}
+import { groupPostPreset } from '../../pages/GroupDetail';
 
-interface groupPreset {
-  postInfo: {
-    locationId: number;
-    locationName: string;
-    locationRoute: string;
-    postTag: string;
-    postDetail: string;
-    thumbnail: string[];
-  };
+interface tagPreset {
+  id: string;
+  tag: string;
 }
 
 interface Props {
   setGroupPosts: React.Dispatch<any>;
-  groupPosts: {
-    locationId: number;
-    locationName: string;
-    locationRoute: string;
-    postTag: string;
-    postDetail: string;
-    thumbnail: string[];
-  }[];
+  groupPosts: groupPostPreset[];
 }
 
 const GroupDetailCreateModal: React.FC<Props> = ({
@@ -52,8 +32,8 @@ const GroupDetailCreateModal: React.FC<Props> = ({
 
   const [isOpen, setIsOpen] = useState(false);
   const [tag, setTag] = useState('');
-  const [tagSet, setTagSet] = useState<tagPreset['tag'][]>([]);
-  const [groupInfos, setgroupInfos] = useState<groupPreset['postInfo']>({
+  const [tagSet, setTagSet] = useState<tagPreset[]>([]);
+  const [groupInfos, setgroupInfos] = useState<groupPostPreset>({
     locationId: 1,
     locationName: '',
     locationRoute: '',
@@ -115,8 +95,6 @@ const GroupDetailCreateModal: React.FC<Props> = ({
       alert('형식을 모두 작성해주세요');
     }
   };
-
-  console.log(thumbnail);
 
   return (
     <div>
