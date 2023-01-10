@@ -5,6 +5,7 @@ import GroupCreateModal from '../components/modal/GroupCreateModal';
 
 const GroupPage = () => {
   const navigate = useNavigate();
+  const [toggle, setToggle] = useState(false);
   const [groups, setGroups] = useState([
     {
       groupId: 1,
@@ -52,9 +53,40 @@ const GroupPage = () => {
         <StRecommendList>카페</StRecommendList>
         <StRecommendList>카페</StRecommendList>
       </StRecommendLists>
+      {toggle ? (
+        <StCategoryGroup style={{ display: 'flex', flexDirection: 'column' }}>
+          <StCategory onClick={() => setToggle(prev => !prev)}>
+            click me ㅜ
+          </StCategory>
+          <StCategory
+            onClick={() => {
+              console.log('인기');
+              setToggle(prev => !prev);
+            }}
+          >
+            인기순
+          </StCategory>
+          <StCategory
+            onClick={() => {
+              console.log('날짜');
+              setToggle(prev => !prev);
+            }}
+          >
+            날짜순
+          </StCategory>
+        </StCategoryGroup>
+      ) : (
+        <StCategoryGroup style={{ display: 'flex', flexDirection: 'column' }}>
+          <StCategory onClick={() => setToggle(prev => !prev)}>
+            click me ㅜ
+          </StCategory>
+          <StCategory style={{ display: 'none' }}>인기순</StCategory>
+          <StCategory style={{ display: 'none' }}>날짜순</StCategory>
+        </StCategoryGroup>
+      )}
+
       <StGroups>
         {groups.map(group => {
-          console.log(group);
           return (
             <StGroup
               key={group.groupId}
@@ -75,10 +107,6 @@ const GroupPage = () => {
           );
         })}
       </StGroups>
-      {/* <StModalIcon
-        onClick={() => setIsOpen(true)}
-        src={require('../빡빡이1.png')}
-      /> */}
       <GroupCreateModal setGroups={setGroups} groups={groups} />
     </StContainer>
   );
@@ -87,16 +115,18 @@ const GroupPage = () => {
 export default GroupPage;
 
 const StContainer = styled.div`
-  position: relative;
+  background-color: #f8f8f8;
+  /* position: relative; */
   width: 100%;
-  /* height: 100vh; */
+  height: 100vh;
   /* padding: 10px; */
   margin: 0 auto;
 `;
 
 //원하는 그룹을 검색해 보세요!
 const StInputContainer = styled.div`
-  margin: 20px 0 0 20px;
+  background-color: white;
+  padding: 20px 0 0 20px;
   @media screen and (max-width: 800px) {
     display: flex;
     justify-content: center;
@@ -104,6 +134,24 @@ const StInputContainer = styled.div`
 
     margin: 20px 0 0 0;
   }
+`;
+
+const StCategoryGroup = styled.div`
+  margin: 0 15px 20px;
+  width: 100px;
+  border: 1px solid gray;
+  border-radius: 20px;
+  overflow: hidden;
+`;
+
+const StCategory = styled.button`
+  width: 100px;
+  height: 30px;
+  border: 0;
+  font-size: 15px;
+  /* border-radius: 10px; */
+
+  cursor: pointer;
 `;
 
 //원하는 그룹을 검색해 보세요!
@@ -127,10 +175,11 @@ const StUpperInput = styled.input`
 
 //검색이 어려우시다고요? 추천해 드릴게요!
 const StRecommend = styled.p`
+  background-color: white;
   color: #7a7a7a;
   font-size: 12px;
-  padding: 0 0 0 50px;
-  margin-bottom: 20px;
+  padding: 0 0 20px 50px;
+  margin: 0;
 
   @media screen and (max-width: 800px) {
     padding: 0;
@@ -140,8 +189,10 @@ const StRecommend = styled.p`
 
 //해시태그 그룹
 const StRecommendLists = styled.div`
+  background-color: white;
   display: flex;
   flex-wrap: wrap;
+  padding-bottom: 20px;
   margin-bottom: 30px;
 
   div {
@@ -208,21 +259,5 @@ const StGroup = styled.div`
 
   @media screen and (max-width: 500px) {
     width: 350px;
-  }
-`;
-
-const StModalIcon = styled.img`
-  width: 60px;
-  height: 60px;
-
-  position: fixed;
-  bottom: 100px;
-  right: 100px;
-
-  cursor: pointer;
-
-  @media screen and (max-width: 500px) {
-    bottom: 60px;
-    right: 60px;
   }
 `;
