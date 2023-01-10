@@ -142,7 +142,7 @@ const GroupDetailCreateModal: React.FC<Props> = ({
                   >
                     {imageSrc.map(img => {
                       return (
-                        <SwiperSlide>
+                        <SwiperSlide style={{ aspectRatio: '1/1' }}>
                           <img src={img} alt="swiper-img" />
                         </SwiperSlide>
                       );
@@ -163,14 +163,6 @@ const GroupDetailCreateModal: React.FC<Props> = ({
             ) : (
               <StGroupImg>
                 <p>사진 등록</p>
-                {/* {imageSrc ? (
-                <label htmlFor="img">
-                  <img src={imageSrc} alt="group-img" />
-                </label>
-              ) : (
-                <label htmlFor="img">사진 등록</label>
-              )} */}
-
                 <label htmlFor="img">사진 등록</label>
                 <input
                   multiple
@@ -280,12 +272,15 @@ const StGroupImgSwiper = styled.div`
   position: relative;
   width: 100%;
   max-width: 400px;
+  height: 100%;
 
   p {
     margin: 0 0 10px 0;
   }
   img {
     width: 100%;
+    height: 100%;
+
     border-radius: 10px;
     background-color: #f5f5f5;
     //max-width: 500px;
