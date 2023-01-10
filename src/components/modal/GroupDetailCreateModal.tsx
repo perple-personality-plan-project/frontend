@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
-import ImageServerHook from '../ImageServerHook';
-import ImagePreviewHook from '../ImagePreviewHook';
+// import ImageServerHook from '../hooks/ImageServerHook';
+import ImageServerMultiHook from '../hooks/ImageServerMultiHook';
+import ImagePreviewMultiHook from '../hooks/ImagePreviewMultiHook';
+// import ImagePreviewHook from '../hooks/ImagePreviewHook';
 import styled from 'styled-components';
 
 import GroupModalTemplate from './GroupModalTemplate';
 import { nanoid } from 'nanoid';
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper';
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 interface tagPreset {
   tag: {
@@ -20,7 +27,7 @@ interface groupPreset {
     locationRoute: string;
     postTag: string;
     postDetail: string;
-    thumbnail: string;
+    thumbnail: string[];
   };
 }
 
@@ -32,7 +39,7 @@ interface Props {
     locationRoute: string;
     postTag: string;
     postDetail: string;
-    thumbnail: string;
+    thumbnail: string[];
   }[];
 }
 
@@ -40,8 +47,8 @@ const GroupDetailCreateModal: React.FC<Props> = ({
   setGroupPosts,
   groupPosts,
 }) => {
-  const { thumbnail, handleFileAWS } = ImageServerHook();
-  const { imageSrc, setImageSrc, handleImagePreview } = ImagePreviewHook();
+  const { thumbnail, handleFileAWS } = ImageServerMultiHook();
+  const { imageSrc, setImageSrc, handleImagePreview } = ImagePreviewMultiHook();
 
   const [isOpen, setIsOpen] = useState(false);
   const [tag, setTag] = useState('');
@@ -52,15 +59,14 @@ const GroupDetailCreateModal: React.FC<Props> = ({
     locationRoute: '',
     postTag: '',
     postDetail: '',
-    thumbnail: '',
+    thumbnail: [],
   });
 
   const tagSetToString = tagSet.map(tag => tag.tag).join('');
-  console.log(groupInfos, tagSet, imageSrc);
 
   const closeModal = () => {
     setIsOpen(false);
-    setImageSrc('');
+    setImageSrc([]);
     setTagSet([]);
   };
 
@@ -73,8 +79,6 @@ const GroupDetailCreateModal: React.FC<Props> = ({
       setTag('');
     }
   };
-
-  console.log(tagSet);
 
   const deleteTag = (id: number | string) => {
     const filtered = tagSet.filter(tag => tag.id !== id);
@@ -89,12 +93,12 @@ const GroupDetailCreateModal: React.FC<Props> = ({
   const sendData = () => {
     if (
       tagSet.length > 0 &&
-      thumbnail !== '' &&
+      thumbnail[0] !== '' &&
       groupInfos.locationName &&
       groupInfos.postDetail
     ) {
       setIsOpen(false);
-      setImageSrc('');
+      setImageSrc([]);
       setTag('');
       setTagSet([]);
       //백엔드 서버에 ...groups정보랑 tagSetToString, thumbnail 보내주면 됌
@@ -112,35 +116,75 @@ const GroupDetailCreateModal: React.FC<Props> = ({
     }
   };
 
+  console.log(thumbnail);
+
   return (
     <div>
-      <StModalIcon onClick={() => setIsOpen(true)}>+</StModalIcon>
+      <StModalIcon onClick={() => setIsOpen(true)}>
+        <p>+</p>
+      </StModalIcon>
 
       <GroupModalTemplate closeModal={closeModal} open={isOpen}>
         <StGroupContainer>
           <StCloseIcon onClick={closeModal}>X</StCloseIcon>
           <h1>게시글 생성하기</h1>
           <StGroup>
-            <StGroupImg>
-              <p>사진 등록</p>
-              {imageSrc ? (
+            {imageSrc.length !== 0 ? (
+              <StGroupImgSwiper>
+                <p>사진 등록</p>
+                <label className="img-swiper" htmlFor="img">
+                  <Swiper
+                    navigation={true}
+                    modules={[Navigation]}
+                    className="mySwiper"
+                    style={{ width: '100%' }}
+                    // style={{ width: '300px' }}
+                  >
+                    {imageSrc.map(img => {
+                      return (
+                        <SwiperSlide>
+                          <img src={img} alt="swiper-img" />
+                        </SwiperSlide>
+                      );
+                    })}
+                  </Swiper>
+                </label>
+                <input
+                  multiple
+                  accept="image/*"
+                  onChange={e => {
+                    handleImagePreview(e);
+                    handleFileAWS(e);
+                  }}
+                  id="img"
+                  type="file"
+                />
+              </StGroupImgSwiper>
+            ) : (
+              <StGroupImg>
+                <p>사진 등록</p>
+                {/* {imageSrc ? (
                 <label htmlFor="img">
                   <img src={imageSrc} alt="group-img" />
                 </label>
               ) : (
                 <label htmlFor="img">사진 등록</label>
-              )}
+              )} */}
 
-              {/* <label htmlFor="img">사진 등록</label> */}
-              <input
-                onChange={e => {
-                  handleImagePreview(e);
-                  handleFileAWS(e);
-                }}
-                id="img"
-                type="file"
-              />
-            </StGroupImg>
+                <label htmlFor="img">사진 등록</label>
+                <input
+                  multiple
+                  accept="image/*"
+                  onChange={e => {
+                    handleImagePreview(e);
+                    handleFileAWS(e);
+                  }}
+                  id="img"
+                  type="file"
+                />
+              </StGroupImg>
+            )}
+
             <StGroupInfo>
               <StGroupInput>
                 <label>장소 이름</label>
@@ -229,6 +273,55 @@ const StGroup = styled.div`
     align-items: center;
     margin: 0 auto;
     /* justify-content: center; */
+  }
+`;
+
+const StGroupImgSwiper = styled.div`
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+
+  p {
+    margin: 0 0 10px 0;
+  }
+  img {
+    width: 100%;
+    border-radius: 10px;
+    background-color: #f5f5f5;
+    //max-width: 500px;
+  }
+
+  label {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #5b5b5b;
+
+    box-sizing: border-box;
+    width: 100%;
+    /* height: 100%; */
+    /* background-color: #f5f5f5; */
+    cursor: pointer;
+    /* border: 1px solid #d9d9d9; */
+    border-radius: 10px;
+  }
+
+  input {
+    display: none;
+  }
+
+  @media screen and (max-width: 1400px) {
+    max-width: 300px;
+  }
+
+  @media screen and (max-width: 1024px) {
+    max-width: 250px;
+  }
+
+  @media screen and (max-width: 800px) {
+    width: 100%;
+    max-width: 250px;
   }
 `;
 
@@ -418,6 +511,11 @@ const StModalIcon = styled.div`
   right: 50px;
 
   cursor: pointer;
+
+  p {
+    position: absolute;
+    top: -22px;
+  }
 
   @media screen and (max-width: 500px) {
     bottom: 60px;

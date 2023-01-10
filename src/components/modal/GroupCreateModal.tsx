@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import ImageServerHook from '../ImageServerHook';
-import ImagePreviewHook from '../ImagePreviewHook';
+import ImageServerHook from '../hooks/ImageServerHook';
+import ImagePreviewHook from '../hooks/ImagePreviewHook';
 import styled from 'styled-components';
 
 import GroupModalTemplate from './GroupModalTemplate';
@@ -122,6 +122,7 @@ const GroupCreateModal: React.FC<Props> = ({ setGroups, groups }) => {
 
               {/* <label htmlFor="img">사진 등록</label> */}
               <input
+                accept="image/*"
                 onChange={e => {
                   handleImagePreview(e);
                   handleFileAWS(e);
@@ -231,6 +232,7 @@ const StGroupImg = styled.div`
   }
   img {
     width: 100%;
+    height: 100%;
     border-radius: 10px;
     background-color: #f5f5f5;
     //max-width: 500px;

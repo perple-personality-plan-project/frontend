@@ -10,7 +10,7 @@ interface Props {
     locationRoute: string;
     postTag: string;
     postDetail: string;
-    thumbnail: string;
+    thumbnail: string[];
   };
 }
 
@@ -32,7 +32,7 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
           <div className="post-header-route">{post.locationRoute}</div>
         </div>
 
-        <img src={post.thumbnail} alt="group-img" />
+        <img src={post.thumbnail[0]} alt="group-img" />
         <div className="post-desc">
           <p>{post.postDetail}</p>
           <div className="post-bottom">
