@@ -10,7 +10,7 @@ interface groupPosts {
   locationRoute: string;
   postTag: string;
   postDetail: string;
-  thumbnail: string;
+  thumbnail: string[];
 }
 
 const GroupDetail = () => {
@@ -22,8 +22,9 @@ const GroupDetail = () => {
       locationRoute: '왕십리',
       postTag: 'ENFP',
       postDetail: '오랜만에 왕십리 곱창!! 왕십리 필수 코스!!',
-      thumbnail:
+      thumbnail: [
         'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
+      ],
     },
     {
       locationId: 2,
@@ -31,8 +32,9 @@ const GroupDetail = () => {
       postTag: 'INTJ',
       locationRoute: '왕십리',
       postDetail: '오랜만에 왕십리 곱창!! 왕십리 필수 코스!!',
-      thumbnail:
+      thumbnail: [
         'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
+      ],
     },
     {
       locationId: 3,
@@ -40,8 +42,9 @@ const GroupDetail = () => {
       postTag: 'INFP',
       locationRoute: '왕십리',
       postDetail: '오랜만에 왕십리 곱창!! 왕십리 필수 코스!!',
-      thumbnail:
+      thumbnail: [
         'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
+      ],
     },
     {
       locationId: 4,
@@ -49,8 +52,9 @@ const GroupDetail = () => {
       postTag: 'ESFJ',
       locationRoute: '왕십리',
       postDetail: '오랜만에 왕십리 곱창!! 왕십리 필수 코스!!',
-      thumbnail:
+      thumbnail: [
         'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
+      ],
     },
   ]);
   return (

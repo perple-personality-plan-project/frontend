@@ -17,6 +17,7 @@ const ImageServerHook = () => {
     if (!e.target.files) return;
 
     const file = e.target.files[0];
+    console.log(e.target.files);
     setThumbnail(
       `https://sblawsimage.s3.ap-northeast-2.amazonaws.com/${file.name}`,
     );
@@ -35,7 +36,7 @@ const ImageServerHook = () => {
 
     promise.then(
       function (data) {
-        alert('이미지 업로드에 성공했습니다.');
+        // alert('이미지 업로드에 성공했습니다.');
       },
       function (err) {
         return alert(`오류가 발생했습니다: ${err.message}`);
