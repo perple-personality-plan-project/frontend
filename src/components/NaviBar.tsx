@@ -49,7 +49,7 @@ const NaviBar = () => {
 
       <StLine />
       <Modal closeModal={() => setIsOpen(false)} open={isOpen}>
-        <StVerticalLists style={{ display: 'flex', flexDirection: 'column' }}>
+        <StVerticalLists>
           <ul>
             {NavArr.map((nav, index) => {
               return (
@@ -159,6 +159,8 @@ const StHorizontalLists = styled.div`
 `;
 
 const StVerticalLists = styled.div`
+  display: flex;
+  flex-direction: column;
   ul {
     margin: 0 5px;
     padding: 0 20px;
