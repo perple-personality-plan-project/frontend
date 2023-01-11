@@ -17,7 +17,7 @@ const ImagePreviewMultiHook = () => {
 
       reader.onload = () => {
         console.log(reader.result);
-        fileURLs[i] = reader.result;
+        fileURLs[i] = { id: i, data: reader.result, toggle: false };
         setImageSrc([...fileURLs]);
       };
     }
