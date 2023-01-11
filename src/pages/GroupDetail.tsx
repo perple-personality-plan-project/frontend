@@ -11,6 +11,7 @@ export interface groupPostPreset {
   postTag: string;
   postDetail: string;
   thumbnail: string[];
+  index: number;
 }
 
 const GroupDetail = () => {
@@ -25,6 +26,7 @@ const GroupDetail = () => {
       thumbnail: [
         'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
       ],
+      index: 0,
     },
     {
       locationId: 2,
@@ -35,6 +37,7 @@ const GroupDetail = () => {
       thumbnail: [
         'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
       ],
+      index: 0,
     },
     {
       locationId: 3,
@@ -45,6 +48,7 @@ const GroupDetail = () => {
       thumbnail: [
         'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
       ],
+      index: 0,
     },
     {
       locationId: 4,
@@ -55,6 +59,7 @@ const GroupDetail = () => {
       thumbnail: [
         'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
       ],
+      index: 0,
     },
   ]);
   return (

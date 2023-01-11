@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper';
+import 'swiper/css';
+import 'swiper/css/navigation';
+
 import { GroupDetailCardModal } from '../../components/modal/GroupDetailCardModal';
 
 interface Props {
@@ -11,13 +16,14 @@ interface Props {
     postTag: string;
     postDetail: string;
     thumbnail: string[];
+    index: number;
   };
 }
 
 const GroupDetailCard: React.FC<Props> = ({ post }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <StGroupPost key={post.locationId}>
+    <StGroupPost>
       <div onClick={() => setIsOpen(true)} className="post-container">
         <div className="post-header">
           <div className="post-header-info">
@@ -34,7 +40,7 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
 
         <img
           className="post-img-size"
-          src={post.thumbnail[0]}
+          src={post.thumbnail[post.index]}
           alt="group-img"
         />
         <div className="post-desc">
@@ -57,7 +63,22 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
       >
         <StXIcon onClick={() => setIsOpen(false)}>X</StXIcon>
         <StDetailContainer>
-          <img src={require('../../빡빡이1.png')} alt="detail-img" />
+          <Swiper
+            navigation={true}
+            modules={[Navigation]}
+            className="mySwiper"
+            style={{ width: '100%', aspectRatio: '1/1' }}
+            // style={{ width: '300px' }}
+          >
+            {post.thumbnail.map((img, index) => {
+              return (
+                <SwiperSlide key={index}>
+                  <img src={img} alt="swiper-img" />
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+          {/* <img src={require('../../빡빡이1.png')} alt="detail-img" /> */}
           <StDetailInfo>
             <StDetailDesc>
               <img src={require('../../빡빡이1.png')} alt="detail-img" />
@@ -78,7 +99,52 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
               </div>
             </StDetailDesc>
             <StDetailBorder></StDetailBorder>
-            <StDetailComment></StDetailComment>
+            <StDetailComments>
+              <StDetailComment>
+                <img src={require('../../빡빡이1.png')} alt="detail-img" />
+                <div className="detail-info">
+                  <div className="detail-top" style={{ display: 'flex' }}>
+                    <h2>{post.locationName}</h2>
+                    <p>{post.postTag}</p>
+                  </div>
+                  <p>{post.postDetail}</p>
+                </div>
+              </StDetailComment>
+              <StDetailComment>
+                <img src={require('../../빡빡이1.png')} alt="detail-img" />
+                <div className="detail-info">
+                  <div className="detail-top" style={{ display: 'flex' }}>
+                    <h2>{post.locationName}</h2>
+                    <p>{post.postTag}</p>
+                  </div>
+                  <p>{post.postDetail}</p>
+                </div>
+              </StDetailComment>
+              <StDetailComment>
+                <img src={require('../../빡빡이1.png')} alt="detail-img" />
+                <div className="detail-info">
+                  <div className="detail-top" style={{ display: 'flex' }}>
+                    <h2>{post.locationName}</h2>
+                    <p>{post.postTag}</p>
+                  </div>
+                  <p>{post.postDetail}</p>
+                </div>
+              </StDetailComment>
+              <StDetailComment>
+                <img src={require('../../빡빡이1.png')} alt="detail-img" />
+                <div className="detail-info">
+                  <div className="detail-top" style={{ display: 'flex' }}>
+                    <h2>{post.locationName}</h2>
+                    <p>{post.postTag}</p>
+                  </div>
+                  <p>{post.postDetail}</p>
+                </div>
+              </StDetailComment>
+            </StDetailComments>
+            <StDetailInput>
+              <input placeholder="댓글을 입력하세요" />
+              <button>완료</button>
+            </StDetailInput>
           </StDetailInfo>
         </StDetailContainer>
       </GroupDetailCardModal>
@@ -93,22 +159,70 @@ const StDetailContainer = styled.div`
   justify-content: center;
   border-radius: 20px;
   overflow: hidden;
+  /* max-width: 800px; */
 
   img {
-    max-width: 600px;
-    width: 60%;
+    /* max-width: 600px; */
+    width: 100%;
+    height: 100%;
     background-color: #b6b6b6;
+  }
+
+  @media screen and (max-width: 1024px) {
+    /* aspect-ratio: 1/1; */
+    width: 350px;
+    /* height: 100%; */
+    flex-direction: column;
+    margin: 0 auto;
+
+    img {
+      width: 350px;
+      height: 350px;
+    }
+  }
+`;
+
+const StDetailInput = styled.div`
+  background-color: #f2f2f2;
+  border-top: 1px solid #b6b6b6;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  margin: auto 0;
+
+  input {
+    border: 1px solid gray;
+    border-radius: 20px;
+    text-indent: 10px;
+    width: 100%;
+    height: 30px;
+  }
+
+  button {
+    width: 80px;
+    height: 30px;
+    border: 0;
+    background-color: #f2f2f2;
   }
 `;
 
 const StDetailInfo = styled.div`
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
   max-width: 400px;
-  width: 40%;
+  width: 60%;
   background-color: #f0f0f0;
+
+  @media screen and (max-width: 1024px) {
+    width: 100%;
+  }
 `;
 
 const StDetailDesc = styled.div`
+  box-sizing: border-box;
+  padding: 20px 20px 10px 20px;
   display: flex;
   img {
     margin-right: 10px;
@@ -119,53 +233,110 @@ const StDetailDesc = styled.div`
   .detail-info {
     display: flex;
     flex-direction: column;
+    width: 100%;
 
     p {
       margin: 0;
       /* width: 20ch; */
     }
-  }
 
-  .detail-top {
-    display: flex;
-    align-items: center;
-    margin: 0 0 10px 0;
-    font-size: 15px;
-    h2 {
+    .detail-top {
+      display: flex;
+      /* justify-content: center; */
+      align-items: center;
+      margin: 0 0 10px 0;
       font-size: 15px;
-      margin: 0 10px 0 0;
+      h2 {
+        font-size: 15px;
+        margin: 0 10px 0 0;
+      }
+
+      p {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 20px;
+        width: 60px;
+        height: 20px;
+        background-color: white;
+      }
     }
 
-    p {
+    .detail-bottom {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 20px;
-      width: 60px;
-      height: 20px;
-      background-color: white;
-    }
-  }
+      justify-content: space-between;
+      margin-top: 30px;
 
-  .detail-bottom {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
-
-    .detail-btn {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 20px;
-      height: 20px;
-      background-color: #d9d9d9;
-      color: black;
-      margin-left: 10px;
+      .detail-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 20px;
+        height: 20px;
+        background-color: #d9d9d9;
+        color: black;
+        margin-left: 10px;
+      }
     }
   }
 `;
 
-const StDetailComment = styled.div``;
+const StDetailComments = styled.div`
+  aspect-ratio: 1/1;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 20px 20px 10px 20px;
+  display: flex;
+  flex-direction: column;
+
+  @media screen and (max-width: 1024px) {
+    width: 100%;
+    height: 300px;
+  }
+`;
+
+const StDetailComment = styled.div`
+  display: flex;
+  margin-bottom: 15px;
+  img {
+    margin-right: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  .detail-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    p {
+      margin: 0;
+      /* width: 20ch; */
+    }
+
+    .detail-top {
+      display: flex;
+      /* justify-content: center; */
+      align-items: center;
+      margin: 0 0 10px 0;
+      font-size: 15px;
+      h2 {
+        font-size: 15px;
+        margin: 0 10px 0 0;
+      }
+
+      p {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 20px;
+        width: 60px;
+        height: 20px;
+        background-color: white;
+      }
+    }
+  }
+`;
 
 const StDetailBorder = styled.div`
   border-bottom: 1px solid #b6b6b6;

@@ -30,6 +30,7 @@ const GroupDetailCreateModal: React.FC<Props> = ({
   const { thumbnail, handleFileAWS } = ImageServerMultiHook();
   const { imageSrc, setImageSrc, handleImagePreview } = ImagePreviewMultiHook();
 
+  const [picIndex, setPicIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [tag, setTag] = useState('');
   const [tagSet, setTagSet] = useState<tagPreset[]>([]);
@@ -40,7 +41,10 @@ const GroupDetailCreateModal: React.FC<Props> = ({
     postTag: '',
     postDetail: '',
     thumbnail: [],
+    index: 0,
   });
+
+  console.log(imageSrc);
 
   const tagSetToString = tagSet.map(tag => tag.tag).join('');
 
@@ -84,16 +88,35 @@ const GroupDetailCreateModal: React.FC<Props> = ({
       //백엔드 서버에 ...groups정보랑 tagSetToString, thumbnail 보내주면 됌
       setGroupPosts([
         ...groupPosts,
-        { ...groupInfos, postTag: tagSetToString, thumbnail: thumbnail },
+        {
+          ...groupInfos,
+          postTag: tagSetToString,
+          thumbnail: thumbnail,
+          index: picIndex,
+        },
       ]);
-      // setGroups([
-      //   ...groups,
-      //   { ...groupInfos, groupTag: tagSetToString, thumbnail: thumbnail },
-      // ]);
+
       alert('게시글 작성 완료!');
     } else {
       alert('형식을 모두 작성해주세요');
     }
+  };
+
+  //버튼을 클릭 했을 때 ImagePreviewMultiHook에서 이미지와 함께 포함시킨 id값과 클릭한 id값을
+  //비교해서 일치하면 이미지와 함께 포함시킨 toggle값을 true로 만들어주고 나머지는 false로 만들어줌
+  //(하나만 선택되고 나머지는 선택해제)
+  //ImagePreviewMultiHook에서 id값을 0부터 했기 때문에 (이미지 프리뷰에서 보이는 이미지의 순서와 같음)
+  //setPicIndex에 id값을 넣어 이미지 순서와 맞추고 그 값을 sendData에 저장시켜 GroupDetail에 보내줌
+  //sendData에 저장된 index값을 GroupDetailCard에서 메인 이미지를 보여주기 위해 thumbnail[index]로 보여줌
+  const selectMainPic = (id: number) => {
+    imageSrc.map((img, index) => (img.id === id ? setPicIndex(id) : null));
+
+    setImageSrc(prev =>
+      prev.map(img =>
+        img.id === id ? { ...img, toggle: true } : { ...img, toggle: false },
+      ),
+    );
+    alert('메인 사진으로 등록되었습니다!');
   };
 
   return (
@@ -110,7 +133,7 @@ const GroupDetailCreateModal: React.FC<Props> = ({
             {imageSrc.length !== 0 ? (
               <StGroupImgSwiper>
                 <p>사진 등록</p>
-                <label className="img-swiper" htmlFor="img">
+                <label htmlFor="img">
                   <Swiper
                     navigation={true}
                     modules={[Navigation]}
@@ -121,7 +144,23 @@ const GroupDetailCreateModal: React.FC<Props> = ({
                     {imageSrc.map(img => {
                       return (
                         <SwiperSlide style={{ aspectRatio: '1/1' }}>
-                          <img src={img} alt="swiper-img" />
+                          <img src={img.data} alt="swiper-img" />
+                          {/* toggle이 true일 때 click된 버튼 보여줌 */}
+                          {img.toggle ? (
+                            <button
+                              className="V-button-clicked"
+                              onClick={() => selectMainPic(img.id)}
+                            >
+                              V
+                            </button>
+                          ) : (
+                            <button
+                              className="V-button"
+                              onClick={() => selectMainPic(img.id)}
+                            >
+                              V
+                            </button>
+                          )}
                         </SwiperSlide>
                       );
                     })}
@@ -282,6 +321,36 @@ const StGroupImgSwiper = styled.div`
 
   input {
     display: none;
+  }
+
+  .V-button {
+    /* font-size: 200px; */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #c6dcf3;
+    border: 0;
+    cursor: pointer;
+
+    /* &:hover {
+      background-color: dodgerblue;
+    } */
+  }
+  .V-button-clicked {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: dodgerblue;
+    border: 0;
+    cursor: pointer;
   }
 
   @media screen and (max-width: 1400px) {
