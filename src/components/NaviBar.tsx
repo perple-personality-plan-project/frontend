@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Modal } from '../components/SidebarModal';
-import Swiper from '../components/Swiper';
+import SwiperSlides from '../components/Swiper';
 
 import 'swiper/css';
 
@@ -45,7 +45,7 @@ const NaviBar = () => {
         style={{ border: '30px solid #F2F2F2' }}
       ></div>
 
-      {Swiper}
+      <SwiperSlides />
 
       <StLine />
       <Modal closeModal={() => setIsOpen(false)} open={isOpen}>
@@ -75,7 +75,7 @@ const StNavContainer = styled.nav`
   .mySwiper {
     position: absolute;
     top: 24px;
-    right: 25%;
+    right: 200px;
   }
 
   @media screen and (max-width: 800px) {
@@ -128,6 +128,7 @@ const StHorizontalLists = styled.div`
   li {
     list-style: none;
     margin-right: 30px;
+    /* margin: 0 auto; */
     color: gray;
   }
 
