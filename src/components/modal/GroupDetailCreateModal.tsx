@@ -30,42 +30,23 @@ const GroupDetailCreateModal: React.FC<Props> = ({
   const { thumbnail, handleFileAWS } = ImageServerMultiHook();
   const { imageSrc, setImageSrc, handleImagePreview } = ImagePreviewMultiHook();
 
+  const [toggle, setToggle] = useState(false);
+  const [route, setRoute] = useState('');
+
   const [picIndex, setPicIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-  const [tag, setTag] = useState('');
-  const [tagSet, setTagSet] = useState<tagPreset[]>([]);
   const [groupInfos, setgroupInfos] = useState<groupPostPreset>({
     locationId: 5,
     locationName: '',
     locationRoute: '',
-    postTag: '',
     postDetail: '',
     thumbnail: [],
     index: 0,
   });
 
-  const tagSetJSON = JSON.stringify(tagSet.map(tag => tag.tag));
-  console.log(tagSetJSON);
-
   const closeModal = () => {
     setIsOpen(false);
     setImageSrc([]);
-    setTagSet([]);
-  };
-
-  const addTag = () => {
-    if (tagSet.length < 3) {
-      setTagSet([...tagSet, { id: nanoid(), tag: `#${tag}` }]);
-      setTag('');
-    } else {
-      alert('최대 3개까지만 등록 가능 합니다.');
-      setTag('');
-    }
-  };
-
-  const deleteTag = (id: number | string) => {
-    const filtered = tagSet.filter(tag => tag.id !== id);
-    setTagSet(filtered);
   };
 
   const handleGroupInfo = (e: any) => {
@@ -74,24 +55,17 @@ const GroupDetailCreateModal: React.FC<Props> = ({
   };
 
   const sendData = () => {
-    if (
-      tagSet.length > 0 &&
-      thumbnail[0] !== undefined &&
-      groupInfos.locationName &&
-      groupInfos.postDetail
-    ) {
+    if (thumbnail[0] !== undefined && groupInfos.postDetail && route !== '') {
       setIsOpen(false);
       setImageSrc([]);
-      setTag('');
-      setTagSet([]);
       //백엔드 서버에 ...groups정보랑 tagSetToString, thumbnail 보내주면 됌
       setGroupPosts([
         ...groupPosts,
         {
           ...groupInfos,
-          postTag: tagSetJSON,
           thumbnail: thumbnail,
           index: picIndex,
+          locationRoute: route,
         },
       ]);
 
@@ -195,43 +169,88 @@ const GroupDetailCreateModal: React.FC<Props> = ({
 
             <StGroupInfo>
               <StGroupInput>
-                <label>장소 이름</label>
+                {/* <p>장소 이름</p>
                 <input
                   name="locationName"
                   onChange={e => handleGroupInfo(e)}
                   placeholder="내용을 작성해주세요."
-                />
-              </StGroupInput>
-              <StGroupInput>
-                <label>태그 작성</label>
-                <div
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
-                  <input
-                    onChange={e => setTag(e.target.value)}
-                    value={tag}
-                    placeholder="태그를 추가해주세요. (최대 3개)"
-                  />
-                  <div onClick={addTag} className="tag-plus">
-                    +
-                  </div>
-                </div>
-              </StGroupInput>
-              <StTagSet>
-                {tagSet.map(tag => {
-                  return (
-                    <div className="tag-icon" key={tag.id}>
-                      {tag.tag}
-                      <div
-                        onClick={() => deleteTag(tag.id)}
-                        className="tag-delete-btn"
+                /> */}
+                <p>루트 추가</p>
+
+                {toggle ? (
+                  <div style={{ display: 'flex' }}>
+                    <StCategoryGroup>
+                      <StCategory
+                        onClick={() => {
+                          setToggle(prev => !prev);
+                          setRoute('A');
+                        }}
                       >
-                        X
-                      </div>
+                        A
+                      </StCategory>
+                      <StCategory
+                        onClick={() => {
+                          setToggle(prev => !prev);
+                          setRoute('B');
+                        }}
+                      >
+                        B
+                      </StCategory>
+                      <StCategory
+                        onClick={() => {
+                          setToggle(prev => !prev);
+                          setRoute('C');
+                        }}
+                      >
+                        C
+                      </StCategory>
+                      <StCategory
+                        onClick={() => {
+                          setToggle(prev => !prev);
+                          setRoute('D');
+                        }}
+                      >
+                        D
+                      </StCategory>
+                      <StCategory
+                        onClick={() => {
+                          setToggle(prev => !prev);
+                          setRoute('E');
+                        }}
+                      >
+                        E
+                      </StCategory>
+                    </StCategoryGroup>
+                    <div
+                      onClick={() => setToggle(prev => !prev)}
+                      className="tag-btn"
+                    >
+                      -
                     </div>
-                  );
-                })}
-              </StTagSet>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <StCategoryGroup
+                      style={{ display: 'flex', flexDirection: 'column' }}
+                    >
+                      <StCategory
+                        onClick={() => {
+                          setToggle(prev => !prev);
+                        }}
+                      >
+                        {route}
+                      </StCategory>
+                    </StCategoryGroup>
+                    <div
+                      onClick={() => setToggle(prev => !prev)}
+                      className="tag-btn"
+                    >
+                      +
+                    </div>
+                  </div>
+                )}
+              </StGroupInput>
+
               <StGroupTextArea>
                 <p>내용 작성</p>
                 <textarea
@@ -420,11 +439,18 @@ const StGroupInfo = styled.div`
 
 const StGroupInput = styled.div`
   margin-bottom: 10px;
+  p {
+    /* display: block; */
+    font-size: 14px;
+    margin: 0 0 5px 0;
+  }
+
   label {
-    display: block;
+    /* display: block; */
     font-size: 14px;
     margin-bottom: 5px;
   }
+
   input {
     width: 100%;
     height: 35px;
@@ -434,7 +460,7 @@ const StGroupInput = styled.div`
     text-indent: 5px;
   }
 
-  .tag-plus {
+  .tag-btn {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -452,6 +478,39 @@ const StGroupInput = styled.div`
       color: white;
     }
   }
+`;
+
+const StCategoryGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  /* margin: 0 15px 20px; */
+  height: 100%;
+  flex: 1;
+  border: 1px solid gray;
+  border-radius: 20px;
+  overflow: hidden;
+  /* position: absolute; */
+
+  @media screen and (max-width: 800px) {
+    left: 0;
+  }
+`;
+
+const StCategoryHead = styled.button`
+  width: 100%;
+  height: 30px;
+  border: 0;
+  font-size: 15px;
+  background-color: white;
+  cursor: pointer;
+`;
+
+const StCategory = styled.button`
+  width: 100%;
+  height: 30px;
+  border: 0;
+  font-size: 15px;
+  background-color: white;
 `;
 
 const StTagSet = styled.div`
