@@ -86,7 +86,7 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
               <div className="detail-info">
                 <div className="detail-top" style={{ display: 'flex' }}>
                   <h2>{post.locationName}</h2>
-                  <p>{post.postTag}</p>
+                  {/* <p>{post.postTag}</p> */}
                 </div>
                 <p>{post.postDetail}</p>
                 <div className="detail-bottom">
@@ -106,7 +106,7 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
                 <div className="detail-info">
                   <div className="detail-top" style={{ display: 'flex' }}>
                     <h2>{post.locationName}</h2>
-                    <p>{post.postTag}</p>
+                    {/* <p>{post.postTag}</p> */}
                   </div>
                   <p>{post.postDetail}</p>
                 </div>
@@ -116,7 +116,7 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
                 <div className="detail-info">
                   <div className="detail-top" style={{ display: 'flex' }}>
                     <h2>{post.locationName}</h2>
-                    <p>{post.postTag}</p>
+                    {/* <p>{post.postTag}</p> */}
                   </div>
                   <p>{post.postDetail}</p>
                 </div>
@@ -126,7 +126,7 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
                 <div className="detail-info">
                   <div className="detail-top" style={{ display: 'flex' }}>
                     <h2>{post.locationName}</h2>
-                    <p>{post.postTag}</p>
+                    {/* <p>{post.postTag}</p> */}
                   </div>
                   <p>{post.postDetail}</p>
                 </div>
@@ -136,7 +136,7 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
                 <div className="detail-info">
                   <div className="detail-top" style={{ display: 'flex' }}>
                     <h2>{post.locationName}</h2>
-                    <p>{post.postTag}</p>
+                    {/* <p>{post.postTag}</p> */}
                   </div>
                   <p>{post.postDetail}</p>
                 </div>
@@ -408,12 +408,13 @@ const StGroupPost = styled.div`
 
         div {
           display: flex;
+          flex-wrap: wrap;
           p {
             background-color: white;
             border-radius: 20px;
             font-size: 12px;
             padding: 5px 15px;
-            margin-right: 5px;
+            margin: 5px 5px 5px 0;
           }
         }
       }

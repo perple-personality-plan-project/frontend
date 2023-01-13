@@ -35,7 +35,7 @@ const GroupDetailCreateModal: React.FC<Props> = ({
   const [tag, setTag] = useState('');
   const [tagSet, setTagSet] = useState<tagPreset[]>([]);
   const [groupInfos, setgroupInfos] = useState<groupPostPreset>({
-    locationId: 1,
+    locationId: 5,
     locationName: '',
     locationRoute: '',
     postTag: '',
@@ -44,7 +44,8 @@ const GroupDetailCreateModal: React.FC<Props> = ({
     index: 0,
   });
 
-  const tagSetJSON = JSON.stringify(tagSet);
+  const tagSetJSON = JSON.stringify(tagSet.map(tag => tag.tag));
+  console.log(tagSetJSON);
 
   const closeModal = () => {
     setIsOpen(false);
@@ -75,7 +76,7 @@ const GroupDetailCreateModal: React.FC<Props> = ({
   const sendData = () => {
     if (
       tagSet.length > 0 &&
-      thumbnail[0] !== '' &&
+      thumbnail[0] !== undefined &&
       groupInfos.locationName &&
       groupInfos.postDetail
     ) {
