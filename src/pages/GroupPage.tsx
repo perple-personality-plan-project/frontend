@@ -65,7 +65,7 @@ const GroupPage = () => {
 
       <StGroups>
         {toggle ? (
-          <StCategoryGroup style={{ display: 'flex', flexDirection: 'column' }}>
+          <StCategoryGroup>
             <StCategoryHead onClick={() => setToggle(prev => !prev)}>
               {filterGroup}
             </StCategoryHead>
@@ -153,6 +153,7 @@ const StGroupContainer = styled.div`
 
   @media screen and (max-width: 800px) {
     width: 100%;
+    margin: 0 15px;
     /* height: 276px; */
   }
 `;
@@ -161,17 +162,20 @@ const StGroupContainer = styled.div`
 const StInputContainer = styled.div`
   box-sizing: border-box;
   background-color: white;
-  padding: 20px 0 0 20px;
+  padding: 20px 0 0 50px;
   @media screen and (max-width: 800px) {
     display: flex;
     justify-content: center;
     width: 100%;
 
     margin: 20px 0 0 0;
+    padding: 20px 0 0 0;
   }
 `;
 
 const StCategoryGroup = styled.div`
+  display: flex;
+  flex-direction: column;
   margin: 0 15px 20px;
   width: 100px;
   border: 1px solid gray;
@@ -182,6 +186,10 @@ const StCategoryGroup = styled.div`
   left: -10px;
 
   z-index: 2;
+
+  @media screen and (max-width: 800px) {
+    left: 0;
+  }
 `;
 
 const StCategoryHead = styled.button`
@@ -209,7 +217,7 @@ const StCategory = styled.button`
 //원하는 그룹을 검색해 보세요!
 const StUpperInput = styled.input`
   width: 95%;
-  max-width: 50%;
+  max-width: 40%;
   height: 20px;
   padding: 10px;
   border-radius: 20px;
@@ -220,7 +228,9 @@ const StUpperInput = styled.input`
   margin: 0 0 20px 0;
 
   @media screen and (max-width: 800px) {
+    text-align: center;
     margin: 0 auto 20px auto;
+    max-width: 50%;
     width: 100%;
   }
 `;
@@ -272,9 +282,15 @@ const StGroups = styled.div`
   display: flex;
   flex-wrap: wrap;
 
-  margin: 70px 15px;
+  margin: 70px auto;
   gap: 15px;
   position: relative;
+  max-width: 1200px;
+
+  @media screen and (max-width: 1250px) {
+    margin: 70px auto;
+    max-width: 600px;
+  }
 `;
 
 //그룹
@@ -285,7 +301,7 @@ const StGroup = styled.div`
   box-shadow: 0px 0px 13.6122px rgba(0, 0, 0, 0.14);
   border-radius: 10px;
   cursor: pointer;
-  width: 600px;
+  width: 550px;
   position: relative;
   /* height: 276px; */
 
