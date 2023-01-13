@@ -177,6 +177,7 @@ const StGroupContainer = styled.div`
   background-color: white;
   border-radius: 10px;
   box-sizing: border-box;
+  margin: 0 auto;
 
   h1 {
     margin-top: 0;
