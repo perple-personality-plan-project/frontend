@@ -44,9 +44,7 @@ const GroupDetailCreateModal: React.FC<Props> = ({
     index: 0,
   });
 
-  console.log(imageSrc);
-
-  const tagSetToString = tagSet.map(tag => tag.tag).join('');
+  const tagSetJSON = JSON.stringify(tagSet);
 
   const closeModal = () => {
     setIsOpen(false);
@@ -90,7 +88,7 @@ const GroupDetailCreateModal: React.FC<Props> = ({
         ...groupPosts,
         {
           ...groupInfos,
-          postTag: tagSetToString,
+          postTag: tagSetJSON,
           thumbnail: thumbnail,
           index: picIndex,
         },
@@ -259,6 +257,7 @@ const StGroupContainer = styled.div`
   background-color: white;
   border-radius: 10px;
   box-sizing: border-box;
+  margin: 0 auto;
 
   h1 {
     margin-top: 0;
