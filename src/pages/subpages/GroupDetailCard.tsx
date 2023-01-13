@@ -38,11 +38,7 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
           <div className="post-header-route">{post.locationRoute}</div>
         </div>
 
-        <img
-          className="post-img-size"
-          src={post.thumbnail[post.index]}
-          alt="group-img"
-        />
+        <img src={post.thumbnail[post.index]} alt="group-img" />
         <div className="post-desc">
           <p>{post.postDetail}</p>
           <div className="post-bottom">
@@ -464,10 +460,8 @@ const StGroupPost = styled.div`
     @media screen and (max-width: 900px) {
       width: 400px;
     }
-  }
-
-  .post-img-size {
-    width: 330px;
-    height: 330px;
+    @media screen and (max-width: 500px) {
+      width: 350px;
+    }
   }
 `;

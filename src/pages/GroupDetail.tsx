@@ -119,6 +119,7 @@ export default GroupDetail;
 
 const StContainer = styled.div`
   display: flex;
+  justify-content: center;
   margin: 20px;
 
   @media screen and (max-width: 900px) {
@@ -144,6 +145,10 @@ const StPostContainer = styled.div`
       margin-left: 0;
     }
   }
+
+  @media screen and (max-width: 500px) {
+    width: 100%;
+  }
 `;
 
 const StBgImages = styled.div`
@@ -154,6 +159,11 @@ const StBgImages = styled.div`
 const StMainContainer = styled.div`
   width: 400px;
   min-width: 400px;
+
+  @media screen and (max-width: 500px) {
+    width: 100%;
+    min-width: 100%;
+  }
 `;
 
 const StGroupInfo = styled.div`
@@ -341,6 +351,7 @@ const StGroupPosts = styled.div`
   gap: 20px;
   margin-left: 50px;
   position: relative;
+  width: 100%;
 
   .post-add-btn {
     display: flex;
@@ -364,5 +375,10 @@ const StGroupPosts = styled.div`
     flex-direction: column;
     gap: 20px;
     margin-left: 0px;
+  }
+
+  @media screen and (max-width: 500px) {
+    flex-direction: column;
+    align-items: center;
   }
 `;
