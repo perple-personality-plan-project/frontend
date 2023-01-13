@@ -13,7 +13,6 @@ interface Props {
     locationId: number;
     locationName: string;
     locationRoute: string;
-    postTag: string;
     postDetail: string;
     thumbnail: string[];
     index: number;
@@ -21,7 +20,6 @@ interface Props {
 }
 
 const GroupDetailCard: React.FC<Props> = ({ post }) => {
-  const postTag = JSON.parse(post.postTag);
   const [isOpen, setIsOpen] = useState(false);
   return (
     <StGroupPost>
@@ -34,11 +32,6 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
               alt="group-img"
             />
             <h3>{post.locationName}</h3>
-            <div>
-              {postTag.map((tag: string) => {
-                return <p>{tag}</p>;
-              })}
-            </div>
           </div>
           <div className="post-header-route">{post.locationRoute}</div>
         </div>
