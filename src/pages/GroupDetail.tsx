@@ -21,7 +21,7 @@ const GroupDetail = () => {
       locationId: 1,
       locationName: '닉네임',
       locationRoute: '왕십리',
-      postTag: 'ENFP',
+      postTag: '["ENFP", "ENFP"]',
       postDetail: '오랜만에 왕십리 곱창!! 왕십리 필수 코스!!',
       thumbnail: [
         'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
@@ -31,7 +31,7 @@ const GroupDetail = () => {
     {
       locationId: 2,
       locationName: '닉네임',
-      postTag: 'INTJ',
+      postTag: '["INTJ", "ENFP"]',
       locationRoute: '왕십리',
       postDetail: '오랜만에 왕십리 곱창!! 왕십리 필수 코스!!',
       thumbnail: [
@@ -42,7 +42,7 @@ const GroupDetail = () => {
     {
       locationId: 3,
       locationName: '닉네임',
-      postTag: 'INFP',
+      postTag: '["INFP", "ENFP"]',
       locationRoute: '왕십리',
       postDetail: '오랜만에 왕십리 곱창!! 왕십리 필수 코스!!',
       thumbnail: [
@@ -53,7 +53,7 @@ const GroupDetail = () => {
     {
       locationId: 4,
       locationName: '닉네임',
-      postTag: 'ESFJ',
+      postTag: '["ESFJ", "ENFP"]',
       locationRoute: '왕십리',
       postDetail: '오랜만에 왕십리 곱창!! 왕십리 필수 코스!!',
       thumbnail: [

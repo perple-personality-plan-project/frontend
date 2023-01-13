@@ -21,6 +21,7 @@ interface Props {
 }
 
 const GroupDetailCard: React.FC<Props> = ({ post }) => {
+  const postTag = JSON.parse(post.postTag);
   const [isOpen, setIsOpen] = useState(false);
   return (
     <StGroupPost>
@@ -33,7 +34,11 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
               alt="group-img"
             />
             <h3>{post.locationName}</h3>
-            <p>{post.postTag}</p>
+            <div>
+              {postTag.map((tag: string) => {
+                return <p>{tag}</p>;
+              })}
+            </div>
           </div>
           <div className="post-header-route">{post.locationRoute}</div>
         </div>
@@ -401,11 +406,15 @@ const StGroupPost = styled.div`
           margin-right: 10px;
         }
 
-        p {
-          background-color: white;
-          border-radius: 20px;
-          font-size: 12px;
-          padding: 5px 15px;
+        div {
+          display: flex;
+          p {
+            background-color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            padding: 5px 15px;
+            margin-right: 5px;
+          }
         }
       }
 
