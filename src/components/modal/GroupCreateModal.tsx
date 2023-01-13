@@ -33,7 +33,7 @@ const GroupCreateModal: React.FC<Props> = ({ setGroups, groups }) => {
     thumbnail: '',
   });
 
-  const tagSetToString = tagSet.map(tag => tag.tag).join('');
+  const tagSetJSON = JSON.stringify(tagSet.map(tag => tag.tag));
 
   const closeModal = () => {
     setIsOpen(false);
@@ -74,7 +74,7 @@ const GroupCreateModal: React.FC<Props> = ({ setGroups, groups }) => {
       //백엔드 서버에 ...groups정보랑 tagSetToString, thumbnail 보내주면 됌
       setGroups([
         ...groups,
-        { ...groupInfos, groupTag: tagSetToString, thumbnail: thumbnail },
+        { ...groupInfos, groupTag: tagSetJSON, thumbnail: thumbnail },
       ]);
       alert('그룹 작성 완료!');
     } else {
