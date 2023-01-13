@@ -12,17 +12,6 @@ const styles = {
     backgroundColor: 'rgba(0,0,0, .7)',
     zIndex: 1000,
   } as React.CSSProperties,
-
-  MODAL_STYLES: {
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    // backgroundColor: 'white',
-    // padding: '50px',
-    zIndex: 1000,
-    width: '60%',
-  } as React.CSSProperties,
 };
 
 interface Props {
@@ -41,10 +30,10 @@ const GroupModalTemplate: React.FC<Props> = ({
   return ReactDOM.createPortal(
     <div>
       <div onClick={closeModal} style={styles.OVERLAY_STYLE} />
-      <div style={styles.MODAL_STYLES}>
+      <StModalStyle>
         <StModalContainer>{children}</StModalContainer>
         {/* <button onClick={onClose}>Close Modal</button> */}
-      </div>
+      </StModalStyle>
     </div>,
     document.getElementById('portal')!,
   );
@@ -58,4 +47,17 @@ const StModalContainer = styled.div`
   /* @media screen and (max-width: 500px) {
     width: 300px;
   } */
+`;
+
+const StModalStyle = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  width: 60%;
+
+  @media screen and (max-width: 500px) {
+    width: 300px;
+  }
 `;
