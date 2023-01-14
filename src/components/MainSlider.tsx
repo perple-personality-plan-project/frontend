@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import styled from 'styled-components';
-import { EffectCards } from 'swiper';
+import { EffectCards, Navigation, Pagination } from 'swiper';
 import 'swiper/css/effect-cards';
 
 const MainSlider = () => {
@@ -10,11 +10,13 @@ const MainSlider = () => {
       <Swiper
         effect={'cards'}
         grabCursor={true}
-        modules={[EffectCards]}
+        navigation={true}
+        pagination={true}
+        mousewheel={true}
+        keyboard={true}
+        modules={[EffectCards, Navigation, Pagination]}
         className="mySwiper"
       >
-        <SwiperSlide>ENFP</SwiperSlide>
-        <SwiperSlide>ENFP</SwiperSlide>
         <SwiperSlide>ENFP</SwiperSlide>
         <SwiperSlide>ENFP</SwiperSlide>
         <SwiperSlide>ENFP</SwiperSlide>
@@ -28,7 +30,7 @@ export default MainSlider;
 
 const StSwiper = styled.div`
   .swiper {
-    width: 650px;
+    width: 600px;
     height: 450px;
     margin-right: 20%;
   }
@@ -52,6 +54,7 @@ const StSwiper = styled.div`
 
   .swiper-slide:nth-child(1n) {
     background-color: rgb(213, 211, 211);
+    box-shadow: 3px;
   }
 
   .swiper-slide:nth-child(2n) {
@@ -63,28 +66,6 @@ const StSwiper = styled.div`
   }
 
   .swiper-slide:nth-child(4n) {
-    background-color: rgb(213, 211, 211);
-  }
-
-  .swiper-slide:nth-child(5n) {
-    background-color: rgb(213, 211, 211);
-  }
-
-  .swiper-slide:nth-child(6n) {
-    background-color: rgb(213, 211, 211);
-  }
-
-  .swiper-slide:nth-child(7n) {
-    background-color: rgb(213, 211, 211);
-  }
-
-  .swiper-slide:nth-child(8n) {
-    background-color: rgb(213, 211, 211);
-  }
-  .swiper-slide:nth-child(9n) {
-    background-color: rgb(213, 211, 211);
-  }
-  .swiper-slide:nth-child(10n) {
     background-color: rgb(213, 211, 211);
   }
 `;
