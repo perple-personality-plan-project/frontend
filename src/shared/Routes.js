@@ -4,6 +4,7 @@ import GroupDetail from '../pages/GroupDetail';
 import MbtiQuestionsPage from '../pages/MbtiQuestionsPage';
 import MbtiCheckPage from '../pages/MbtiCheckPage';
 import NaviBar from '../components/NaviBar';
+
 import MainPage from '../pages/MainPage';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
@@ -12,8 +13,12 @@ import SignUpPage from '../pages/SignUpPage';
 import MapPage from '../pages/MapPage';
 import MyPage from '../pages/MyPage';
 
+import { store } from '../redux/config/configStore';
+import { Provider } from 'react-redux';
+
 const Router = () => {
   return (
+  <Provider store={store}>
     <BrowserRouter>
       <Routes>
         <Route path="/group" element={<GroupPage />} />
@@ -75,6 +80,7 @@ const Router = () => {
         <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </BrowserRouter>
+     </Provider>
   );
 };
 

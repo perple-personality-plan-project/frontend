@@ -1,46 +1,52 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 import GroupCreateModal from '../components/modal/GroupCreateModal';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../components/hooks/typescripthook/hooks';
+import { __groupGetDate, __groupGetRank } from '../redux/modules/groupSlice';
+import GroupCard from './subpages/GroupCard';
 
 export interface groupPreset {
-  groupId: number;
-  groupName: string;
-  groupTag: string;
-  groupDetail: string;
+  created_at: string;
+  description: string;
+  feedCount: number;
+  group_id: number;
+  group_name: string;
+  group_user_count: number;
+  hashtags: string;
   thumbnail: string;
+  updated_at: string;
 }
 
 const GroupPage = () => {
-  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { groupRank } = useAppSelector(store => store.group);
+  const { groupDate } = useAppSelector(store => store.group);
+
   const [toggle, setToggle] = useState(false);
-  const [filterGroup, setFilterGroup] = useState('인기순 v');
-  const [groups, setGroups] = useState<groupPreset[]>([
-    {
-      groupId: 1,
-      groupName: '미친 텐션의 술집 정보',
-      groupTag: '[]',
-      groupDetail: '만화 카페 정보 공유하는 방입니다 :)',
-      thumbnail:
-        'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
-    },
-    {
-      groupId: 2,
-      groupName: '미친 텐션의 술집 정보',
-      groupTag: '["# 술집", "# 맥주", "# 소주", "# INTJ", "# 춤zzzzzzzz"]',
-      groupDetail: '만화 카페 정보 공유하는 방입니다 :)',
-      thumbnail:
-        'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
-    },
-    {
-      groupId: 3,
-      groupName: '미친 텐션의 술집 정보',
-      groupTag: '["# 술집", "# 맥주", "# 소주", "# INTJ", "# 춤"]',
-      groupDetail: '만화 카페 정보 공유하는 방입니다 :)',
-      thumbnail:
-        'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
-    },
-  ]);
+  const [filterGroup, setFilterGroup] = useState('인기순');
+
+  const [groupByfilter, setGroupByfilter] = useState([]);
+
+  useEffect(() => {
+    if (filterGroup === '인기순') {
+      dispatch(__groupGetRank());
+    }
+    if (filterGroup === '날짜순') {
+      dispatch(__groupGetDate());
+    }
+  }, [filterGroup]);
+
+  useEffect(() => {
+    setGroupByfilter(groupRank);
+  }, [groupRank]);
+
+  useEffect(() => {
+    setGroupByfilter(groupDate);
+  }, [groupDate]);
 
   return (
     <StContainer>
@@ -72,7 +78,7 @@ const GroupPage = () => {
             <StCategory
               onClick={() => {
                 setToggle(prev => !prev);
-                setFilterGroup('인기순 v');
+                setFilterGroup('인기순');
               }}
             >
               인기순
@@ -80,7 +86,7 @@ const GroupPage = () => {
             <StCategory
               onClick={() => {
                 setToggle(prev => !prev);
-                setFilterGroup('날짜순 v');
+                setFilterGroup('날짜순');
               }}
             >
               날짜순
@@ -94,45 +100,27 @@ const GroupPage = () => {
           </StCategoryGroup>
         )}
 
-        {groups.map(group => {
-          return (
-            <StGroupContainer>
-              <StIcons>
-                <button onClick={() => console.log('a')} className="icon">
-                  A
-                </button>
-                <button onClick={() => console.log('b')} className="icon">
-                  B
-                </button>
-              </StIcons>
-              <StGroup
-                key={group.groupId}
-                onClick={() => navigate(`/${group.groupId}`)}
-              >
-                <div className="img-container">
-                  <img src={group.thumbnail} alt="group-img" />
-                </div>
-                <div className="info-vertical">
-                  <h2>{group.groupName}</h2>
-                  {/* <p>{group.groupDetail}</p> */}
-
-                  <p>게시글 2,786개 / 123명이 구독중이에요</p>
-                  <div className="btn-group">
-                    {JSON.parse(group.groupTag).length !== 0 ? (
-                      JSON.parse(group.groupTag).map((tag: string) => {
-                        return <button>{tag}</button>;
-                      })
-                    ) : (
-                      <p>태그가 없습니다</p>
-                    )}
-                  </div>
-                </div>
-              </StGroup>
-            </StGroupContainer>
-          );
+        {groupByfilter.map((group: groupPreset) => {
+          return <GroupCard key={group.group_id} group={group} />;
         })}
+
+        {/* {groupRank.map((group: groupPreset) => {
+          if (filterGroup === '인기순') {
+            return <GroupCard key={group.group_id} group={group} />;
+          }
+        })}
+
+        {groupDate.map((group: groupPreset) => {
+          if (filterGroup === '날짜순') {
+            return <GroupCard key={group.group_id} group={group} />;
+          }
+        })} */}
       </StGroups>
-      <GroupCreateModal setGroups={setGroups} groups={groups} />
+      <GroupCreateModal
+        setGroupByfilter={setGroupByfilter}
+        groupByfilter={groupByfilter}
+        filterGroup={filterGroup}
+      />
     </StContainer>
   );
 };
@@ -146,16 +134,6 @@ const StContainer = styled.div`
   height: 100vh;
   /* padding: 10px; */
   margin: 0 auto;
-`;
-
-const StGroupContainer = styled.div`
-  position: relative;
-
-  @media screen and (max-width: 800px) {
-    width: 100%;
-    margin: 0 15px;
-    /* height: 276px; */
-  }
 `;
 
 //원하는 그룹을 검색해 보세요!
@@ -293,7 +271,45 @@ const StGroups = styled.div`
   }
 `;
 
-//그룹
+const StGroupContainer = styled.div`
+  position: relative;
+
+  @media screen and (max-width: 800px) {
+    width: 100%;
+    margin: 0 15px;
+    /* height: 276px; */
+  }
+`;
+
+const StIcons = styled.div`
+  position: absolute;
+  display: flex;
+  top: 20px;
+  right: 20px;
+
+  z-index: 1;
+
+  .icon:nth-of-type(2) {
+    margin-left: 5px;
+  }
+
+  .icon {
+    border: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    background-color: pink;
+  }
+  @media screen and (max-width: 500px) {
+    /* display: none; */
+    top: 50%;
+    transform: translate(0, -280%);
+    left: 55px;
+  }
+`;
+
 const StGroup = styled.div`
   display: flex;
   padding: 20px;
@@ -365,34 +381,5 @@ const StGroup = styled.div`
   @media screen and (max-width: 800px) {
     width: 100%;
     box-sizing: border-box;
-  }
-`;
-
-const StIcons = styled.div`
-  position: absolute;
-  display: flex;
-  top: 20px;
-  right: 20px;
-
-  z-index: 1;
-
-  .icon:nth-of-type(2) {
-    margin-left: 5px;
-  }
-
-  .icon {
-    border: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 30px;
-    height: 30px;
-    background-color: pink;
-  }
-  @media screen and (max-width: 500px) {
-    /* display: none; */
-    top: 50%;
-    transform: translate(0, -280%);
-    left: 55px;
   }
 `;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ImageServerHook from '../hooks/ImageServerHook';
 import ImagePreviewHook from '../hooks/ImagePreviewHook';
 import styled from 'styled-components';
@@ -7,6 +7,10 @@ import GroupModalTemplate from './GroupModalTemplate';
 import { nanoid } from 'nanoid';
 
 import { groupPreset } from '../../pages/GroupPage';
+import { useAppDispatch, useAppSelector } from '../hooks/typescripthook/hooks';
+import { __groupGetDate, __groupGetRank } from '../../redux/modules/groupSlice';
+import { useNavigate } from 'react-router';
+import nonTokenClient from '../../api/noClient';
 
 interface tagPreset {
   id: string;
@@ -14,26 +18,55 @@ interface tagPreset {
 }
 
 interface Props {
-  setGroups: React.Dispatch<any>;
-  groups: groupPreset[];
+  setGroupByfilter: React.Dispatch<any>;
+  groupByfilter: groupPreset[];
+  filterGroup: string;
 }
 
-const GroupCreateModal: React.FC<Props> = ({ setGroups, groups }) => {
+interface infoProps {
+  description: string;
+  group_name: string;
+}
+
+const GroupCreateModal: React.FC<Props> = ({
+  setGroupByfilter,
+  filterGroup,
+}) => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { thumbnail, handleFileAWS } = ImageServerHook();
   const { imageSrc, setImageSrc, handleImagePreview } = ImagePreviewHook();
+  const [toggle, setToggle] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
   const [tag, setTag] = useState('');
   const [tagSet, setTagSet] = useState<tagPreset[]>([]);
-  const [groupInfos, setgroupInfos] = useState<groupPreset>({
-    groupId: 5,
-    groupName: '',
-    groupTag: '',
-    groupDetail: '',
-    thumbnail: '',
+  const [groupInfos, setgroupInfos] = useState<infoProps>({
+    description: '',
+    group_name: '',
   });
 
   const tagSetJSON = JSON.stringify(tagSet.map(tag => tag.tag));
+
+  const { groupRank } = useAppSelector(store => store.group);
+  const { groupDate } = useAppSelector(store => store.group);
+
+  useEffect(() => {
+    if (filterGroup === '인기순') {
+      dispatch(__groupGetRank());
+    }
+    if (filterGroup === '날짜순') {
+      dispatch(__groupGetDate());
+    }
+  }, [toggle]);
+
+  useEffect(() => {
+    setGroupByfilter(groupRank);
+  }, [groupRank]);
+
+  useEffect(() => {
+    setGroupByfilter(groupDate);
+  }, [groupDate]);
 
   const closeModal = () => {
     setIsOpen(false);
@@ -61,21 +94,31 @@ const GroupCreateModal: React.FC<Props> = ({ setGroups, groups }) => {
     setgroupInfos({ ...groupInfos, [name]: value });
   };
 
+  const postDataToServer = async () => {
+    try {
+      await nonTokenClient.post(`/group`, {
+        group_name: groupInfos.group_name,
+        thumbnail: thumbnail,
+        description: groupInfos.description,
+        hashtag: tagSetJSON,
+      });
+      navigate('/group');
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const sendData = () => {
     if (
       tagSet.length > 0 &&
       thumbnail !== '' &&
-      groupInfos.groupName &&
-      groupInfos.groupDetail
+      groupInfos.group_name &&
+      groupInfos.description
     ) {
+      postDataToServer();
       setIsOpen(false);
       setImageSrc('');
       setTagSet([]);
-      //백엔드 서버에 ...groups정보랑 tagSetToString, thumbnail 보내주면 됌
-      setGroups([
-        ...groups,
-        { ...groupInfos, groupTag: tagSetJSON, thumbnail: thumbnail },
-      ]);
       alert('그룹 작성 완료!');
     } else {
       alert('형식을 모두 작성해주세요');
@@ -116,7 +159,7 @@ const GroupCreateModal: React.FC<Props> = ({ setGroups, groups }) => {
               <StGroupInput>
                 <label>그룹 이름</label>
                 <input
-                  name="groupName"
+                  name="group_name"
                   onChange={e => handleGroupInfo(e)}
                   placeholder="내용을 작성해주세요."
                 />
@@ -154,11 +197,18 @@ const GroupCreateModal: React.FC<Props> = ({ setGroups, groups }) => {
               <StGroupTextArea>
                 <p>내용 작성</p>
                 <textarea
-                  name="groupDetail"
+                  name="description"
                   onChange={e => handleGroupInfo(e)}
                 ></textarea>
               </StGroupTextArea>
-              <StGroupBtn onClick={sendData}>모두 작성했어요!</StGroupBtn>
+              <StGroupBtn
+                onClick={() => {
+                  sendData();
+                  setToggle(!toggle);
+                }}
+              >
+                모두 작성했어요!
+              </StGroupBtn>
             </StGroupInfo>
           </StGroup>
         </StGroupContainer>
@@ -389,6 +439,8 @@ const StModalIcon = styled.div`
   position: fixed;
   bottom: 50px;
   right: 50px;
+
+  z-index: 3;
 
   cursor: pointer;
 
