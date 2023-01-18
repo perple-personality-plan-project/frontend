@@ -131,7 +131,8 @@ const StContainer = styled.div`
   background-color: #f8f8f8;
   /* position: relative; */
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
   /* padding: 10px; */
   margin: 0 auto;
 `;
@@ -160,7 +161,7 @@ const StCategoryGroup = styled.div`
   border-radius: 20px;
   overflow: hidden;
   position: absolute;
-  top: -50px;
+  top: 20px;
   left: -10px;
 
   z-index: 2;
@@ -260,13 +261,15 @@ const StGroups = styled.div`
   display: flex;
   flex-wrap: wrap;
 
-  margin: 70px auto;
+  margin: 0 auto;
+  padding: 70px 0;
   gap: 15px;
   position: relative;
   max-width: 1200px;
 
   @media screen and (max-width: 1250px) {
-    margin: 70px auto;
+    margin: 0 auto;
+    padding: 70px 0;
     max-width: 600px;
   }
 `;
