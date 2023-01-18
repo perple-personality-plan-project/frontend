@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -13,6 +13,7 @@ import {
   useAppSelector,
 } from '../../components/hooks/typescripthook/hooks';
 import { __groupFeedDetail } from '../../redux/modules/groupSlice';
+import nonTokenClient from '../../api/noClient';
 
 interface feedCardPreset {
   feed: groupFeedPreset;
@@ -33,21 +34,35 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({ feed, paramId }) => {
   } = feed;
 
   const { groupFeedDetail }: any = useAppSelector(store => store.group);
+  const [comment, setComment] = useState('');
 
-  //groupDetail에서 map을 쓴 후 모달 부분을 카드 컴포넌트로 빼면
-  //각 컴포넌트에 대한 feed_id를 가질 수 있게됨.
-  //useParams 값도 props로 넘겨주면 groupid와 feedid를 두개다 가질 수 있기 때문에
-  //feedDetail을 가져올 수 있음.
-  useEffect(() => {
-    dispatch(__groupFeedDetail({ groupId: paramId, feedId: feed_id }));
-  }, []);
+  const param: any = paramId;
+  const groupId = param.id;
 
   const thumbnailArray = thumbnail.split(',');
   const imgLink = process.env.REACT_APP_IMG_SERVER;
 
+  //async/await로 동기처리 해줄 수 있음.
+  //await가 끝난 후 다음 줄 실행함.
+  const postComment = async () => {
+    await nonTokenClient.post(
+      `/group-comment/group/${groupId}/feed/${feed_id}`,
+      {
+        comment,
+      },
+    );
+    dispatch(__groupFeedDetail({ groupId: groupId, feedId: feed_id }));
+    setComment('');
+  };
+
+  const openModal = () => {
+    setIsOpen(true);
+    dispatch(__groupFeedDetail({ groupId: groupId, feedId: feed_id }));
+  };
+
   return (
     <StGroupPost>
-      <div onClick={() => setIsOpen(true)} className="post-container">
+      <div onClick={openModal} className="post-container">
         <div className="post-header">
           <div className="post-header-info">
             <img
@@ -125,17 +140,21 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({ feed, paramId }) => {
                     <img src={require('../../빡빡이1.png')} alt="detail-img" />
                     <div className="detail-info">
                       <div className="detail-top" style={{ display: 'flex' }}>
-                        <h2>{comment.comment_id}</h2>
+                        <h2>{comment.nickname}</h2>
                       </div>
-                      <p>{comment.comment_id}</p>
+                      <p>{comment.comment}</p>
                     </div>
                   </StDetailComment>
                 );
               })}
             </StDetailComments>
             <StDetailInput>
-              <input placeholder="댓글을 입력하세요" />
-              <button>완료</button>
+              <input
+                value={comment}
+                onChange={e => setComment(e.target.value)}
+                placeholder="댓글을 입력하세요"
+              />
+              <button onClick={postComment}>완료</button>
             </StDetailInput>
           </StDetailInfo>
         </StDetailContainer>

@@ -81,7 +81,7 @@ export const __groupFeedDetail = createAsyncThunk<
 >('group/feedlist/detail', async (payload, thunkAPI) => {
   try {
     const { data } = await nonTokenClient.get(
-      `/group/${payload.groupId.id}/feed/${payload.feedId}`,
+      `/group/${payload.groupId}/feed/${payload.feedId}`,
     );
     return thunkAPI.fulfillWithValue(data.data);
   } catch (e) {
