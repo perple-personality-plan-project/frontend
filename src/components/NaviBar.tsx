@@ -4,13 +4,25 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Modal } from '../components/SidebarModal';
 import SwiperSlides from '../components/Swiper';
+import { useNavigate } from 'react-router-dom';
+import client from '../api/client';
 
 import 'swiper/css';
 
 const NaviBar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
   const NavArr = ['HOT', 'MAP', 'GROUP', 'PROFILE'];
+  const token = localStorage.getItem('accessToken');
+  const navigate = useNavigate();
+  const [trigger, setTrigger] = useState(false);
+
+  const logout = async () => {
+    if (window.confirm('로그아웃 하시겠습니까?')) {
+      await client.post('/user/logout');
+      localStorage.clear();
+      setTrigger(!trigger);
+    }
+  };
 
   return (
     <StNavContainer>
@@ -35,9 +47,15 @@ const NaviBar = () => {
             })}
           </ul>
         </StHorizontalLists>
-        <StBtnGroup>
-          <button>로그인 </button>
-        </StBtnGroup>
+        {token ? (
+          <StBtnGroup>
+            <button onClick={logout}>로그아웃 </button>
+          </StBtnGroup>
+        ) : (
+          <StBtnGroup>
+            <button onClick={() => navigate('/signin')}>로그인 </button>
+          </StBtnGroup>
+        )}
       </StNav>
 
       <div

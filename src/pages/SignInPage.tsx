@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { json } from 'stream/consumers';
 import styled from 'styled-components';
+import client from '../api/client';
 import nonTokenClient from '../api/noClient';
 
 const SignInPage = () => {
   const [LoginId, setLoginId] = useState('');
   const [Password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const onLoginIdHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginId(e.currentTarget.value);
@@ -16,12 +19,24 @@ const SignInPage = () => {
   };
 
   const login = async () => {
-    const x = await nonTokenClient.post('/api/user/login', {
-      login_id: LoginId,
-      password: Password,
-    });
-    console.log(x);
-    console.log('dd');
+    try {
+      const { data } = await nonTokenClient.post('/user/login', {
+        login_id: LoginId,
+        password: Password,
+      });
+
+      // localStorage.setItem(
+      //   'user',
+      //   JSON.stringify(data.data, ['accessToken', 'refreshToken']),
+      // );
+      localStorage.setItem('accessToken', data.data.accessToken);
+      localStorage.setItem('refreshToken', data.data.refreshToken);
+
+      alert('로그인 성공');
+      navigate('/');
+    } catch (error) {
+      alert('아이디와 비밀번호를 다시 확인해주세요');
+    }
   };
 
   return (
