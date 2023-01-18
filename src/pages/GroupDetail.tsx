@@ -1,8 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import styled from 'styled-components';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../components/hooks/typescripthook/hooks';
 import GroupDetailCreateModal from '../components/modal/GroupDetailCreateModal';
+import {
+  __groupFeedList,
+  __groupGetRank,
+  __groupSubscribeCheck,
+} from '../redux/modules/groupSlice';
 import GroupDetailCard from './subpages/GroupDetailCard';
+import { groupPreset } from './GroupPage';
+import nonTokenClient from '../api/noClient';
+import GroupDetailEmptyShow from './subpages/GroupDetailEmptyShow';
 
 export interface groupPostPreset {
   locationId: number;
@@ -13,54 +25,57 @@ export interface groupPostPreset {
   index: number;
 }
 
+export interface groupFeedPreset {
+  created_at: string;
+  description: string;
+  feed_id: number;
+  group_user_id: number;
+  location: null;
+  thumbnail: string;
+  updated_at: string;
+}
+
 const GroupDetail = () => {
-  const id = useParams();
-  const [groupPosts, setGroupPosts] = useState<groupPostPreset[]>([
-    {
-      locationId: 1,
-      locationName: '닉네임',
-      locationRoute: '왕십리',
+  const paramId = useParams();
 
-      postDetail: '오랜만에 왕십리 곱창!! 왕십리 필수 코스!!',
-      thumbnail: [
-        'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
-      ],
-      index: 0,
-    },
-    {
-      locationId: 2,
-      locationName: '닉네임',
+  const dispatch = useAppDispatch();
+  const { groupRank } = useAppSelector(store => store.group);
+  const { groupSubscribe } = useAppSelector(store => store.group);
+  const { groupFeedList } = useAppSelector(store => store.group);
+  const [toggle, setToggle] = useState(false);
+  const filteredByPage: any = groupRank.filter((group: groupPreset) =>
+    paramId.id ? group.group_id === +paramId.id : null,
+  );
 
-      locationRoute: '왕십리',
-      postDetail: '오랜만에 왕십리 곱창!! 왕십리 필수 코스!!',
-      thumbnail: [
-        'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
-      ],
-      index: 0,
-    },
-    {
-      locationId: 3,
-      locationName: '닉네임',
+  //페이지 시작할 때 그룹 정보와 그룹 게시글 정보들을 가져옴
+  useEffect(() => {
+    dispatch(__groupGetRank());
+    dispatch(__groupFeedList({ id: paramId.id }));
+  }, []);
 
-      locationRoute: '왕십리',
-      postDetail: '오랜만에 왕십리 곱창!! 왕십리 필수 코스!!',
-      thumbnail: [
-        'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
-      ],
-      index: 0,
-    },
-    {
-      locationId: 4,
-      locationName: '닉네임',
+  //부모 trigger
+  const [trigger, setTrigger] = useState();
 
-      locationRoute: '왕십리',
-      postDetail: '오랜만에 왕십리 곱창!! 왕십리 필수 코스!!',
-      thumbnail: [
-        'https://sblawsimage.s3.ap-northeast-2.amazonaws.com/%EB%B9%A1%EB%B9%A1%EC%9D%B4.PNG',
-      ],
-      index: 0,
-    },
-  ]);
+  //자식 trigger가 부모 trigger를 변경시켜 useEffect작동
+  //피드 생성 후 다시 받아기 위한 useEffect
+  useEffect(() => {
+    dispatch(__groupFeedList({ id: paramId.id }));
+  }, [trigger]);
+
+  //이 페이지에서 구독한지 확인하기 + 구독 했으면 구독자 수
+  //화면에서 늘어야 하니 그룹도 업데이트 해주기
+  useEffect(() => {
+    dispatch(__groupSubscribeCheck({ id: paramId.id }));
+    dispatch(__groupGetRank());
+  }, [toggle]);
+
+  //thunk 쓸 필요 없으면 같은 페이지에서 작업하기
+  //toggle을 임의로 줌으로써 useEffect를 toggle에 의존하여 작동하게 만듬
+  const onClickGroupSubscribe = async () => {
+    await nonTokenClient.put(`/group/${paramId.id}`);
+    setToggle(!toggle);
+  };
+
   return (
     <div>
       <StBgImages></StBgImages>
@@ -68,47 +83,78 @@ const GroupDetail = () => {
         <StMainContainer>
           <StGroupInfo>
             <div className="group-info">
-              <img src={require('../빡빡이1.png')} alt="group-img" />
+              {/* <img src={require('../빡빡이1.png')} alt="group-img" /> */}
+              <img
+                src={
+                  process.env.REACT_APP_IMG_SERVER +
+                  filteredByPage[0]?.thumbnail
+                }
+                alt="group-img"
+              />
               <div className="group-text">
-                <h1>미친 텐션의 술집 정보</h1>
-                <p>게시물 ?개 / ?명이 소통중이에요 </p>
+                <h1>{filteredByPage[0]?.group_name}</h1>
+                <p>
+                  게시물 {filteredByPage[0]?.feedCount}개 /{' '}
+                  {filteredByPage[0]?.group_user_count}명이 소통중이에요{' '}
+                </p>
               </div>
             </div>
             <div className="group-tag-container">
-              <div className="group-tag"># 태그</div>
-              <div className="group-tag"># 태그</div>
-              <div className="group-tag"># 태그</div>
-              <div className="group-tag"># 태그</div>
-              <div className="group-tag"># 태그</div>
-              <div className="group-tag"># 태그</div>
-              <div className="group-tag"># 태그</div>
-              <div className="group-tag"># 태그</div>
-              <div className="group-tag"># 태그</div>
+              {filteredByPage[0]?.hashtags
+                .split(',')
+                .map((tag: string, index: number) => {
+                  return (
+                    <div key={index} className="group-tag">
+                      {tag}
+                    </div>
+                  );
+                })}
             </div>
             <div className="group-horizontal-line" />
+            {groupSubscribe ? (
+              <button
+                onClick={onClickGroupSubscribe}
+                className="group-subscribe-cancel"
+              >
+                구독 취소
+              </button>
+            ) : (
+              <button
+                onClick={onClickGroupSubscribe}
+                className="group-subscribe"
+              >
+                그룹 구독하기
+              </button>
+            )}
             <div className="group-intro">
               <h2>그룹 소개</h2>
-              <p>
-                E 들의 집합소❤️❤️❤️❤️❤ 신나는 분위기의 술집 정보 공유방입니다. ️
-                마음에 쏙 드는 곳이 있다면 게시글로 남겨주세요!
-              </p>
+              <p>{filteredByPage[0]?.description}</p>
             </div>
           </StGroupInfo>
         </StMainContainer>
         <StPostContainer>
           <h2>그룹 게시글</h2>
           <StGroupPosts>
-            {/* <div className="post-add-btn">+</div> */}
-            {groupPosts.map(post => (
-              <GroupDetailCard key={post.locationId} post={post} />
-            ))}
+            {groupFeedList.length !== 0 ? (
+              groupFeedList.map((feed: groupFeedPreset) => (
+                <GroupDetailCard
+                  key={feed.feed_id}
+                  feed={feed}
+                  paramId={paramId}
+                />
+              ))
+            ) : (
+              <GroupDetailEmptyShow />
+            )}
           </StGroupPosts>
         </StPostContainer>
 
-        <GroupDetailCreateModal
-          setGroupPosts={setGroupPosts}
-          groupPosts={groupPosts}
-        />
+        {groupSubscribe ? (
+          <GroupDetailCreateModal
+            paramId={paramId}
+            setTriggerParant={setTrigger}
+          />
+        ) : null}
       </StContainer>
     </div>
   );
@@ -169,6 +215,8 @@ const StGroupInfo = styled.div`
   img {
     width: 100px;
     height: 100px;
+    margin: 0 10px 10px 0;
+    border-radius: 10px;
   }
   .group-info {
     display: flex;
@@ -225,6 +273,40 @@ const StGroupInfo = styled.div`
 
     p {
       color: #5b5b5b;
+    }
+  }
+
+  .group-subscribe {
+    width: 100%;
+    border: 1px solid gray;
+    border-radius: 5px;
+    color: gray;
+    cursor: pointer;
+    padding: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: white;
+
+    &:hover {
+      background-color: gray;
+      color: white;
+    }
+  }
+
+  .group-subscribe-cancel {
+    width: 100%;
+    border: 1px solid gray;
+    border-radius: 5px;
+    color: gray;
+    cursor: pointer;
+    padding: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: white;
+
+    &:hover {
+      background-color: #f55757;
+      color: white;
     }
   }
 `;

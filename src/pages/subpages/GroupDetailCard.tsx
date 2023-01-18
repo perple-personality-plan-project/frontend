@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -7,20 +7,44 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 import { GroupDetailCardModal } from '../../components/modal/GroupDetailCardModal';
+import { groupFeedPreset } from '../GroupDetail';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../components/hooks/typescripthook/hooks';
+import { __groupFeedDetail } from '../../redux/modules/groupSlice';
 
-interface Props {
-  post: {
-    locationId: number;
-    locationName: string;
-    locationRoute: string;
-    postDetail: string;
-    thumbnail: string[];
-    index: number;
-  };
+interface feedCardPreset {
+  feed: groupFeedPreset;
+  paramId: object;
 }
 
-const GroupDetailCard: React.FC<Props> = ({ post }) => {
+const GroupDetailCard: React.FC<feedCardPreset> = ({ feed, paramId }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const {
+    created_at,
+    description,
+    feed_id,
+    group_user_id,
+    location,
+    thumbnail,
+    updated_at,
+  } = feed;
+
+  const { groupFeedDetail }: any = useAppSelector(store => store.group);
+
+  //groupDetail에서 map을 쓴 후 모달 부분을 카드 컴포넌트로 빼면
+  //각 컴포넌트에 대한 feed_id를 가질 수 있게됨.
+  //useParams 값도 props로 넘겨주면 groupid와 feedid를 두개다 가질 수 있기 때문에
+  //feedDetail을 가져올 수 있음.
+  useEffect(() => {
+    dispatch(__groupFeedDetail({ groupId: paramId, feedId: feed_id }));
+  }, []);
+
+  const thumbnailArray = thumbnail.split(',');
+  const imgLink = process.env.REACT_APP_IMG_SERVER;
+
   return (
     <StGroupPost>
       <div onClick={() => setIsOpen(true)} className="post-container">
@@ -31,16 +55,19 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
               src={require('../../빡빡이1.png')}
               alt="group-img"
             />
-            <h3>{post.locationName}</h3>
+            <h3>{location}</h3>
           </div>
-          <div className="post-header-route">{post.locationRoute}</div>
+          <div className="post-header-route">{location}</div>
         </div>
 
-        <img src={post.thumbnail[post.index]} alt="group-img" />
+        <img
+          src={process.env.REACT_APP_IMG_SERVER + thumbnail.split(',')[0]}
+          alt="group-img"
+        />
         <div className="post-desc">
-          <p>{post.postDetail}</p>
+          <p>{description}</p>
           <div className="post-bottom">
-            <p className="post-date">2022.12.29</p>
+            <p className="post-date">{created_at}</p>
             <div className="post-bottom-right">
               <div className="post-bottom-icon">A</div>
               <div className="post-bottom-icon">B</div>
@@ -53,6 +80,87 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
       <GroupDetailCardModal
         onClose={() => setIsOpen(false)}
         open={isOpen}
+        id={groupFeedDetail?.feed_id}
+      >
+        <StXIcon onClick={() => setIsOpen(false)}>X</StXIcon>
+        <StDetailContainer>
+          <Swiper
+            navigation={true}
+            modules={[Navigation]}
+            className="mySwiper"
+            style={{ width: '100%', aspectRatio: '1/1' }}
+          >
+            {thumbnailArray.map((thumbnail, index) => {
+              return (
+                <SwiperSlide key={index}>
+                  <img src={`${imgLink}${thumbnail}`} alt="swiper-img" />
+                </SwiperSlide>
+              );
+            })}
+            <img src={thumbnail} alt="swiper-img" />
+          </Swiper>
+          <StDetailInfo>
+            <StDetailDesc>
+              <img src={require('../../빡빡이1.png')} alt="detail-img" />
+              <div className="detail-info">
+                <div className="detail-top" style={{ display: 'flex' }}>
+                  <h2>{location}</h2>
+                </div>
+                <p>{description}</p>
+                <div className="detail-bottom">
+                  <p>2012.12.29</p>
+                  <div style={{ display: 'flex' }}>
+                    <div className="detail-btn">좋</div>
+                    <div className="detail-btn">댓</div>
+                    <div className="detail-btn">저장</div>
+                  </div>
+                </div>
+              </div>
+            </StDetailDesc>
+            <StDetailBorder></StDetailBorder>
+            <StDetailComments>
+              {groupFeedDetail?.comment?.map((comment: any) => {
+                return (
+                  <StDetailComment key={comment.comment_id}>
+                    <img src={require('../../빡빡이1.png')} alt="detail-img" />
+                    <div className="detail-info">
+                      <div className="detail-top" style={{ display: 'flex' }}>
+                        <h2>{comment.comment_id}</h2>
+                      </div>
+                      <p>{comment.comment_id}</p>
+                    </div>
+                  </StDetailComment>
+                );
+              })}
+              {/* <StDetailComment>
+                <img src={require('../../빡빡이1.png')} alt="detail-img" />
+                <div className="detail-info">
+                  <div className="detail-top" style={{ display: 'flex' }}>
+                    <h2>{location}</h2>
+                  </div>
+                  <p>{description}</p>
+                </div>
+              </StDetailComment>
+              <StDetailComment>
+                <img src={require('../../빡빡이1.png')} alt="detail-img" />
+                <div className="detail-info">
+                  <div className="detail-top" style={{ display: 'flex' }}>
+                    <h2>{location}</h2>
+                  </div>
+                  <p>{description}</p>
+                </div>
+              </StDetailComment> */}
+            </StDetailComments>
+            <StDetailInput>
+              <input placeholder="댓글을 입력하세요" />
+              <button>완료</button>
+            </StDetailInput>
+          </StDetailInfo>
+        </StDetailContainer>
+      </GroupDetailCardModal>
+      {/* <GroupDetailCardModal
+        onClose={() => setIsOpen(false)}
+        open={isOpen}
         id={post.locationId}
       >
         <StXIcon onClick={() => setIsOpen(false)}>X</StXIcon>
@@ -62,7 +170,6 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
             modules={[Navigation]}
             className="mySwiper"
             style={{ width: '100%', aspectRatio: '1/1' }}
-            // style={{ width: '300px' }}
           >
             {post.thumbnail.map((img, index) => {
               return (
@@ -72,14 +179,12 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
               );
             })}
           </Swiper>
-          {/* <img src={require('../../빡빡이1.png')} alt="detail-img" /> */}
           <StDetailInfo>
             <StDetailDesc>
               <img src={require('../../빡빡이1.png')} alt="detail-img" />
               <div className="detail-info">
                 <div className="detail-top" style={{ display: 'flex' }}>
                   <h2>{post.locationName}</h2>
-                  {/* <p>{post.postTag}</p> */}
                 </div>
                 <p>{post.postDetail}</p>
                 <div className="detail-bottom">
@@ -99,7 +204,6 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
                 <div className="detail-info">
                   <div className="detail-top" style={{ display: 'flex' }}>
                     <h2>{post.locationName}</h2>
-                    {/* <p>{post.postTag}</p> */}
                   </div>
                   <p>{post.postDetail}</p>
                 </div>
@@ -109,31 +213,11 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
                 <div className="detail-info">
                   <div className="detail-top" style={{ display: 'flex' }}>
                     <h2>{post.locationName}</h2>
-                    {/* <p>{post.postTag}</p> */}
                   </div>
                   <p>{post.postDetail}</p>
                 </div>
               </StDetailComment>
-              <StDetailComment>
-                <img src={require('../../빡빡이1.png')} alt="detail-img" />
-                <div className="detail-info">
-                  <div className="detail-top" style={{ display: 'flex' }}>
-                    <h2>{post.locationName}</h2>
-                    {/* <p>{post.postTag}</p> */}
-                  </div>
-                  <p>{post.postDetail}</p>
-                </div>
-              </StDetailComment>
-              <StDetailComment>
-                <img src={require('../../빡빡이1.png')} alt="detail-img" />
-                <div className="detail-info">
-                  <div className="detail-top" style={{ display: 'flex' }}>
-                    <h2>{post.locationName}</h2>
-                    {/* <p>{post.postTag}</p> */}
-                  </div>
-                  <p>{post.postDetail}</p>
-                </div>
-              </StDetailComment>
+          
             </StDetailComments>
             <StDetailInput>
               <input placeholder="댓글을 입력하세요" />
@@ -141,7 +225,7 @@ const GroupDetailCard: React.FC<Props> = ({ post }) => {
             </StDetailInput>
           </StDetailInfo>
         </StDetailContainer>
-      </GroupDetailCardModal>
+      </GroupDetailCardModal> */}
     </StGroupPost>
   );
 };
@@ -368,6 +452,7 @@ const StGroupPost = styled.div`
     cursor: pointer;
 
     img {
+      aspect-ratio: 1/1;
       width: 100%;
       background-color: #f0f0f0;
     }
