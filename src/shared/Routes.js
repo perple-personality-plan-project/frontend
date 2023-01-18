@@ -18,69 +18,68 @@ import { Provider } from 'react-redux';
 
 const Router = () => {
   return (
-  <Provider store={store}>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/group" element={<GroupPage />} />
-        <Route path="/:id" element={<GroupDetail />} />
-        <Route
-          path="/"
-          element={
-            <div>
-              <NaviBar />
-              <GroupPage />
-            </div>
-          }
-        />
-        <Route path="/" element={<GroupPage />} />
-        <Route
-          path="/main"
-          element={
-            <div>
-              <Header />
-              <MainPage />
-            </div>
-          }
-        />
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/:id" element={<GroupDetail />} />
+          <Route
+            path="/group"
+            element={
+              <div>
+                <NaviBar />
+                <GroupPage />
+              </div>
+            }
+          />
 
-        <Route
-          path="/signin"
-          element={
-            <div>
-              <SignInPage />
-            </div>
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            <div>
-              <SignUpPage />
-            </div>
-          }
-        />
-        <Route
-          path="/mbti"
-          element={
-            <div>
-              <Header />
-              <MbtiCheckPage />
-            </div>
-          }
-        />
-        <Route
-          path="/mbtiquestion"
-          element={
-            <div>
-              <MbtiQuestionsPage />
-            </div>
-          }
-        />
-        <Route path="/map" element={<MapPage />} />
-        <Route path="/mypage" element={<MyPage />} />
-      </Routes>
-    </BrowserRouter>
-     </Provider>
+          <Route
+            path="/"
+            element={
+              <div>
+                <Header />
+                <MainPage />
+              </div>
+            }
+          />
+
+          <Route
+            path="/signin"
+            element={
+              <div>
+                <SignInPage />
+              </div>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <div>
+                <SignUpPage />
+              </div>
+            }
+          />
+          <Route
+            path="/mbti"
+            element={
+              <div>
+                <Header />
+                <MbtiCheckPage />
+              </div>
+            }
+          />
+          <Route
+            path="/mbtiquestion"
+            element={
+              <div>
+                <MbtiQuestionsPage />
+              </div>
+            }
+          />
+          <Route path="/map" element={<MapPage />} />
+          <Route path="/mypage" element={<MyPage />} />
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 };
 

@@ -31,7 +31,10 @@ const GroupCard: React.FC<groupCardPreset> = ({ group }): JSX.Element => {
       </StIcons>
       <StGroup key={group_id} onClick={() => navigate(`/${group_id}`)}>
         <div className="img-container">
-          <img src={thumbnail} alt="group-img" />
+          <img
+            src={process.env.REACT_APP_IMG_SERVER + thumbnail}
+            alt="group-img"
+          />
         </div>
         <div className="info-vertical">
           <h2>{group_name}</h2>
@@ -39,10 +42,10 @@ const GroupCard: React.FC<groupCardPreset> = ({ group }): JSX.Element => {
             게시글 {feedCount}개 / {group_user_count}명이 구독중이에요
           </p>
           <div className="btn-group">
-            {hashtags.length !== 0 ? (
+            {hashtags?.length !== 0 ? (
               hashtags
-                .split(',')
-                .map((tag, index) => <button key={index}>{tag}</button>)
+                ?.split(',')
+                ?.map((tag, index) => <button key={index}>{tag}</button>)
             ) : (
               <p>태그가 없습니다</p>
             )}

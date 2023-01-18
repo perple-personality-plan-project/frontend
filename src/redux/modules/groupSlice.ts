@@ -5,6 +5,9 @@ import nonTokenClient from '../../api/noClient';
 type groupState = {
   groupRank: [];
   groupDate: [];
+  groupFeedList: [];
+  groupSubscribe: object;
+  groupFeedDetail: object;
   isLoading: boolean;
   error: string | unknown;
 };
@@ -12,6 +15,9 @@ type groupState = {
 const initialState: groupState = {
   groupRank: [],
   groupDate: [],
+  groupSubscribe: {},
+  groupFeedList: [],
+  groupFeedDetail: {},
   isLoading: false,
   error: null,
 };
@@ -39,6 +45,49 @@ export const __groupGetDate = createAsyncThunk(
     }
   },
 );
+
+interface subscribePreset {
+  id: number;
+}
+
+export const __groupSubscribeCheck = createAsyncThunk<
+  {},
+  { id: string | undefined }
+>('group/subscribeCheck', async (payload, thunkAPI) => {
+  try {
+    const { data } = await nonTokenClient.get(`/group/${payload.id}`);
+    console.log(data);
+    return thunkAPI.fulfillWithValue(data.data);
+  } catch (e) {
+    thunkAPI.rejectWithValue(e);
+  }
+});
+
+export const __groupFeedList = createAsyncThunk<[], { id: string | undefined }>(
+  'group/feedlist',
+  async (payload, thunkAPI) => {
+    try {
+      const { data } = await nonTokenClient.get(`/group/${payload.id}/feed`);
+      return thunkAPI.fulfillWithValue(data.data);
+    } catch (e) {
+      thunkAPI.rejectWithValue(e);
+    }
+  },
+);
+
+export const __groupFeedDetail = createAsyncThunk<
+  [],
+  { groupId: any; feedId: number }
+>('group/feedlist/detail', async (payload, thunkAPI) => {
+  try {
+    const { data } = await nonTokenClient.get(
+      `/group/${payload.groupId.id}/feed/${payload.feedId}`,
+    );
+    return thunkAPI.fulfillWithValue(data.data);
+  } catch (e) {
+    thunkAPI.rejectWithValue(e);
+  }
+});
 
 interface postPreset {
   group_name: string;
@@ -94,19 +143,61 @@ export const groupSlice = createSlice({
       state.error = action.payload;
     });
 
-    builder.addCase(__groupPost.pending, state => {
+    builder.addCase(__groupSubscribeCheck.pending, state => {
       state.isLoading = true;
     });
 
-    builder.addCase(__groupPost.fulfilled, (state, action) => {
+    builder.addCase(__groupSubscribeCheck.fulfilled, (state, action) => {
       state.isLoading = false;
-      //   state.groupDate = action.payload;
+      state.groupSubscribe = action.payload;
     });
 
-    builder.addCase(__groupPost.rejected, (state, action) => {
+    builder.addCase(__groupSubscribeCheck.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     });
+
+    builder.addCase(__groupFeedList.pending, state => {
+      state.isLoading = true;
+    });
+
+    builder.addCase(__groupFeedList.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.groupFeedList = action.payload;
+    });
+
+    builder.addCase(__groupFeedList.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    });
+
+    builder.addCase(__groupFeedDetail.pending, state => {
+      state.isLoading = true;
+    });
+
+    builder.addCase(__groupFeedDetail.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.groupFeedDetail = action.payload;
+    });
+
+    builder.addCase(__groupFeedDetail.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    });
+
+    // builder.addCase(__groupPost.pending, state => {
+    //   state.isLoading = true;
+    // });
+
+    // builder.addCase(__groupPost.fulfilled, (state, action) => {
+    //   state.isLoading = false;
+    //   //   state.groupDate = action.payload;
+    // });
+
+    // builder.addCase(__groupPost.rejected, (state, action) => {
+    //   state.isLoading = false;
+    //   state.error = action.payload;
+    // });
   },
 });
 

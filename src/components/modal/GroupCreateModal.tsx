@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import ImageServerHook from '../hooks/ImageServerHook';
 import ImagePreviewHook from '../hooks/ImagePreviewHook';
 import styled from 'styled-components';
 
@@ -26,6 +25,7 @@ interface Props {
 interface infoProps {
   description: string;
   group_name: string;
+  thumbnail?: any;
 }
 
 const GroupCreateModal: React.FC<Props> = ({
@@ -34,7 +34,8 @@ const GroupCreateModal: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { thumbnail, handleFileAWS } = ImageServerHook();
+  // const { thumbnail, handleFileAWS } = ImageServerHook();
+  const [thumbnail, setThumbnail] = useState('');
   const { imageSrc, setImageSrc, handleImagePreview } = ImagePreviewHook();
   const [toggle, setToggle] = useState(false);
 
@@ -94,14 +95,18 @@ const GroupCreateModal: React.FC<Props> = ({
     setgroupInfos({ ...groupInfos, [name]: value });
   };
 
+  const handleSetThumbnail = (e: any) => {
+    setThumbnail(e.target.files[0]);
+  };
+
   const postDataToServer = async () => {
     try {
-      await nonTokenClient.post(`/group`, {
-        group_name: groupInfos.group_name,
-        thumbnail: thumbnail,
-        description: groupInfos.description,
-        hashtag: tagSetJSON,
-      });
+      const formData = new FormData();
+      formData.append('group_name', groupInfos.group_name);
+      formData.append('thumbnail', thumbnail);
+      formData.append('description', groupInfos.description);
+      formData.append('hashtag', tagSetJSON);
+      await nonTokenClient.post(`/group`, formData);
       navigate('/group');
     } catch (e) {
       console.log(e);
@@ -109,12 +114,7 @@ const GroupCreateModal: React.FC<Props> = ({
   };
 
   const sendData = () => {
-    if (
-      tagSet.length > 0 &&
-      thumbnail !== '' &&
-      groupInfos.group_name &&
-      groupInfos.description
-    ) {
+    if (tagSet.length > 0 && groupInfos.group_name && groupInfos.description) {
       postDataToServer();
       setIsOpen(false);
       setImageSrc('');
@@ -143,13 +143,11 @@ const GroupCreateModal: React.FC<Props> = ({
               ) : (
                 <label htmlFor="img">사진 등록</label>
               )}
-
-              {/* <label htmlFor="img">사진 등록</label> */}
               <input
                 accept="image/*"
                 onChange={e => {
                   handleImagePreview(e);
-                  handleFileAWS(e);
+                  handleSetThumbnail(e);
                 }}
                 id="img"
                 type="file"
@@ -195,7 +193,7 @@ const GroupCreateModal: React.FC<Props> = ({
                 })}
               </StTagSet>
               <StGroupTextArea>
-                <p>내용 작성</p>
+                <p>그룹 소개</p>
                 <textarea
                   name="description"
                   onChange={e => handleGroupInfo(e)}
