@@ -1,12 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Modal } from '../components/SidebarModal';
+import { useNavigate } from 'react-router-dom';
+import nonTokenClient from '../api/noClient';
+import client from '../api/client';
+import axios from 'axios';
 
 const NaviBar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
   const NavArr = ['HOT', 'MAP', 'GROUP', 'PROFILE'];
+  const token = localStorage.getItem('accessToken');
+  const navigate = useNavigate();
+  const [trigger, setTrigger] = useState(false);
+
+  const logout = async () => {
+    if (window.confirm('로그아웃 하시겠습니까?')) {
+      await client.post('/user/logout');
+      localStorage.clear();
+      setTrigger(!trigger);
+    }
+  };
 
   return (
     <StNavContainer>
@@ -31,9 +45,15 @@ const NaviBar = () => {
             })}
           </ul>
         </StHorizontalLists>
-        <StBtnGroup>
-          <button>로그인 </button>
-        </StBtnGroup>
+        {token ? (
+          <StBtnGroup>
+            <button onClick={logout}>로그아웃 </button>
+          </StBtnGroup>
+        ) : (
+          <StBtnGroup>
+            <button onClick={() => navigate('/signin')}>로그인 </button>
+          </StBtnGroup>
+        )}
       </StNav>
 
       <div
