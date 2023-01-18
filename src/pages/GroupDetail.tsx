@@ -111,13 +111,26 @@ const GroupDetail = () => {
                 })}
             </div>
             <div className="group-horizontal-line" />
+
+            <div className="group-intro">
+              <h2>그룹 소개</h2>
+              <p>{filteredByPage[0]?.description}</p>
+            </div>
             {groupSubscribe ? (
-              <button
-                onClick={onClickGroupSubscribe}
-                className="group-subscribe-cancel"
-              >
-                구독 취소
-              </button>
+              <StSubscribeOn>
+                <button
+                  onClick={onClickGroupSubscribe}
+                  className="group-subscribe-on"
+                >
+                  구독중
+                </button>
+                <button
+                  onClick={onClickGroupSubscribe}
+                  className="group-subscribe-cancel"
+                >
+                  구독취소
+                </button>
+              </StSubscribeOn>
             ) : (
               <button
                 onClick={onClickGroupSubscribe}
@@ -126,10 +139,6 @@ const GroupDetail = () => {
                 그룹 구독하기
               </button>
             )}
-            <div className="group-intro">
-              <h2>그룹 소개</h2>
-              <p>{filteredByPage[0]?.description}</p>
-            </div>
           </StGroupInfo>
         </StMainContainer>
         <StPostContainer>
@@ -211,11 +220,61 @@ const StMainContainer = styled.div`
   }
 `;
 
+const StSubscribeOn = styled.div`
+  text-align: center;
+
+  .group-subscribe-on {
+    /* width: 100%;
+    border: 1px solid gray;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    padding: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #644eee; */
+
+    display: block;
+    width: 100%;
+    border: 1px solid gray;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    padding: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #644eee;
+  }
+
+  .group-subscribe-cancel {
+    display: none;
+    width: 100%;
+    border: 1px solid gray;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    padding: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: pink;
+  }
+
+  &:hover {
+    .group-subscribe-on {
+      display: none;
+    }
+
+    .group-subscribe-cancel {
+      display: block;
+    }
+  }
+`;
+
 const StGroupInfo = styled.div`
   img {
-    width: 100px;
-    height: 100px;
-    margin: 0 10px 10px 0;
+    width: 80px;
+    height: 80px;
+    /* margin: 0 10px 10px 0; */
     border-radius: 10px;
   }
   .group-info {
@@ -226,10 +285,11 @@ const StGroupInfo = styled.div`
   .group-text {
     display: flex;
     flex-direction: column;
+    margin-left: 10px;
 
     h1,
     p {
-      margin: 0;
+      margin: 0 0 5px 0;
       padding: 0;
 
       font-size: 13px;
@@ -244,6 +304,7 @@ const StGroupInfo = styled.div`
   .group-tag-container {
     display: flex;
     flex-wrap: wrap;
+    margin-top: 30px;
 
     .group-tag {
       background-color: #eeeeee;
@@ -258,7 +319,7 @@ const StGroupInfo = styled.div`
 
   .group-horizontal-line {
     border-bottom: 2px solid #eeeeee;
-    margin: 30px 0;
+    margin: 20px 0 30px 0;
   }
 
   .group-intro {
@@ -280,34 +341,17 @@ const StGroupInfo = styled.div`
     width: 100%;
     border: 1px solid gray;
     border-radius: 5px;
-    color: gray;
+    color: white;
     cursor: pointer;
     padding: 10px 0;
     font-size: 18px;
     font-weight: bold;
-    background-color: white;
+    background-color: #644eee;
 
-    &:hover {
+    /* &:hover {
       background-color: gray;
       color: white;
-    }
-  }
-
-  .group-subscribe-cancel {
-    width: 100%;
-    border: 1px solid gray;
-    border-radius: 5px;
-    color: gray;
-    cursor: pointer;
-    padding: 10px 0;
-    font-size: 18px;
-    font-weight: bold;
-    background-color: white;
-
-    &:hover {
-      background-color: #f55757;
-      color: white;
-    }
+    } */
   }
 `;
 

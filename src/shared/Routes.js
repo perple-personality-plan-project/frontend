@@ -21,7 +21,15 @@ const Router = () => {
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
-          <Route path="/:id" element={<GroupDetail />} />
+          <Route
+            path="/:id"
+            element={
+              <div>
+                <NaviBar />
+                <GroupDetail />
+              </div>
+            }
+          />
           <Route
             path="/group"
             element={
