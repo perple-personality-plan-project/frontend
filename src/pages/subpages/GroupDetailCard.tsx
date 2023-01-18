@@ -132,24 +132,6 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({ feed, paramId }) => {
                   </StDetailComment>
                 );
               })}
-              {/* <StDetailComment>
-                <img src={require('../../빡빡이1.png')} alt="detail-img" />
-                <div className="detail-info">
-                  <div className="detail-top" style={{ display: 'flex' }}>
-                    <h2>{location}</h2>
-                  </div>
-                  <p>{description}</p>
-                </div>
-              </StDetailComment>
-              <StDetailComment>
-                <img src={require('../../빡빡이1.png')} alt="detail-img" />
-                <div className="detail-info">
-                  <div className="detail-top" style={{ display: 'flex' }}>
-                    <h2>{location}</h2>
-                  </div>
-                  <p>{description}</p>
-                </div>
-              </StDetailComment> */}
             </StDetailComments>
             <StDetailInput>
               <input placeholder="댓글을 입력하세요" />
@@ -158,74 +140,6 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({ feed, paramId }) => {
           </StDetailInfo>
         </StDetailContainer>
       </GroupDetailCardModal>
-      {/* <GroupDetailCardModal
-        onClose={() => setIsOpen(false)}
-        open={isOpen}
-        id={post.locationId}
-      >
-        <StXIcon onClick={() => setIsOpen(false)}>X</StXIcon>
-        <StDetailContainer>
-          <Swiper
-            navigation={true}
-            modules={[Navigation]}
-            className="mySwiper"
-            style={{ width: '100%', aspectRatio: '1/1' }}
-          >
-            {post.thumbnail.map((img, index) => {
-              return (
-                <SwiperSlide key={index}>
-                  <img src={img} alt="swiper-img" />
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
-          <StDetailInfo>
-            <StDetailDesc>
-              <img src={require('../../빡빡이1.png')} alt="detail-img" />
-              <div className="detail-info">
-                <div className="detail-top" style={{ display: 'flex' }}>
-                  <h2>{post.locationName}</h2>
-                </div>
-                <p>{post.postDetail}</p>
-                <div className="detail-bottom">
-                  <p>2012.12.29</p>
-                  <div style={{ display: 'flex' }}>
-                    <div className="detail-btn">좋</div>
-                    <div className="detail-btn">댓</div>
-                    <div className="detail-btn">저장</div>
-                  </div>
-                </div>
-              </div>
-            </StDetailDesc>
-            <StDetailBorder></StDetailBorder>
-            <StDetailComments>
-              <StDetailComment>
-                <img src={require('../../빡빡이1.png')} alt="detail-img" />
-                <div className="detail-info">
-                  <div className="detail-top" style={{ display: 'flex' }}>
-                    <h2>{post.locationName}</h2>
-                  </div>
-                  <p>{post.postDetail}</p>
-                </div>
-              </StDetailComment>
-              <StDetailComment>
-                <img src={require('../../빡빡이1.png')} alt="detail-img" />
-                <div className="detail-info">
-                  <div className="detail-top" style={{ display: 'flex' }}>
-                    <h2>{post.locationName}</h2>
-                  </div>
-                  <p>{post.postDetail}</p>
-                </div>
-              </StDetailComment>
-          
-            </StDetailComments>
-            <StDetailInput>
-              <input placeholder="댓글을 입력하세요" />
-              <button>완료</button>
-            </StDetailInput>
-          </StDetailInfo>
-        </StDetailContainer>
-      </GroupDetailCardModal> */}
     </StGroupPost>
   );
 };
@@ -451,6 +365,8 @@ const StGroupPost = styled.div`
     overflow: hidden;
     cursor: pointer;
 
+    filter: brightness(100%);
+
     img {
       aspect-ratio: 1/1;
       width: 100%;
@@ -458,14 +374,18 @@ const StGroupPost = styled.div`
     }
 
     .post-header {
-      background-color: pink;
+      /* background-color: pink; */
+      color: white;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      /* position: absolute; */
+      position: absolute;
       width: 100%;
       padding: 10px;
       box-sizing: border-box;
+      background-color: rgba(0, 0, 0, 0.05);
+      /* background-color: transparent; */
+      /* backdrop-filter: blur(5px); */
 
       .post-header-info {
         display: flex;
@@ -479,6 +399,8 @@ const StGroupPost = styled.div`
         }
 
         h3 {
+          color: white;
+          filter: brightness(100%);
           margin: 0;
           font-size: 15px;
           margin-right: 10px;

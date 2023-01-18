@@ -622,7 +622,7 @@ const StModalIcon = styled.div`
 
   width: 60px;
   height: 60px;
-  background-color: #565656;
+  background-color: #644eee;
   color: white;
 
   position: fixed;
