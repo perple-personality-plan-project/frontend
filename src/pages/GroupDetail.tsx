@@ -78,7 +78,9 @@ const GroupDetail = () => {
 
   return (
     <div>
-      <StBgImages></StBgImages>
+      <StBgImages>
+        <img src={require('../이미지1.webp')} alt="bg-image" />
+      </StBgImages>
       <StContainer>
         <StMainContainer>
           <StGroupInfo>
@@ -207,11 +209,17 @@ const StPostContainer = styled.div`
 
 const StBgImages = styled.div`
   background-color: #f3f3f3;
-  height: 250px;
+  height: 300px;
+
+  img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+  }
 `;
 
 const StMainContainer = styled.div`
-  width: 400px;
+  width: 460px;
   min-width: 400px;
 
   @media screen and (max-width: 500px) {

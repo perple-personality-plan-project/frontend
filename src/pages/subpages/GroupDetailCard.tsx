@@ -55,6 +55,13 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({ feed, paramId }) => {
     setComment('');
   };
 
+  const deleteComment = async (commentId: string | number) => {
+    await nonTokenClient.delete(
+      `/group-comment/group/${groupId}/feed/${feed_id}/${commentId}`,
+    );
+    dispatch(__groupFeedDetail({ groupId: groupId, feedId: feed_id }));
+  };
+
   const openModal = () => {
     setIsOpen(true);
     dispatch(__groupFeedDetail({ groupId: groupId, feedId: feed_id }));
@@ -144,6 +151,12 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({ feed, paramId }) => {
                       </div>
                       <p>{comment.comment}</p>
                     </div>
+                    <div
+                      onClick={() => deleteComment(comment.comment_id)}
+                      className="detail-del"
+                    >
+                      X
+                    </div>
                   </StDetailComment>
                 );
               })}
@@ -216,6 +229,8 @@ const StDetailInput = styled.div`
     height: 30px;
     border: 0;
     background-color: #f2f2f2;
+
+    cursor: pointer;
   }
 `;
 
@@ -309,6 +324,8 @@ const StDetailComments = styled.div`
 const StDetailComment = styled.div`
   display: flex;
   margin-bottom: 15px;
+  position: relative;
+
   img {
     margin-right: 10px;
     width: 40px;
@@ -347,6 +364,28 @@ const StDetailComment = styled.div`
       }
     }
   }
+
+  .detail-del {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(0, -50%);
+
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      background-color: white;
+      color: black;
+
+      cursor: pointer;
+    }
+  }
 `;
 
 const StDetailBorder = styled.div`
@@ -371,10 +410,11 @@ const StXIcon = styled.div`
 `;
 
 const StGroupPost = styled.div`
+  /* width: 100%; */
   .post-container {
     position: relative;
     /* margin: 20px; */
-    width: 330px;
+    width: 430px;
 
     /* height: 400px; */
 
@@ -400,7 +440,7 @@ const StGroupPost = styled.div`
       align-items: center;
       position: absolute;
       width: 100%;
-      padding: 10px;
+      padding: 20px;
       box-sizing: border-box;
       background-color: rgba(0, 0, 0, 0.05);
       /* background-color: transparent; */
@@ -485,12 +525,14 @@ const StGroupPost = styled.div`
         margin: 0 5px;
       }
     }
-
     @media screen and (max-width: 900px) {
-      width: 400px;
+      width: 460px;
     }
     @media screen and (max-width: 500px) {
-      width: 350px;
+      width: 100%;
     }
+  }
+  @media screen and (max-width: 900px) {
+    width: 100%;
   }
 `;
