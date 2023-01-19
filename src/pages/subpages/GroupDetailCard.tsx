@@ -46,7 +46,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({ feed, paramId }) => {
   //await가 끝난 후 다음 줄 실행함.
   const postComment = async () => {
     await nonTokenClient.post(
-      `/group-comment/group/${groupId}/feed/${feed_id}`,
+      `api/group-comment/group/${groupId}/feed/${feed_id}`,
       {
         comment,
       },
@@ -57,7 +57,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({ feed, paramId }) => {
 
   const deleteComment = async (commentId: string | number) => {
     await nonTokenClient.delete(
-      `/group-comment/group/${groupId}/feed/${feed_id}/${commentId}`,
+      `api/group-comment/group/${groupId}/feed/${feed_id}/${commentId}`,
     );
     dispatch(__groupFeedDetail({ groupId: groupId, feedId: feed_id }));
   };

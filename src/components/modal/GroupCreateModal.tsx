@@ -106,7 +106,7 @@ const GroupCreateModal: React.FC<Props> = ({
       formData.append('thumbnail', thumbnail);
       formData.append('description', groupInfos.description);
       formData.append('hashtag', tagSetJSON);
-      await nonTokenClient.post(`/group`, formData);
+      await nonTokenClient.post(`api/group`, formData);
       navigate('/group');
     } catch (e) {
       console.log(e);
