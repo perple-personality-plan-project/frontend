@@ -35,7 +35,12 @@ const NaviBar = () => {
               alt="toggle"
               onClick={() => setIsOpen(prev => !prev)}
             />
-            <img className="logo" src={require('../amu.png')} alt="logo" />
+            <img
+              className="logo"
+              src={require('../amu.png')}
+              onClick={() => navigate('/')}
+              alt="logo"
+            />
           </StImgGroup>
           <ul>
             {NavArr.map((nav, index) => {
@@ -124,10 +129,12 @@ const StImgGroup = styled.div`
   img {
     width: 70px;
     height: 70px;
+    cursor: pointer;
   }
 
   .toggle {
     display: none;
+    cursor: pointer;
   }
 `;
 
@@ -181,8 +188,9 @@ const StHorizontalLists = styled.div`
 const StVerticalLists = styled.div`
   display: flex;
   flex-direction: column;
+  text-align: center;
   ul {
-    margin: 0 5px;
+    margin: 0;
     padding: 0 20px;
 
     box-shadow: 0 0 5px 1px gray;

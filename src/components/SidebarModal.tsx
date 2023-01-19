@@ -14,7 +14,7 @@ const styles = {
 
   MODAL_STYLES: {
     position: 'fixed',
-    top: '80px',
+    top: '70px',
     left: '0',
     // transform: 'translate(-58%, -50%)',
     backgroundColor: 'white',
