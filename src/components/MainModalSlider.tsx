@@ -28,7 +28,7 @@ export const MainModalSlider: React.FC<Props> = ({ id, imageData }) => {
         >
           {imageData.map(image => (
             <SwiperSlide>
-              <img src={image} />
+              <img src={process.env.REACT_APP_IMG_API + image} />
             </SwiperSlide>
           ))}
         </Swiper>

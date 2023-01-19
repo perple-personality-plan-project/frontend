@@ -77,10 +77,10 @@ const StSwiper = styled.div`
     transform: translate3d(calc(0px + 10%), 0px, -100px) rotateZ(0deg) scale(1);
     transition-duration: 0ms;
   }
-  //////
+
   .swiper-slide:nth-child(1n) {
     border: 1px gray;
-    background-color: #d385f7;
+    background-color: white;
   }
 
   .swiper-slide:nth-child(2n) {

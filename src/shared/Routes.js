@@ -57,7 +57,7 @@ const Router = () => {
           <Route
             path="/"
             element={
-              <div>
+              <div style={{ maxWidth: '1440px', margin: 'auto' }}>
                 <Header />
                 <MainPage />
               </div>
