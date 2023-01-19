@@ -26,9 +26,9 @@ export const MainModalSlider: React.FC<Props> = ({ id, imageData }) => {
           modules={[Navigation, Pagination, Mousewheel, Keyboard]}
           className="mySwiper"
         >
-          {imageData.map(image => (
-            <SwiperSlide>
-              <img src={process.env.REACT_APP_IMG_API + image} />
+          {imageData.map((image, index) => (
+            <SwiperSlide key={index}>
+              <img src={process.env.REACT_APP_IMG_SERVER + image} />
             </SwiperSlide>
           ))}
         </Swiper>

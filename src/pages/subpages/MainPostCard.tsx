@@ -72,7 +72,7 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
         </div>
         <img
           className="post-img-size"
-          src={process.env.REACT_APP_IMG_API + splited[0]}
+          src={process.env.REACT_APP_IMG_SERVER + splited[0]}
           alt="group-img"
         />
         <div className="post-desc">
