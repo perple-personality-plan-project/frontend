@@ -8,10 +8,11 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 import nonTokenClient from '../../api/noClient';
+import { useAppDispatch } from '../hooks/typescripthook/hooks';
+import { __groupFeedList } from '../../redux/modules/groupSlice';
 
 interface Props {
   paramId: any;
-  setTriggerParant: any;
 }
 
 interface detailCreatePreset {
@@ -20,24 +21,23 @@ interface detailCreatePreset {
   description: string;
 }
 
-const GroupDetailCreateModal: React.FC<Props> = ({
-  paramId,
-  setTriggerParant,
-}) => {
-  // const { thumbnail, handleFileAWS } = ImageServerMultiHook();
-  const { imageSrc, setImageSrc, handleImagePreview } = ImagePreviewMultiHook();
+interface tnumbnailPreset {
+  thumbnail: any;
+}
 
+const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
+  const { imageSrc, setImageSrc, handleImagePreview } = ImagePreviewMultiHook();
   const [toggle, setToggle] = useState(false);
   const [route, setRoute] = useState('');
-
-  // const [picIndex, setPicIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-
+  const [thumbnail, setThumbnail] = useState<tnumbnailPreset['thumbnail']>();
   const [groupInfos, setgroupInfos] = useState<detailCreatePreset>({
     description: '',
     location: '',
     thumbnail: [],
   });
+
+  const dispatch = useAppDispatch();
 
   const closeModal = () => {
     setIsOpen(false);
@@ -49,65 +49,38 @@ const GroupDetailCreateModal: React.FC<Props> = ({
     setgroupInfos({ ...groupInfos, [name]: value });
   };
 
-  interface preset {
-    thumbnail2: any;
-  }
-
-  const [trigger, setTrigger] = useState(false);
-  const [thumbnail2, setThumbnail2] = useState<preset['thumbnail2']>();
-
-  //sendData 후 정보를 업데이트 하기 위해 부모 컴포넌트에 있는 trigger를 변경
-  //부모 trigger가 변경되면 useEffect작동
-  useEffect(() => {
-    setTriggerParant(trigger);
-  }, [trigger]);
-
   const handleSetThumbnail = (e: any) => {
     const tumbnailArr = [];
     for (let i = 0; i < e.target.files.length; i++) {
       tumbnailArr[i] = e.target.files[i];
     }
-    setThumbnail2([...tumbnailArr]);
+    setThumbnail([...tumbnailArr]);
   };
 
-  const sendData = () => {
+  const fetchData = async (formData: any) => {
+    await nonTokenClient.post(`api/group/${paramId.id}/feed`, formData);
+    await dispatch(__groupFeedList({ id: paramId.id }));
+  };
+
+  const sendData = async () => {
     const formData = new FormData();
-    for (let i = 0; i < thumbnail2.length; i++) {
-      formData.append('thumbnail', thumbnail2[i]);
+    for (let i = 0; i < thumbnail.length; i++) {
+      formData.append('thumbnail', thumbnail[i]);
     }
     formData.append('location', route);
     formData.append('description', groupInfos.description);
 
     if (groupInfos.description && route !== '') {
-      setTrigger(!trigger);
+      fetchData(formData);
       setIsOpen(false);
       setImageSrc([]);
       setRoute('');
-
-      nonTokenClient.post(`/group/${paramId.id}/feed`, formData);
 
       alert('게시글 작성 완료!');
     } else {
       alert('형식을 모두 작성해주세요');
     }
   };
-
-  //버튼을 클릭 했을 때 ImagePreviewMultiHook에서 이미지와 함께 포함시킨 id값과 클릭한 id값을
-  //비교해서 일치하면 이미지와 함께 포함시킨 toggle값을 true로 만들어주고 나머지는 false로 만들어줌
-  //(하나만 선택되고 나머지는 선택해제)
-  //ImagePreviewMultiHook에서 id값을 0부터 했기 때문에 (이미지 프리뷰에서 보이는 이미지의 순서와 같음)
-  //setPicIndex에 id값을 넣어 이미지 순서와 맞추고 그 값을 sendData에 저장시켜 GroupDetail에 보내줌
-  //sendData에 저장된 index값을 GroupDetailCard에서 메인 이미지를 보여주기 위해 thumbnail[index]로 보여줌
-  // const selectMainPic = (id: number) => {
-  //   imageSrc.map((img, index) => (img.id === id ? setPicIndex(id) : null));
-
-  //   setImageSrc(prev =>
-  //     prev.map(img =>
-  //       img.id === id ? { ...img, toggle: true } : { ...img, toggle: false },
-  //     ),
-  //   );
-  //   alert('메인 사진으로 등록되었습니다!');
-  // };
 
   return (
     <div>
@@ -129,28 +102,11 @@ const GroupDetailCreateModal: React.FC<Props> = ({
                     modules={[Navigation]}
                     className="mySwiper"
                     style={{ width: '100%' }}
-                    // style={{ width: '300px' }}
                   >
                     {imageSrc.map((img, index) => {
                       return (
                         <SwiperSlide key={index} style={{ aspectRatio: '1/1' }}>
                           <img src={img.data} alt="swiper-img" />
-                          {/* toggle이 true일 때 click된 버튼 보여줌 */}
-                          {/* {img.toggle ? (
-                            <button
-                              className="V-button-clicked"
-                              onClick={() => selectMainPic(img.id)}
-                            >
-                              V
-                            </button>
-                          ) : (
-                            <button
-                              className="V-button"
-                              onClick={() => selectMainPic(img.id)}
-                            >
-                              V
-                            </button>
-                          )} */}
                         </SwiperSlide>
                       );
                     })}
@@ -177,7 +133,6 @@ const GroupDetailCreateModal: React.FC<Props> = ({
                   onChange={e => {
                     handleImagePreview(e);
                     handleSetThumbnail(e);
-                    // handleFileAWS(e);
                   }}
                   id="img"
                   type="file"
@@ -187,12 +142,6 @@ const GroupDetailCreateModal: React.FC<Props> = ({
 
             <StGroupInfo>
               <StGroupInput>
-                {/* <p>장소 이름</p>
-                <input
-                  name="locationName"
-                  onChange={e => handleGroupInfo(e)}
-                  placeholder="내용을 작성해주세요."
-                /> */}
                 <p>루트 추가</p>
 
                 {toggle ? (
