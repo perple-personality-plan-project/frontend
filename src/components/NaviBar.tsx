@@ -58,12 +58,12 @@ const NaviBar = () => {
         )}
       </StNav>
 
-      <div
+      {/* <div
         className="swiper-bgColor"
         style={{ border: '30px solid #F2F2F2' }}
-      ></div>
+      ></div> */}
 
-      <SwiperSlides />
+      {/* <SwiperSlides /> */}
 
       <StLine />
       <Modal closeModal={() => setIsOpen(false)} open={isOpen}>
@@ -94,6 +94,7 @@ const StNavContainer = styled.nav`
     position: absolute;
     top: 24px;
     right: 200px;
+    /* right: 0; */
   }
 
   @media screen and (max-width: 800px) {
@@ -145,8 +146,8 @@ const StHorizontalLists = styled.div`
 
   li {
     list-style: none;
-    margin-right: 30px;
-    /* margin: 0 auto; */
+    /* margin-right: 30px; */
+    margin: 0 30px;
     color: gray;
   }
 
