@@ -2,6 +2,15 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Map from '../components/Map';
 import MapForm from '../components/MapForm';
 import MapList from '../components/MapList';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../components/hooks/typescripthook/hooks';
+
+import { __RemoveItem } from '../redux/modules/mapSlice';
+import { __RootMaker } from '../redux/modules/mapSlice';
 
 // Window 인터페이스에 Kakao API를 위한 kakao 객체 정의
 declare global {
@@ -64,6 +73,11 @@ export interface KakaoPagination {
 }
 export type KakaoMarker = any; // 카카오 마커 객체
 
+type RootType = {
+  place_group: string;
+  place_group_name: string;
+};
+
 const MapPage = () => {
   //- Ref Hook 참고 https://ko.reactjs.org/docs/hooks-reference.html#useref
   const map = useRef<KakaoMap>(null);
@@ -76,6 +90,60 @@ const MapPage = () => {
   const [kakaoPagination, setKakaoPagination] =
     useState<KakaoPagination | null>(null);
   const [kakaoMarkers, setKakaoMarkers] = useState<KakaoMarker[]>([]);
+
+  const useselector = useAppSelector(state => state.map.MapPost);
+  const dispatch = useAppDispatch();
+
+  const maplist = useselector.filter((item: any, index: number) => index !== 0);
+
+  const [checkedInputs, setCheckedInputs] = useState<any>([]);
+
+  const [Root, setRoot] = useState<any>([]);
+  const [RootTitle, setRootTitle] = useState<any>([]);
+
+  const stringRoot = JSON.stringify(Root);
+
+  //onchange Root Title
+  const onChangeRoot = (e: any) => {
+    setRoot([...Root, e]);
+  };
+  const onChangeRootTitle = (e: any) => {
+    setRootTitle(e);
+  };
+
+  //dispatch __RootMaker
+  const dispatchRoot = (event: any) => {
+    event.preventDefault();
+
+    const Roots: RootType = {
+      place_group: stringRoot,
+      place_group_name: RootTitle,
+    };
+
+    dispatch(__RootMaker(Roots));
+  };
+
+  const changeHandler = (checked: any, id: any) => {
+    if (checked) {
+      setCheckedInputs([...checkedInputs, id]);
+    } else {
+      // 체크 해제
+      setCheckedInputs(checkedInputs.filter((el: any) => el !== id));
+    }
+  };
+
+  function togglechange() {
+    setCheckedInputs([...checkedInputs, 0, 1, 2, 3, 4]);
+  }
+  const [Modals, setModals] = useState(true);
+
+  const ModalShow = () => {
+    setModals(!Modals);
+  };
+
+  const dispatchPlaceName = (placeName: string) => {
+    dispatch(__RemoveItem(placeName));
+  };
 
   useEffect(() => {
     if (mapContainer.current === null) {
@@ -242,9 +310,74 @@ const MapPage = () => {
       };
     }
   }, [kakaoMarkers]);
-
+  const navigate = useNavigate();
   return (
     <div className="map-page">
+      <Header>
+        <Hamburger>햄버거바</Hamburger>
+        <Logo onClick={() => navigate(`/main`)}>PLATTER</Logo>
+        <Cart onClick={ModalShow}>장바구니</Cart>
+        <Modal show={Modals}>
+          <button onClick={togglechange}>전체 선택</button>
+          <CartIcon onClick={ModalShow}>장바구니아이콘</CartIcon>
+          <BoxContainer>
+            <Box>
+              <form onSubmit={dispatchRoot}>
+                {maplist.map((item: any, index: number) => {
+                  return (
+                    <CheckBoxForm key={index}>
+                      <CheckBox
+                        type="checkbox"
+                        name="checkbox"
+                        value={index + 1}
+                        onChange={e => {
+                          changeHandler(e.currentTarget.checked, index);
+                          onChangeRoot({
+                            place_name: item.place_name,
+                            address_name: item.address_name,
+                            x: item.x,
+                            y: item.y,
+                          });
+                        }}
+                        checked={checkedInputs.includes(index) ? true : false}
+                      />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="50"
+                        height="50"
+                        color="#644EEE"
+                        fill="currentColor"
+                        className="bi bi-geo-alt-fill"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                      </svg>
+                      <Desc>
+                        <ID>{index + 1}</ID>
+                        <CheckLabel>{item.place_name}</CheckLabel>
+                        <CheckDesc>{item.address_name}</CheckDesc>
+                      </Desc>
+                      <Delete
+                        onClick={e => {
+                          dispatchPlaceName(item.place_name);
+                        }}
+                      >
+                        X
+                      </Delete>
+                    </CheckBoxForm>
+                  );
+                })}
+                <RootName
+                  placeholder="루트이름"
+                  onChange={e => onChangeRootTitle(e.target.value)}
+                ></RootName>
+                <RootBtn>루트 만들기</RootBtn>
+              </form>
+            </Box>
+          </BoxContainer>
+        </Modal>
+        <Login onClick={() => navigate(`/login`)}>로그인</Login>
+      </Header>
       <Map forwardRef={mapContainer} />
       <div
         className="map-control"
@@ -262,5 +395,190 @@ const MapPage = () => {
     </div>
   );
 };
+
+const Header = styled.div`
+  //header
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  z-index: 100;
+  //css translucent gradient black
+  background: rgba(0, 0, 0, 0.5);
+  background: -moz-linear-gradient(
+    top,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  background: -webkit-gradient(
+    left top,
+    left bottom,
+    color-stop(0%, rgba(0, 0, 0, 0.5)),
+    color-stop(100%, rgba(0, 0, 0, 0))
+  );
+  background: -webkit-linear-gradient(
+    top,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  background: -o-linear-gradient(
+    top,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  background: -ms-linear-gradient(
+    top,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000', GradientType=0 );
+`;
+const Hamburger = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  transform: translate(-50%, -50%);
+`;
+const Logo = styled.div`
+  //position middle
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
+  cursor: pointer;
+`;
+const Cart = styled.div`
+  //position right
+  position: absolute;
+  top: 50%;
+  right: 80px;
+  transform: translate(0, -50%);
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 100;
+`;
+const Login = styled.div`
+  //position right
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translate(0, -50%);
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 100;
+`;
+const Modal = styled.div<any>`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 500px;
+  height: 100vh;
+  background-color: white;
+  z-index: 100;
+  display: ${props => (props.show ? 'none' : '')};
+`;
+const CartIcon = styled.button`
+  //position top right
+  position: absolute;
+  top: 30px;
+  right: 80px;
+  cursor: pointer;
+`;
+const BoxContainer = styled.div`
+  //box with border
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 450px;
+  height: 800px;
+  border: 1px solid black;
+`;
+//Box stye
+const Box = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  padding: 0 20px;
+`;
+
+const Desc = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+`;
+const Delete = styled.div`
+  position: absolute;
+  margin-left: 370px;
+  margin-bottom: 50px;
+  cursor: pointer;
+`;
+
+const CheckBoxForm = styled.div`
+  //box with border
+  width: 400px;
+  height: 100px;
+  border: 1px solid black;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-top: 20px;
+`;
+const ID = styled.div`
+  font-size: 20px;
+`;
+
+//Radio button style
+const CheckBox = styled.input`
+  margin-right: 10px;
+`;
+//Radio button label style
+const CheckLabel = styled.label`
+  font-size: 20px;
+  font-weight: bold;
+`;
+
+const CheckDesc = styled.div`
+  font-size: 15px;
+`;
+const RootName = styled.input`
+  //position bottom
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 400px;
+  height: 50px;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 15px;
+  font-size: 20px;
+  padding: 0 20px;
+`;
+
+//Root button style
+const RootBtn = styled.button`
+  //position bottom
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 400px;
+  height: 50px;
+  background-color: black;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 15px;
+  cursor: pointer;
+`;
 
 export default MapPage;
