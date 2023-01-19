@@ -24,7 +24,14 @@ const Router = () => {
           <Route
             path="/:id"
             element={
-              <div>
+              <div
+                style={{
+                  maxWidth: '1440px',
+                  margin: '0 auto',
+                  position: 'relative',
+                  // justifyContent: 'center',
+                }}
+              >
                 <NaviBar />
                 <GroupDetail />
               </div>
@@ -33,7 +40,14 @@ const Router = () => {
           <Route
             path="/group"
             element={
-              <div>
+              <div
+                style={{
+                  maxWidth: '1440px',
+                  margin: '0 auto',
+                  position: 'relative',
+                  // justifyContent: 'center',
+                }}
+              >
                 <NaviBar />
                 <GroupPage />
               </div>
