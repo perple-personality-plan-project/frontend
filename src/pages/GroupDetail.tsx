@@ -53,33 +53,22 @@ const GroupDetail = () => {
     dispatch(__groupFeedList({ id: paramId.id }));
   }, []);
 
-  //부모 trigger
-  const [trigger, setTrigger] = useState();
-
-  //자식 trigger가 부모 trigger를 변경시켜 useEffect작동
-  //피드 생성 후 다시 받아기 위한 useEffect
-  useEffect(() => {
-    dispatch(__groupFeedList({ id: paramId.id }));
-  }, [trigger]);
-
-  //이 페이지에서 구독한지 확인하기 + 구독 했으면 구독자 수
-  //화면에서 늘어야 하니 그룹도 업데이트 해주기
+  //이 페이지에서 구독한지 확인하기
   useEffect(() => {
     dispatch(__groupSubscribeCheck({ id: paramId.id }));
-    dispatch(__groupGetRank());
-  }, [toggle]);
+  }, []);
 
-  //thunk 쓸 필요 없으면 같은 페이지에서 작업하기
-  //toggle을 임의로 줌으로써 useEffect를 toggle에 의존하여 작동하게 만듬
   const onClickGroupSubscribe = async () => {
-    await nonTokenClient.put(`/group/${paramId.id}`);
-    setToggle(!toggle);
+    await nonTokenClient.put(`api/group/${paramId.id}`); //구독 or 구독 취소 => 나중에 thunk에 넣기
+    await dispatch(__groupSubscribeCheck({ id: paramId.id })); //구독 확인
+    await dispatch(__groupGetRank()); //여기서 그룹 정보 들고옴
+    await dispatch(__groupFeedList({ id: paramId.id })); //그룹 게시글 들고옴
   };
 
   return (
     <div>
       <StBgImages>
-        <img src={require('../이미지1.webp')} alt="bg-image" />
+        <img src={require('../이미지1.webp')} alt="bg-img" />
       </StBgImages>
       <StContainer>
         <StMainContainer>
@@ -160,12 +149,7 @@ const GroupDetail = () => {
           </StGroupPosts>
         </StPostContainer>
 
-        {groupSubscribe ? (
-          <GroupDetailCreateModal
-            paramId={paramId}
-            setTriggerParant={setTrigger}
-          />
-        ) : null}
+        {groupSubscribe ? <GroupDetailCreateModal paramId={paramId} /> : null}
       </StContainer>
     </div>
   );
@@ -232,16 +216,6 @@ const StSubscribeOn = styled.div`
   text-align: center;
 
   .group-subscribe-on {
-    /* width: 100%;
-    border: 1px solid gray;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    padding: 10px 0;
-    font-size: 18px;
-    font-weight: bold;
-    background-color: #644eee; */
-
     display: block;
     width: 100%;
     border: 1px solid gray;
@@ -355,124 +329,6 @@ const StGroupInfo = styled.div`
     font-size: 18px;
     font-weight: bold;
     background-color: #644eee;
-
-    /* &:hover {
-      background-color: gray;
-      color: white;
-    } */
-  }
-`;
-
-const StGroupPost = styled.div`
-  .post-container {
-    position: relative;
-    /* margin: 20px; */
-    width: 330px;
-
-    /* height: 400px; */
-
-    background-color: white;
-    border: 1px solid #d9d9d9;
-    border-radius: 10px;
-    overflow: hidden;
-    cursor: pointer;
-
-    img {
-      width: 100%;
-      background-color: #f0f0f0;
-    }
-
-    .post-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: absolute;
-      width: 100%;
-      padding: 10px;
-      box-sizing: border-box;
-
-      .post-header-info {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-
-        img {
-          background-color: pink;
-          border-radius: 50%;
-          margin-right: 10px;
-        }
-
-        h3 {
-          margin: 0;
-          font-size: 15px;
-          margin-right: 10px;
-        }
-
-        p {
-          background-color: white;
-          border-radius: 20px;
-          font-size: 12px;
-          padding: 5px 15px;
-        }
-      }
-
-      .post-header-route {
-        background-color: white;
-        border-radius: 5px;
-        color: #5b5b5b;
-        font-size: 12px;
-        font-weight: bold;
-        padding: 10px 15px;
-        /* margin-right: 20px; */
-      }
-    }
-
-    .post-desc {
-      margin: 15px;
-      p {
-        max-width: 25ch;
-        margin: 0 0 40px 0;
-        overflow: auto;
-      }
-
-      .post-date {
-        font-size: 14px;
-        color: #9e9e9e;
-        margin: 0;
-      }
-    }
-
-    .post-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .post-bottom-right {
-      display: flex;
-
-      .post-bottom-icon {
-        width: 30px;
-        height: 30px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: pink;
-
-        /* border-radius: 50%; */
-        margin: 0 5px;
-      }
-    }
-
-    @media screen and (max-width: 900px) {
-      width: 400px;
-    }
-  }
-
-  @media screen and (max-width: 900px) {
-    flex-direction: column;
-    gap: 20px;
-    margin-left: 0px;
   }
 `;
 
