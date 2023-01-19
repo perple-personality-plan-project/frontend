@@ -26,7 +26,7 @@ export const __groupGetRank = createAsyncThunk(
   'groupRank/get',
   async (payload, thunkAPI) => {
     try {
-      const { data } = await nonTokenClient.get(`/group?sort=rank`);
+      const { data } = await nonTokenClient.get(`api/group?sort=rank`);
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
       thunkAPI.rejectWithValue(e);
@@ -38,7 +38,7 @@ export const __groupGetDate = createAsyncThunk(
   'groupDate/get',
   async (payload, thunkAPI) => {
     try {
-      const { data } = await nonTokenClient.get(`/group?sort=date`);
+      const { data } = await nonTokenClient.get(`api/group?sort=date`);
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
       thunkAPI.rejectWithValue(e);
@@ -55,7 +55,7 @@ export const __groupSubscribeCheck = createAsyncThunk<
   { id: string | undefined }
 >('group/subscribeCheck', async (payload, thunkAPI) => {
   try {
-    const { data } = await nonTokenClient.get(`/group/${payload.id}`);
+    const { data } = await nonTokenClient.get(`api/group/${payload.id}`);
     console.log(data);
     return thunkAPI.fulfillWithValue(data.data);
   } catch (e) {
@@ -67,7 +67,7 @@ export const __groupFeedList = createAsyncThunk<[], { id: string | undefined }>(
   'group/feedlist',
   async (payload, thunkAPI) => {
     try {
-      const { data } = await nonTokenClient.get(`/group/${payload.id}/feed`);
+      const { data } = await nonTokenClient.get(`api/group/${payload.id}/feed`);
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
       thunkAPI.rejectWithValue(e);
@@ -81,7 +81,7 @@ export const __groupFeedDetail = createAsyncThunk<
 >('group/feedlist/detail', async (payload, thunkAPI) => {
   try {
     const { data } = await nonTokenClient.get(
-      `/group/${payload.groupId}/feed/${payload.feedId}`,
+      `api/group/${payload.groupId}/feed/${payload.feedId}`,
     );
     return thunkAPI.fulfillWithValue(data.data);
   } catch (e) {
@@ -101,7 +101,7 @@ export const __groupPost = createAsyncThunk<postPreset, object>(
   async (payload, thunkAPI) => {
     // console.log(payload);
     try {
-      const { data } = await nonTokenClient.post(`/group`, payload);
+      const { data } = await nonTokenClient.post(`api/group`, payload);
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
       thunkAPI.rejectWithValue(e);
