@@ -1,30 +1,32 @@
-// import { createSlice } from '@reduxjs/toolkit';
-// import { createAsyncThunk } from '@reduxjs/toolkit';
-// import client, { nonTokenClient } from '../../api/client';
+import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import nonTokenClient from '../../api/noClient';
 
-// interface initialState {
-//   postId: number;
-//   posts: [];
-//   isLoading: boolean;
-// }
+type mainPostState = {
+  mainFeedList: [];
+  isLoading: boolean;
+  error: string | unknown;
+};
 
-// const initialState: initialState = {
-//   postId: 0,
-//   posts: [],
-//   isLoading: false,
-// };
+const initialState: mainPostState = {
+  mainFeedList: [],
+  isLoading: false,
+  error: null,
+};
 
-// export const __getPosts = createAsyncThunk(
-//   'getPosts',
-//   async (payload, thunkAPI) => {
-//     try {
-//       const { data } = await client.get(`/posts`);
-//       return thunkAPI.fulfillWithValue(data.allPost);
-//     } catch (e) {
-//       thunkAPI.rejectWithValue(e);
-//     }
-//   },
-// );
+export const __mainFeedlist = createAsyncThunk(
+  'main/feedlist',
+
+  async (payload, thunkAPI) => {
+    try {
+      const { data } = await nonTokenClient.get(`/api/feed`);
+      console.log(data);
+      return thunkAPI.fulfillWithValue(data.data);
+    } catch (e) {
+      thunkAPI.rejectWithValue(e);
+    }
+  },
+);
 
 // export const __addPost = createAsyncThunk(
 //   'addPost',
@@ -62,24 +64,24 @@
 //   },
 // );
 
-// const postsSlice = createSlice(
-//   {
-//   name: 'posts',
-//   initialState,
-//   extraReducers: builder => {
-//     builder
-//       .addCase(__getPosts.pending, state => {
-//         state.isLoading = true;
-//       })
-//       .addCase(__getPosts.fulfilled, (state, action) => {
-//         state.isLoading = false;
-//         state = action.payload;
-//       })
-//       .addCase(__getPosts.pending, state => {
-//         state.isLoading = true;
-//       });
-//   },
-// }
-// );
+const postSlice = createSlice({
+  name: 'post',
+  initialState,
+  reducers: {},
 
-export default {};
+  extraReducers: builder => {
+    builder
+      .addCase(__mainFeedlist.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(__mainFeedlist.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.mainFeedList = action.payload;
+      })
+      .addCase(__mainFeedlist.rejected, state => {
+        state.isLoading = false;
+      });
+  },
+});
+
+export default postSlice.reducer;

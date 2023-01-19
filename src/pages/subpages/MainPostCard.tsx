@@ -6,13 +6,13 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 interface Props {
   post: {
-    locationId: number;
-    locationName: string;
-    locationRoute: string;
-    postTag: string;
-    postDetail: string;
-    thumbnail: string[];
-    imageData: string[];
+    feed_id: number;
+    thumbnail: string;
+    description: string;
+    like_count: number;
+    mbti: string;
+    created_at: string;
+    updated_at: string;
   };
 }
 
@@ -51,9 +51,11 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
       setDataSource(dataSource.concat(Array.from({ length: 2 })));
     }, 1000);
   };
-
+  console.log(post.thumbnail);
+  const splited = post.thumbnail.split(',');
+  console.log(splited);
   return (
-    <StGroupPost key={post.locationId}>
+    <StGroupPost key={post.feed_id}>
       <div className="post-container" onClick={() => setIsOpen(true)}>
         <div className="post-header">
           <div className="post-header-info">
@@ -62,18 +64,19 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
               src={require('../../빡빡이1.png')}
               alt="group-img"
             />
-            <h3>{post.locationName}</h3>
-            <p>{post.postTag}</p>
+            {/* <h3>{post.locationName}</h3> */}
+            <p>{post.mbti}</p>
           </div>
-          <div className="post-header-route">{post.locationRoute}</div>
+          {/* <div className="post-header-route">{post.locationRoute}</div> */}
+          <div className="post-header-route">왕십리</div>
         </div>
         <img
           className="post-img-size"
-          src={post.thumbnail[0]}
+          src={process.env.REACT_APP_IMG_API + splited[0]}
           alt="group-img"
         />
         <div className="post-desc">
-          <p>{post.postDetail}</p>
+          <p>{post.description}</p>
           <div className="post-bottom">
             <p className="post-date">2022.12.29</p>
             <div className="post-bottom-right">
@@ -88,22 +91,23 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
       <MainModal
         onClose={() => setIsOpen(false)}
         open={isOpen}
-        id={post.locationId}
+        id={post.feed_id}
       >
         <StXIcon onClick={() => setIsOpen(false)}>X</StXIcon>
         <Arrow>
           <div className="button-prev" />
           <StDetailContainer>
-            <MainModalSlider id={post.locationId} imageData={post.imageData} />
+            <MainModalSlider id={post.feed_id} imageData={splited} />
             <StDetailInfo>
               <StDetailDesc>
                 <img src={require('../../빡빡이1.png')} alt="detail-img" />
                 <div className="detail-info">
                   <div className="detail-top" style={{ display: 'flex' }}>
-                    <h2>{post.locationName}</h2>
-                    <p>{post.postTag}</p>
+                    {/* <h2>{post.locationName}</h2> */}
+                    <h2>왕십리</h2>
+                    <p>{post.mbti}</p>
                   </div>
-                  <p>{post.postDetail}</p>
+                  <p>{post.description}</p>
                   <div className="detail-bottom">
                     <p>2022.12.29</p>
                     <div style={{ display: 'flex' }}>
@@ -136,7 +140,7 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
                               className="detail-top"
                               style={{ display: 'flex' }}
                             >
-                              <h2>{post.locationName}</h2>
+                              {/* <h2>{post.locationName}</h2> */}
                               {/* <p>{post.postTag}</p> */}
                             </div>
                             <p>{comment.content}</p>
