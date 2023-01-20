@@ -66,6 +66,16 @@ const Router = () => {
           />
 
           <Route
+            path="/community"
+            element={
+              <div style={{ maxWidth: '1440px', margin: 'auto' }}>
+                <Header />
+                <MainPage />
+              </div>
+            }
+          />
+
+          <Route
             path="/signin"
             element={
               <div>

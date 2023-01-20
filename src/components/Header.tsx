@@ -9,7 +9,10 @@ import axios from 'axios';
 
 const MainHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const NavArr = ['커뮤니티', '맵', '그룹', '마이페이지'];
+
+  const NavArr = ['커뮤니티', '맵', '그룹', '마이 페이지'];
+  const NavArrEng = ['community', 'map', 'group', 'mypage'];
+
   const token = localStorage.getItem('accessToken');
   const navigate = useNavigate();
   const [trigger, setTrigger] = useState(false);
@@ -42,7 +45,7 @@ const MainHeader = () => {
             {NavArr.map((nav, index) => {
               return (
                 <li key={index}>
-                  <Link to={`/${nav}`}>{nav} </Link>
+                  <Link to={`/${NavArrEng[index]}`}>{nav}</Link>
                 </li>
               );
             })}
