@@ -9,7 +9,7 @@ import axios from 'axios';
 
 const MainHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const NavArr = ['HOT', 'MAP', 'GROUP', 'PROFILE'];
+  const NavArr = ['커뮤니티', '맵', '그룹', '마이페이지'];
   const token = localStorage.getItem('accessToken');
   const navigate = useNavigate();
   const [trigger, setTrigger] = useState(false);
