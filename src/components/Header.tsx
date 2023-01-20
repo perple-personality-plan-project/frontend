@@ -7,7 +7,7 @@ import nonTokenClient from '../api/noClient';
 import client from '../api/client';
 import axios from 'axios';
 
-const NaviBar = () => {
+const MainHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
   const NavArr = ['HOT', 'MAP', 'GROUP', 'PROFILE'];
   const token = localStorage.getItem('accessToken');
@@ -33,7 +33,7 @@ const NaviBar = () => {
               alt="toggle"
               onClick={() => setIsOpen(prev => !prev)}
             />
-            <img className="logo" src={require('../amu.png')} alt="logo" />
+            <div className="logo">Platter</div>
           </StImgGroup>
           <ul>
             {NavArr.map((nav, index) => {
@@ -58,10 +58,10 @@ const NaviBar = () => {
 
       <div
         className="swiper-bgColor"
-        style={{ border: '30px solid #F2F2F2' }}
+        // style={{ border: '30px solid #F2F2F2' }}
       ></div>
 
-      <StLine />
+      {/* <StLine /> */}
       <Modal closeModal={() => setIsOpen(false)} open={isOpen}>
         <StVerticalLists style={{ display: 'flex', flexDirection: 'column' }}>
           <ul>
@@ -79,7 +79,7 @@ const NaviBar = () => {
   );
 };
 
-export default NaviBar;
+export default MainHeader;
 
 const StNavContainer = styled.nav`
   .swiper-bgColor {
@@ -109,8 +109,8 @@ const StNav = styled.nav`
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  padding: 0 20px;
+  background-color: #644eee;
+  padding: 20px 20px;
 `;
 
 const StImgGroup = styled.div`
@@ -123,6 +123,11 @@ const StImgGroup = styled.div`
 
   .toggle {
     display: none;
+  }
+  .logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
   }
 `;
 
@@ -142,11 +147,11 @@ const StHorizontalLists = styled.div`
   li {
     list-style: none;
     margin-right: 30px;
-    color: gray;
+    color: white;
   }
 
   li a {
-    color: gray;
+    color: white;
     text-decoration: none;
   }
 
@@ -205,15 +210,19 @@ const StVerticalLists = styled.div`
 
 const StBtnGroup = styled.div`
   button {
+    width: 80px;
+    height: 20px;
     font-size: 16px;
     font-weight: bold;
-    background-color: white;
-    border: 0;
+    background-color: #644eee;
+    border: 1px white;
+    border-radius: 50px;
+    color: white;
 
     cursor: pointer;
   }
 `;
 
-const StLine = styled.div`
-  border-bottom: 1px solid #c2bebe;
-`;
+// const StLine = styled.div`
+//   border-bottom: 1px solid #c2bebe;
+// `;

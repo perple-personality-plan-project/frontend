@@ -17,13 +17,29 @@ const MainSlider = () => {
         modules={[EffectCards, Navigation, Pagination]}
         className="mySwiper"
       >
-        <SwiperSlide>
+        {/* <SwiperSlide>
           <img
             src={
               'https://w7.pngwing.com/pngs/109/756/png-transparent-disney-inside-out-characters-illustration-youtube-pixar-animation-film-inside-out-fictional-character-film-good-dinosaur-thumbnail.png'
             }
           />
-        </SwiperSlide>
+        </SwiperSlide> */}
+        <SwiperSlide>ALL</SwiperSlide>
+        <SwiperSlide>ISTJ</SwiperSlide>
+        <SwiperSlide>ISTP</SwiperSlide>
+        <SwiperSlide>ISFJ</SwiperSlide>
+        <SwiperSlide>ISFP</SwiperSlide>
+        <SwiperSlide>INTJ</SwiperSlide>
+        <SwiperSlide>INTP</SwiperSlide>
+        <SwiperSlide>INFJ</SwiperSlide>
+        <SwiperSlide>INFP</SwiperSlide>
+        <SwiperSlide>ESTJ</SwiperSlide>
+        <SwiperSlide>ESTP</SwiperSlide>
+        <SwiperSlide>ESFJ</SwiperSlide>
+        <SwiperSlide>ESFP</SwiperSlide>
+        <SwiperSlide>ENTJ</SwiperSlide>
+        <SwiperSlide>ENTP</SwiperSlide>
+        <SwiperSlide>ENFJ</SwiperSlide>
         <SwiperSlide>ENFP</SwiperSlide>
       </Swiper>
     </StSwiper>
@@ -55,7 +71,7 @@ const StSwiper = styled.div`
     border-radius: 10px;
     font-size: 40px;
     font-weight: bold;
-    color: #fff;
+    color: #151414;
   }
 
   .swiper-wrapper {
@@ -85,7 +101,12 @@ const StSwiper = styled.div`
 
   .swiper-slide:nth-child(2n) {
     border: 1px gray;
-    background-color: #d3acf7;
+    background-color: white;
+  }
+
+  .swiper-slide:nth-child(2n) {
+    border: 1px gray;
+    background-color: white;
   }
 
   //버튼

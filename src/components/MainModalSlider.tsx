@@ -41,10 +41,12 @@ export default MainModalSlider;
 
 const StSwiper = styled.div`
   .swiper {
-    max-width: 625px;
-    aspect-ratio: '1/1';
+    /* max-width: 625px; */
+    width: 625px;
+    aspect-ratio: '1/1.2';
     border-radius: 20px 0 0 20px;
     @media screen and (max-width: 1024px) {
+      max-width: 290px;
       border-radius: 20px 20px 0 0;
     }
   }
