@@ -19,7 +19,7 @@ export const __mainFeedlist = createAsyncThunk(
 
   async (payload, thunkAPI) => {
     try {
-      const { data } = await nonTokenClient.get(`/api/feed`);
+      const { data } = await nonTokenClient.get(`api/feed`);
       console.log(data);
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {

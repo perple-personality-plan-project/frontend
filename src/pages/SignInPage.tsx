@@ -20,7 +20,7 @@ const SignInPage = () => {
 
   const login = async () => {
     try {
-      const { data } = await nonTokenClient.post('/user/login', {
+      const { data } = await nonTokenClient.post('api/user/login', {
         login_id: LoginId,
         password: Password,
       });

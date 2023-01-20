@@ -18,7 +18,7 @@ const NaviBar = () => {
 
   const logout = async () => {
     if (window.confirm('로그아웃 하시겠습니까?')) {
-      await client.post('/user/logout');
+      await client.post('api/user/logout');
       localStorage.clear();
       setTrigger(!trigger);
     }

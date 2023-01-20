@@ -52,7 +52,7 @@ export const __RootMaker = createAsyncThunk<RootMaker, {}>(
   async (payload, thunkAPI) => {
     try {
       console.log(payload);
-      const { data } = await nonTokenClient.post(`/api/map`, payload);
+      const { data } = await nonTokenClient.post(`api/map`, payload);
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
       thunkAPI.rejectWithValue(e);

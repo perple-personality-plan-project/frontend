@@ -39,7 +39,7 @@ const SignUpPage = () => {
     setMbti(e.currentTarget.value);
   };
   const signUp = (payload: any) => {
-    nonTokenClient.post('/user/signup', payload);
+    nonTokenClient.post('api/user/signup', payload);
   };
 
   const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
