@@ -28,11 +28,11 @@ interface commentPreset {
 }
 
 const MainPostCard: React.FC<Props> = ({ post }) => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { mainFeedDetail }: any = useAppSelector(store => store);
+  // const { mainFeedDetail }: any = useAppSelector(store => store.post);
   const [comments, setComments] = useState<commentPreset[]>([]);
   const [content, setContent] = useState('');
 
