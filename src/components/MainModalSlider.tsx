@@ -103,10 +103,11 @@ const StSwiper = styled.div`
   .swiper-slide img {
     display: block;
     width: 100%;
-    height: 100%;
+    height: 625px;
     object-fit: cover;
     border-radius: 20px 0 0 20px;
     @media screen and (max-width: 1024px) {
+      height: 290px;
       border-radius: 20px 20px 0 0;
     }
   }
