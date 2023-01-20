@@ -11,16 +11,19 @@ import 'swiper/css';
 
 const NaviBar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const NavArr = ['HOT', 'MAP', 'GROUP', 'PROFILE'];
   const token = localStorage.getItem('accessToken');
   const navigate = useNavigate();
   const [trigger, setTrigger] = useState(false);
+
+  const NavArr = ['커뮤니티', '맵', '그룹', '마이 페이지'];
+  const NavArrEng = ['community', 'map', 'group', 'mypage'];
 
   const logout = async () => {
     if (window.confirm('로그아웃 하시겠습니까?')) {
       await client.post('api/user/logout');
       localStorage.clear();
-      setTrigger(!trigger);
+      // setTrigger(!trigger);
+      window.location.reload();
     }
   };
 
@@ -29,24 +32,28 @@ const NaviBar = () => {
       <StNav>
         <StHorizontalLists>
           <StImgGroup>
+            {/* <p className="toggle">Platter</p> */}
             <img
               className="toggle"
               src={require('../빡빡이1.png')}
               alt="toggle"
               onClick={() => setIsOpen(prev => !prev)}
             />
-            <img
+            <p className="logo" onClick={() => navigate('/')}>
+              Platter
+            </p>
+            {/* <img
               className="logo"
               src={require('../amu.png')}
               onClick={() => navigate('/')}
               alt="logo"
-            />
+            /> */}
           </StImgGroup>
           <ul>
             {NavArr.map((nav, index) => {
               return (
                 <li key={index}>
-                  <Link to={`/${nav}`}>{nav}</Link>
+                  <Link to={`/${NavArrEng[index]}`}>{nav}</Link>
                 </li>
               );
             })}
@@ -132,6 +139,18 @@ const StImgGroup = styled.div`
     cursor: pointer;
   }
 
+  p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 70px;
+    cursor: pointer;
+    margin: 0;
+
+    font-weight: bold;
+  }
+
   .toggle {
     display: none;
     cursor: pointer;
@@ -180,7 +199,8 @@ const StHorizontalLists = styled.div`
       display: block;
       position: absolute;
       left: 50%;
-      transform: translate(-50%, 0);
+      top: 50%;
+      transform: translate(-50%, -15%);
     }
   }
 `;
