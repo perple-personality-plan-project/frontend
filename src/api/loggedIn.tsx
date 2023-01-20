@@ -2,26 +2,26 @@ import axios from 'axios';
 
 // const client = axios.create({ baseURL: process.env.REACT_APP_API });
 
-const client = axios.create({ baseURL: process.env.REACT_APP_API });
+const loggedIn = axios.create({ baseURL: process.env.REACT_APP_API });
 
-client.interceptors.request.use(function (config: any) {
+loggedIn.interceptors.request.use(function (config: any) {
   //   console.log(config);
   //   const user = localStorage.getItem('user');
   const accessToken = localStorage.getItem('accessToken');
-  const refreshToken = localStorage.getItem('refreshToken');
-  console.log(config);
+  //   const refreshToken = localStorage.getItem('refreshToken');
+  //   console.log(config);
   //   if (!user) {
   //     config.headers['accessToken'] = null;
   //     config.headers['refreshToken'] = null;
   //     return config;
   //   }
   //   const { accessToken, refreshToken } = JSON.parse(user);
-  config.headers['accessToken'] = accessToken;
-  config.headers['authorization'] = refreshToken;
+  config.headers['authorization'] = accessToken;
+  //   config.headers['authorization'] = refreshToken;
   return config;
 });
 
-// client.interceptors.response.use(
+// loggedIn.interceptors.response.use(
 //   function (response) {
 //     console.log(response);
 //     return response;
@@ -30,7 +30,7 @@ client.interceptors.request.use(function (config: any) {
 //     if (error.response && error.response.status === 403) {
 //       try {
 //         const originalRequest = error.config;
-//         const data = await client.get('/user/refresh-token');
+//         const data = await loggedIn.get('/user/refresh-token');
 //         console.log(data);
 //         //   if (data) {
 //         //       const {accessToken, refreshToken} = data.data
@@ -38,7 +38,7 @@ client.interceptors.request.use(function (config: any) {
 //         //       localStorage.setItem('user', JSON.stringify(data.data, ['accessToken', 'refreshToken']))
 //         //       originalRequest.headers['accessToken'] = accessToken;
 //         //       originalRequest.headers['refreshToken'] = refreshToken;
-//         //       return await client.request(originalRequest);
+//         //       return await loggedIn.request(originalRequest);
 //         //       }
 //       } catch (error) {
 //         localStorage.removeItem('user');
@@ -50,4 +50,4 @@ client.interceptors.request.use(function (config: any) {
 //   },
 // );
 
-export default client;
+export default loggedIn;
