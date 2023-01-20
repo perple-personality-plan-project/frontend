@@ -131,7 +131,7 @@ function MyPage() {
   return (
     <Container>
       <NaviBar></NaviBar>
-      <Banner src=""></Banner>
+      <Banner src="https://cdn-pro-web-40-6.cdn-nhncommerce.com/appacompany_godomall_com/data/main/mboxbanner_03.jpg"></Banner>
       <Profile>
         {profileInfo?.map((item: any) => {
           return (
@@ -245,7 +245,7 @@ function MyPage() {
               return (
                 <GroupFeed onClick={() => navigate(`/${index + 1}`)}>
                   <GroupProfile
-                    src={require('../빡빡이1.png')}
+                    src={process.env.REACT_APP_IMG_SERVER + item.thumbnail}
                     alt="group-img"
                   />{' '}
                   <Title>{item.group_name}</Title>

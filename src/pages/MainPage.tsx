@@ -29,9 +29,9 @@ const MainPage = () => {
   const { mainFeedList } = useAppSelector(store => store.post);
   const [mainPosts, setMainPosts] = useState<mainPostPreset[]>([]);
 
-  // useEffect(() => {
-  //   dispatch(__mainFeedlist());
-  // }, []);
+  useEffect(() => {
+    dispatch(__mainFeedlist());
+  }, []);
 
   return (
     <Wrap>
