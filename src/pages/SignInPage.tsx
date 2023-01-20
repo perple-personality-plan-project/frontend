@@ -52,6 +52,7 @@ const SignInPage = () => {
           height="20px"
           placeholder="ID를 입력하세요."
           onChange={onLoginIdHandler}
+          required
         />
         <Label></Label>
         <Input
@@ -59,6 +60,8 @@ const SignInPage = () => {
           height="20px"
           placeholder="비밀번호를 입력하세요."
           onChange={onPasswordHandler}
+          type="password"
+          required
         />
         <ButtonWrap>
           <div className="gathered">
@@ -69,7 +72,12 @@ const SignInPage = () => {
             >
               로그인
             </Button>
-            <Button style={{ width: '200px', height: '40px' }}>회원가입</Button>
+            <Button
+              style={{ width: '200px', height: '40px' }}
+              onClick={() => navigate(`/signup`)}
+            >
+              회원가입
+            </Button>
           </div>
           <Button style={{ height: '40px', marginTop: '15%' }}>
             카카오로 로그인하기

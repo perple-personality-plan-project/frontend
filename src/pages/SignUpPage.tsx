@@ -125,7 +125,10 @@ const SignUpPage = () => {
           </Button>
         </div>
         <ButtonWrap>
-          <Button style={{ width: '398px', height: '40px', marginTop: '7%' }}>
+          <Button
+            style={{ width: '398px', height: '40px', marginTop: '7%' }}
+            onClick={() => navigate(`/signin`)}
+          >
             모두 작성했어요!
           </Button>
         </ButtonWrap>
