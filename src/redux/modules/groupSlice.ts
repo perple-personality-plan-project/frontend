@@ -1,12 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import loggedIn from '../../api/loggedIn';
 import nonTokenClient from '../../api/noClient';
 
 type groupState = {
   groupRank: [];
   groupDate: [];
   groupFeedList: [];
-  groupSubscribe: object;
+  groupSubscribe: {
+    admin_flag?: number;
+    created_at?: string;
+    group_id?: number;
+    group_user_id?: number;
+    updated_at?: string;
+    user_id?: number;
+  };
   groupFeedDetail: object;
   isLoading: boolean;
   error: string | unknown;
@@ -55,7 +63,7 @@ export const __groupSubscribeCheck = createAsyncThunk<
   { id: string | undefined }
 >('group/subscribeCheck', async (payload, thunkAPI) => {
   try {
-    const { data } = await nonTokenClient.get(`api/group/${payload.id}`);
+    const { data } = await loggedIn.get(`api/group/${payload.id}`);
     console.log(data);
     return thunkAPI.fulfillWithValue(data.data);
   } catch (e) {
