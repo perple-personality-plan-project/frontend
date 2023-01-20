@@ -4,7 +4,30 @@ import styled from 'styled-components';
 import { EffectCards, Navigation, Pagination } from 'swiper';
 import 'swiper/css/effect-cards';
 
-const MainSlider = () => {
+interface props {
+  setMbtiCheck: any;
+}
+
+const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
+  const mbtiCategory = [
+    'All', //0
+    'ISTJ', //1
+    'ISTP', //2
+    'ISFJ',
+    'INTJ',
+    'INTP',
+    'INFJ',
+    'INFP',
+    'ESTJ',
+    'ESTP',
+    'ESFJ',
+    'ESFP',
+    'ENTJ',
+    'ENTP',
+    'ENFJ',
+    'ENFP',
+  ];
+
   return (
     <StSwiper>
       <Swiper
@@ -14,33 +37,17 @@ const MainSlider = () => {
         pagination={true}
         mousewheel={true}
         keyboard={true}
+        onSlideChange={swiperCore => {
+          const { activeIndex, snapIndex, previousIndex, realIndex } =
+            swiperCore;
+          setMbtiCheck(mbtiCategory[activeIndex]);
+        }}
         modules={[EffectCards, Navigation, Pagination]}
         className="mySwiper"
       >
-        {/* <SwiperSlide>
-          <img
-            src={
-              'https://w7.pngwing.com/pngs/109/756/png-transparent-disney-inside-out-characters-illustration-youtube-pixar-animation-film-inside-out-fictional-character-film-good-dinosaur-thumbnail.png'
-            }
-          />
-        </SwiperSlide> */}
-        <SwiperSlide>ALL</SwiperSlide>
-        <SwiperSlide>ISTJ</SwiperSlide>
-        <SwiperSlide>ISTP</SwiperSlide>
-        <SwiperSlide>ISFJ</SwiperSlide>
-        <SwiperSlide>ISFP</SwiperSlide>
-        <SwiperSlide>INTJ</SwiperSlide>
-        <SwiperSlide>INTP</SwiperSlide>
-        <SwiperSlide>INFJ</SwiperSlide>
-        <SwiperSlide>INFP</SwiperSlide>
-        <SwiperSlide>ESTJ</SwiperSlide>
-        <SwiperSlide>ESTP</SwiperSlide>
-        <SwiperSlide>ESFJ</SwiperSlide>
-        <SwiperSlide>ESFP</SwiperSlide>
-        <SwiperSlide>ENTJ</SwiperSlide>
-        <SwiperSlide>ENTP</SwiperSlide>
-        <SwiperSlide>ENFJ</SwiperSlide>
-        <SwiperSlide>ENFP</SwiperSlide>
+        {mbtiCategory.map((mbti: any, index) => {
+          return <SwiperSlide key={index}>{mbti}</SwiperSlide>;
+        })}
       </Swiper>
     </StSwiper>
   );
