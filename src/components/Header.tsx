@@ -19,6 +19,7 @@ const MainHeader = () => {
       await client.post('api/user/logout');
       localStorage.clear();
       setTrigger(!trigger);
+      navigate('/signin');
     }
   };
 
@@ -33,7 +34,9 @@ const MainHeader = () => {
               alt="toggle"
               onClick={() => setIsOpen(prev => !prev)}
             />
-            <div className="logo">Platter</div>
+            <div className="logo" onClick={() => navigate('/')}>
+              Platter
+            </div>
           </StImgGroup>
           <ul>
             {NavArr.map((nav, index) => {

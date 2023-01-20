@@ -24,6 +24,7 @@ const NaviBar = () => {
       localStorage.clear();
       // setTrigger(!trigger);
       window.location.reload();
+      navigate('/signin');
     }
   };
 

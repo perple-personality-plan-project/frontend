@@ -11,6 +11,7 @@ import {
 
 import { __RemoveItem } from '../redux/modules/mapSlice';
 import { __RootMaker } from '../redux/modules/mapSlice';
+import client from '../api/client';
 
 // Window 인터페이스에 Kakao API를 위한 kakao 객체 정의
 declare global {
@@ -79,6 +80,7 @@ type RootType = {
 };
 
 const MapPage = () => {
+  const navigate = useNavigate();
   //- Ref Hook 참고 https://ko.reactjs.org/docs/hooks-reference.html#useref
   const map = useRef<KakaoMap>(null);
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -101,7 +103,9 @@ const MapPage = () => {
   const [Root, setRoot] = useState<any>([]);
   const [RootTitle, setRootTitle] = useState<any>([]);
 
-  const stringRoot = JSON.stringify(Root);
+  const stringRoot = JSON.stringify(maplist);
+
+  const token = localStorage.getItem('accessToken');
 
   //onchange Root Title
   const onChangeRoot = (e: any) => {
@@ -119,7 +123,7 @@ const MapPage = () => {
       place_group: stringRoot,
       place_group_name: RootTitle,
     };
-
+    console.log(Roots);
     dispatch(__RootMaker(Roots));
   };
 
@@ -310,15 +314,24 @@ const MapPage = () => {
       };
     }
   }, [kakaoMarkers]);
-  const navigate = useNavigate();
+  const [trigger, setTrigger] = useState(false);
+
+  const logout = async () => {
+    if (window.confirm('로그아웃 하시겠습니까?')) {
+      await client.post('api/user/logout');
+      localStorage.clear();
+      setTrigger(!trigger);
+    }
+  };
+
   return (
     <div className="map-page">
       <Header>
-        <Hamburger>햄버거바</Hamburger>
-        <Logo onClick={() => navigate(`/main`)}>PLATTER</Logo>
+        <Hamburger src="https://w7.pngwing.com/pngs/909/687/png-transparent-hamburger-button-hot-dog-computer-icons-pancake-hot-dog-share-icon-navbar-menu-thumbnail.png"></Hamburger>
+        <Logo onClick={() => navigate(`/`)}>PLATTER</Logo>
         <Cart onClick={ModalShow}>장바구니</Cart>
         <Modal show={Modals}>
-          <button onClick={togglechange}>전체 선택</button>
+          <SelectAll onClick={togglechange}>□ 전체 선택</SelectAll>
           <CartIcon onClick={ModalShow}>장바구니아이콘</CartIcon>
           <BoxContainer>
             <Box>
@@ -327,6 +340,7 @@ const MapPage = () => {
                   return (
                     <CheckBoxForm key={index}>
                       <CheckBox
+                        required
                         type="checkbox"
                         name="checkbox"
                         value={index + 1}
@@ -376,7 +390,11 @@ const MapPage = () => {
             </Box>
           </BoxContainer>
         </Modal>
-        <Login onClick={() => navigate(`/login`)}>로그인</Login>
+        {token ? (
+          <Login onClick={logout}>로그아웃 </Login>
+        ) : (
+          <Login onClick={() => navigate('/signin')}>로그인 </Login>
+        )}
       </Header>
       <Map forwardRef={mapContainer} />
       <div
@@ -405,45 +423,22 @@ const Header = styled.div`
   height: 80px;
   z-index: 100;
   //css translucent gradient black
-  background: rgba(0, 0, 0, 0.5);
+  background: white;
   background: -moz-linear-gradient(
     top,
     rgba(0, 0, 0, 0.5) 0%,
     rgba(0, 0, 0, 0) 100%
   );
-  background: -webkit-gradient(
-    left top,
-    left bottom,
-    color-stop(0%, rgba(0, 0, 0, 0.5)),
-    color-stop(100%, rgba(0, 0, 0, 0))
-  );
-  background: -webkit-linear-gradient(
-    top,
-    rgba(0, 0, 0, 0.5) 0%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  background: -o-linear-gradient(
-    top,
-    rgba(0, 0, 0, 0.5) 0%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  background: -ms-linear-gradient(
-    top,
-    rgba(0, 0, 0, 0.5) 0%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.5) 0%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000', GradientType=0 );
 `;
-const Hamburger = styled.div`
+const Hamburger = styled.img`
   position: absolute;
   top: 50%;
   left: 5%;
   transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  z-index: 100;
 `;
 const Logo = styled.div`
   //position middle
@@ -458,7 +453,7 @@ const Cart = styled.div`
   //position right
   position: absolute;
   top: 50%;
-  right: 80px;
+  right: 120px;
   transform: translate(0, -50%);
   font-weight: bold;
   cursor: pointer;
@@ -468,7 +463,7 @@ const Login = styled.div`
   //position right
   position: absolute;
   top: 50%;
-  right: 20px;
+  right: 30px;
   transform: translate(0, -50%);
   font-weight: bold;
   cursor: pointer;
@@ -484,11 +479,20 @@ const Modal = styled.div<any>`
   z-index: 100;
   display: ${props => (props.show ? 'none' : '')};
 `;
+
+const SelectAll = styled.div`
+  //position top left
+  position: absolute;
+  top: 60px;
+  left: 50px;
+  cursor: pointer;
+  font-weight: bold;
+`;
 const CartIcon = styled.button`
   //position top right
   position: absolute;
   top: 30px;
-  right: 80px;
+  right: 100px;
   cursor: pointer;
 `;
 const BoxContainer = styled.div`

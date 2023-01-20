@@ -12,6 +12,7 @@ import SignInPage from '../pages/SignInPage';
 import SignUpPage from '../pages/SignUpPage';
 import MapPage from '../pages/MapPage';
 import MyPage from '../pages/MyPage';
+import TogoUserlist from '../pages/Togolist';
 
 import { store } from '../redux/config/configStore';
 import { Provider } from 'react-redux';
@@ -97,8 +98,9 @@ const Router = () => {
               </div>
             }
           />
-          <Route path="/map" element={<MapPage />} />
-          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/MAP" element={<MapPage />} />
+          <Route path="/PROFILE" element={<MyPage />} />
+          <Route path="/togolist" element={<TogoUserlist />} />
         </Routes>
       </BrowserRouter>
     </Provider>
