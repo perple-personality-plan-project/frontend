@@ -108,8 +108,8 @@ const Router = () => {
               </div>
             }
           />
-          <Route path="/MAP" element={<MapPage />} />
-          <Route path="/PROFILE" element={<MyPage />} />
+          <Route path="/map" element={<MapPage />} />
+          <Route path="/mypage" element={<MyPage />} />
           <Route path="/togolist" element={<TogoUserlist />} />
         </Routes>
       </BrowserRouter>
