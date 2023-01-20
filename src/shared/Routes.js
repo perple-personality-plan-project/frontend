@@ -83,8 +83,8 @@ const Router = () => {
           <Route
             path="/mbti"
             element={
-              <div>
-                <Header />
+              <div style={{ maxWidth: '1440px', margin: 'auto' }}>
+                <NaviBar />
                 <MbtiCheckPage />
               </div>
             }

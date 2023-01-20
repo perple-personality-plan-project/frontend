@@ -18,7 +18,7 @@ const MbtiCheckPage = () => {
           >
             <img src={require('../빡빡이1.png')} alt="group-img" />
             <div className="post-desc">
-              <p>perple 간편 검사</p>
+              <p>Platter 간편 검사</p>
             </div>
           </div>
           <div
@@ -106,7 +106,6 @@ const StGroupPosts = styled.div`
   flex-wrap: wrap;
   gap: 20px;
 
-
   .post-container {
     position: relative;
     width: 330px;
@@ -117,24 +116,23 @@ const StGroupPosts = styled.div`
     overflow: hidden;
 
     @media screen and (max-width: 412px) {
-    margin: auto;
+      margin: auto;
     }
   }
 
-    img {
-      width: 80%;
-      background-color: #f0f0f0;
-      margin: 10% 10% 0 10%;
-    }
+  img {
+    width: 80%;
+    background-color: #f0f0f0;
+    margin: 10% 10% 0 10%;
+  }
 
-    .post-desc {
-      /* margin: 15px; */
-      padding-left: 25%;
-      p {
-        margin: 20px;
-        overflow: auto;
-        font-size: 2ch;
-      }
+  .post-desc {
+    /* margin: 15px; */
+    padding-left: 25%;
+    p {
+      margin: 20px;
+      overflow: auto;
+      font-size: 2ch;
     }
-  
+  }
 `;

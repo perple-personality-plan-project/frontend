@@ -4,6 +4,12 @@ import { MainModal } from '../../components/modal/MainModal';
 import MainModalSlider from '../../components/MainModalSlider';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
+import { __mainFeedDetail } from '../../redux/modules/postSlice';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../components/hooks/typescripthook/hooks';
+
 interface Props {
   post: {
     feed_id: number;
@@ -22,8 +28,11 @@ interface commentPreset {
 }
 
 const MainPostCard: React.FC<Props> = ({ post }) => {
+  const dispatch = useAppDispatch();
+
   const [isOpen, setIsOpen] = useState(false);
 
+  const { mainFeedDetail }: any = useAppSelector(store => store);
   const [comments, setComments] = useState<commentPreset[]>([]);
   const [content, setContent] = useState('');
 
@@ -51,9 +60,9 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
       setDataSource(dataSource.concat(Array.from({ length: 2 })));
     }, 1000);
   };
-  console.log(post.thumbnail);
+  // console.log(post.thumbnail);
   const splited = post.thumbnail.split(',');
-  console.log(splited);
+  // console.log(splited);
   return (
     <StGroupPost key={post.feed_id}>
       <div className="post-container" onClick={() => setIsOpen(true)}>
@@ -80,9 +89,9 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
           <div className="post-bottom">
             <p className="post-date">2022.12.29</p>
             <div className="post-bottom-right">
-              <div className="post-bottom-icon">A</div>
-              <div className="post-bottom-icon">B</div>
-              <div className="post-bottom-icon">C</div>
+              <div className="post-bottom-icon">좋</div>
+              <div className="post-bottom-icon">저장</div>
+              <div className="post-bottom-icon">공</div>
             </div>
           </div>
         </div>
@@ -177,7 +186,7 @@ export default MainPostCard;
 const StGroupPost = styled.div`
   .post-container {
     position: relative;
-    width: 400px;
+    width: 430px;
 
     background-color: white;
     border: 1px solid #d9d9d9;
@@ -191,14 +200,15 @@ const StGroupPost = styled.div`
     }
 
     .post-header {
-      background-color: whitesmoke;
+      background-color: white;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      /* position: absolute; */
+      position: absolute;
       width: 100%;
-      padding: 10px;
+      padding: 20px;
       box-sizing: border-box;
+      background-color: rgba(0, 0, 0, 0.05);
       border-radius: 10px;
 
       .post-header-info {

@@ -2,18 +2,23 @@ import { createSlice } from '@reduxjs/toolkit';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import nonTokenClient from '../../api/noClient';
 
+//타입지정
 type mainPostState = {
   mainFeedList: [];
+  mainFeedDetail: object;
   isLoading: boolean;
   error: string | unknown;
 };
 
+//초기값설정
 const initialState: mainPostState = {
   mainFeedList: [],
+  mainFeedDetail: {},
   isLoading: false,
   error: null,
 };
 
+//thunk 함수
 export const __mainFeedlist = createAsyncThunk(
   'main/feedlist',
 
@@ -28,42 +33,21 @@ export const __mainFeedlist = createAsyncThunk(
   },
 );
 
-// export const __addPost = createAsyncThunk(
-//   'addPost',
-//   async (payload, thunkAPI) => {
-//     try {
-//       const { data } = await client.post(`/posts`, payload);
-//       return thunkAPI.fulfillWithValue(data.createdPost);
-//     } catch (e) {
-//       alert(`addPostError: ${e}`);
-//     }
-//   },
-// );
+export const __mainFeedDetail = createAsyncThunk(
+  'main/feedDetail',
 
-// export const __deletePost = createAsyncThunk(
-//   'deletePost',
-//   async (payload, thunkAPI) => {
-//     try {
-//       await client.delete(`/posts/${payload}`);
-//       return thunkAPI.fulfillWithValue(payload);
-//     } catch (e) {
-//       alert(`deletePostError: ${e}`);
-//     }
-//   },
-// );
+  async (payload, thunkAPI) => {
+    try {
+      const { data } = await nonTokenClient.get(`/api/feed/:feed_id`);
+      console.log(data);
+      return thunkAPI.fulfillWithValue(data.data);
+    } catch (e) {
+      thunkAPI.rejectWithValue(e);
+    }
+  },
+);
 
-// export const __updatePost = createAsyncThunk(
-//   'updatePost',
-//   async (payload, thunkAPI) => {
-//     try {
-//       const { data } = await client.put(`/posts/${payload.id}`, payload.post);
-//       return thunkAPI.fulfillWithValue(data);
-//     } catch (e) {
-//       alert(`updatePostError: ${e}`);
-//     }
-//   },
-// );
-
+//리듀서
 const postSlice = createSlice({
   name: 'post',
   initialState,
@@ -79,6 +63,17 @@ const postSlice = createSlice({
         state.mainFeedList = action.payload;
       })
       .addCase(__mainFeedlist.rejected, state => {
+        state.isLoading = false;
+      });
+    builder
+      .addCase(__mainFeedDetail.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(__mainFeedDetail.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.mainFeedDetail = action.payload;
+      })
+      .addCase(__mainFeedDetail.rejected, state => {
         state.isLoading = false;
       });
   },

@@ -27,17 +27,31 @@ const MainPage = () => {
   console.log(mainFeedList);
   const [mainPosts, setMainPosts] = useState<mainPostPreset[]>([]);
 
-  useEffect(() => {
-    dispatch(__mainFeedlist());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(__mainFeedlist());
+  // }, []);
 
   return (
     <Wrap>
       <Backgr>
         <TitleWrap>
           <div className="gathered">
-            <MbtiTag>😀ENFP</MbtiTag>
+            <MbtiTag>ENFP</MbtiTag>
             <MbtiTitle>뭐하고 놀까?</MbtiTitle>
+            <div style={{ fontSize: '15px', padding: '20px 0 0 20px' }}>
+              MBTI 검사하고 나에게 맞는 HOT PLACE 찾자!
+            </div>
+            {/* <div
+              style={{
+                width: '110px',
+                height: '50px',
+                border: '2px soild white',
+                fontSize: '15px',
+                padding: '8% 0 0 70%',
+              }}
+            >
+              v MBTI 검사하기
+            </div> */}
           </div>
           <div>
             <MainSlider />
@@ -67,14 +81,14 @@ const Backgr = styled.div`
   align-items: center;
   position: relative;
   width: 100%;
-  height: 400px;
+  height: 370px;
   font-size: 50px;
   justify-content: center;
   left: 0;
   right: 0;
-  border-radius: 0 0 0 40%;
+  border-radius: 0 0 0 250px;
   padding-top: 10vh;
-  background-color: rgb(115, 84, 241);
+  background-color: #644eee;
 
   @media screen and (max-width: 800px) {
     font-size: 1.5em;
@@ -89,7 +103,8 @@ const TitleWrap = styled.div`
   gap: 150px;
 
   .gathered {
-    margin-top: 90px;
+    margin-top: 10px;
+    color: white;
   }
   @media screen and (max-width: 800px) {
     text-align: center;
@@ -97,9 +112,13 @@ const TitleWrap = styled.div`
     width: 100%;
     height: 100%;
     font-size: 23px;
+    gap: 70px;
     .gathered {
       flex-direction: row;
       margin: auto;
+
+      .div {
+      }
     }
   }
 `;
@@ -108,28 +127,32 @@ const MbtiTag = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 300px;
-  height: 100px;
-  color: rgb(115, 84, 241);
+  width: 250px;
+  height: 90px;
+  color: #644eee;
   border-radius: 50px;
   background-color: white;
+  font-weight: 500;
 
   @media screen and (max-width: 800px) {
     justify-content: center;
     /* margin-left: 15%; */
     width: 120px;
     height: 50px;
+    margin: auto;
   }
 `;
 
 const MbtiTitle = styled.div`
-  color: white;
   margin-left: 55px;
+  .div {
+    font-size: 10px;
+  }
   @media screen and (max-width: 412px) {
     /* justify-content: center; */
     /* margin-left: 5%; */
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
   }
 `;
 
