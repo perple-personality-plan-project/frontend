@@ -2,15 +2,33 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useNavigate } from 'react-router';
-
 import styled from 'styled-components';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../components/hooks/typescripthook/hooks';
+
 import NaviBar from '../components/Header';
+import {
+  __getMyProfile,
+  __myFeed,
+  __myGroupList,
+  __getMap,
+  __updateProfile,
+  __getPicked,
+} from '../redux/modules/mySlice';
+import { async } from 'q';
+import FeedModal from '../components/modal/FeedModal';
+import { awaitExpression, isTSEnumMember } from '@babel/types';
+import FeedDetailModal from '../components/modal/FeedDetailModal';
 
 interface IAppState {
   show: boolean;
 }
 
 function MyPage() {
+  const dispatch = useAppDispatch();
+
   const [myFeed, setMyFeed] = useState(true);
   const [toGoList, setToGoList] = useState(false);
   const [dibs, setDibs] = useState(false);
@@ -20,6 +38,58 @@ function MyPage() {
   const [dataSource, setDataSource] = useState(Array.from({ length: 4 }));
   const [hasMore, setHasMore] = useState(true);
   const [Modals, setModals] = useState(true);
+
+  const [MBTI, setMBTI] = useState(false);
+  const [nickName, setnickName] = useState(false);
+  const onChangeMBTI = (e: any) => {
+    setMBTI(e);
+  };
+  const onChangeNickName = (e: any) => {
+    setnickName(e);
+  };
+
+  const profileInfo = useAppSelector((store: any) => store.mypage.profileInfo);
+  const myfeed = useAppSelector((store: any) => store.mypage.myFeed);
+  const myGroupList = useAppSelector((store: any) => store.mypage.myGroupList);
+  const mapList = useAppSelector((store: any) => store.mypage.maplist);
+  const myPick = useAppSelector((store: any) => store.mypage.myPick);
+
+  console.log(myGroupList);
+
+  //json parser function for myfeed using for loop
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    await dispatch(__getMyProfile());
+    await dispatch(__myGroupList());
+    await dispatch(__getMap());
+    await dispatch(__getPicked());
+    await dispatch(__myFeed());
+    await mapListParser();
+  };
+
+  const mapListParser = () => {
+    let mapJson = [];
+    for (let i = 0; i < mapList.length; i++) {
+      mapJson.push(JSON.parse(mapList[i].place_group));
+    }
+    console.log(mapJson);
+    return mapJson;
+  };
+
+  //dispatch __updateProfile
+  const updateProfile = async () => {
+    const patchProfile = {
+      nickname: nickName,
+      mbti: MBTI,
+    };
+    await dispatch(__updateProfile(patchProfile));
+    await dispatch(__getMyProfile());
+    setProfileEdit(!profileEdit);
+  };
 
   const navigate = useNavigate();
 
@@ -63,31 +133,48 @@ function MyPage() {
       <NaviBar></NaviBar>
       <Banner src=""></Banner>
       <Profile>
-        <Mbti show={profileEdit}>ENTJ</Mbti>
-        <MbtiInput show={profileEdit} />
-        <Image src="https://blog.kakaocdn.net/dn/bw32S0/btqz1LaRxRm/xUvL2Kd0ygXyAY1T254un0/img.png"></Image>
-        <Retest onClick={() => navigate(`/mbti`)}>다시 검사하기▷</Retest>
-        <Name show={profileEdit}>홍길동님</Name>
-        <NameInput show={profileEdit} />
-        <Edit onClick={profileEditShow}>내프로필 편집하기</Edit>
-        <Box>
-          <ProfileBox>
-            <FeedNum>7</FeedNum>
-            <FeedType>피드</FeedType>
-          </ProfileBox>
-          <ProfileBox>
-            <FeedNum>7</FeedNum>
-            <FeedType>list</FeedType>
-          </ProfileBox>
-          <ProfileBox>
-            <FeedNum>7</FeedNum>
-            <FeedType>찜</FeedType>
-          </ProfileBox>
-          <ProfileBox>
-            <FeedNum>7</FeedNum>
-            <FeedType>팔로워</FeedType>
-          </ProfileBox>
-        </Box>
+        {profileInfo?.map((item: any) => {
+          return (
+            <div>
+              <Mbti show={profileEdit}>{item.mbti}</Mbti>
+              <MbtiInput
+                onChange={e => onChangeMBTI(e.target.value)}
+                show={profileEdit}
+              />
+              <Image src="https://blog.kakaocdn.net/dn/bw32S0/btqz1LaRxRm/xUvL2Kd0ygXyAY1T254un0/img.png"></Image>
+              <Retest onClick={() => navigate(`/mbti`)}>다시 검사하기▷</Retest>
+              <Name show={profileEdit}>{item.nickname}</Name>
+              <NameInput
+                onChange={e => onChangeNickName(e.target.value)}
+                show={profileEdit}
+              />
+              <Edit show={profileEdit} onClick={profileEditShow}>
+                내프로필 편집하기
+              </Edit>
+              <Editsend show={profileEdit} onClick={updateProfile}>
+                편집하기
+              </Editsend>
+              <Box>
+                <ProfileBox>
+                  <FeedNum>{item.feeds_cnt}</FeedNum>
+                  <FeedType>피드</FeedType>
+                </ProfileBox>
+                <ProfileBox>
+                  <FeedNum>{item.routes_cnt}</FeedNum>
+                  <FeedType>To-go</FeedType>
+                </ProfileBox>
+                <ProfileBox>
+                  <FeedNum>{item.picks_cnt}</FeedNum>
+                  <FeedType>찜</FeedType>
+                </ProfileBox>
+                <ProfileBox>
+                  <FeedNum>{item.groups_cnt}</FeedNum>
+                  <FeedType>그룹</FeedType>
+                </ProfileBox>
+              </Box>
+            </div>
+          );
+        })}
       </Profile>
       <FeedContainer>
         <BtnComp>
@@ -98,121 +185,77 @@ function MyPage() {
         </BtnComp>
         <FeedBox>
           <MyFeed show={myFeed}>
-            <InfiniteScroll
-              dataLength={dataSource.length}
-              next={fetchMoreData}
-              hasMore={hasMore}
-              loader={<p>loading...</p>}
-              style={{ overflow: 'none' }}
-            >
-              {dataSource.map((item, index) => {
-                return (
-                  <Feed>
-                    <PostImage src={require('../전주맛집.jpg')} />
-                    <TopGradation></TopGradation>
-                    <Address>전주🏃</Address>
-                    <Icon
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="50"
-                      height="50"
-                      fill="currentColor"
-                      className="bi bi-geo-alt-fill"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                    </Icon>
-                    <PlaceNum>5</PlaceNum>
-                  </Feed>
-                );
-              })}
-            </InfiniteScroll>
+            {myfeed?.map((item: any) => {
+              return (
+                <Feed>
+                  <PostImage
+                    src={process.env.REACT_APP_IMG_SERVER + item.thumbnail}
+                  />
+                  <TopGradation></TopGradation>
+                  <Address>전주🏃</Address>
+                  <FeedDetailModal />
+                </Feed>
+              );
+            })}
           </MyFeed>
           <ToGoList show={toGoList}>
-            <InfiniteScroll
-              dataLength={dataSource.length}
-              next={fetchMoreData}
-              hasMore={hasMore}
-              loader={<p>loading...</p>}
-              style={{ overflow: 'none' }}
-            >
-              {dataSource.map((item, index) => {
-                return (
-                  <Feed>
-                    <PostImage src={require('../전주맛집.jpg')} />
-                    <TopGradation></TopGradation>
-                    <Address>대구🏃</Address>
-                    <Icon
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="50"
-                      height="50"
-                      fill="currentColor"
-                      className="bi bi-geo-alt-fill"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                    </Icon>
-                    <PlaceNum>5</PlaceNum>
-                  </Feed>
-                );
-              })}
-            </InfiniteScroll>
+            {mapList.map((item: any) => {
+              return (
+                <ToGoFeed onClick={() => navigate(`/togolist`)}>
+                  <ToGoAddress>{item.place_group_name}</ToGoAddress>
+                  <Icon
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="50"
+                    height="50"
+                    fill="currentColor"
+                    className="bi bi-geo-alt-fill"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                  </Icon>
+                  <PlaceNum>{JSON.parse(item.place_group).length}</PlaceNum>
+                </ToGoFeed>
+              );
+            })}
           </ToGoList>
           <DibsList show={dibs}>
-            <InfiniteScroll
-              dataLength={dataSource.length}
-              next={fetchMoreData}
-              hasMore={hasMore}
-              loader={<p>loading...</p>}
-              style={{ overflow: 'none' }}
-            >
-              {dataSource.map((item, index) => {
-                return (
-                  <Feed>
-                    <PostImage src={require('../전주맛집.jpg')} />
-                    <TopGradation></TopGradation>
-                    <Address>대전🏃</Address>
-                    <Icon
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="50"
-                      height="50"
-                      fill="currentColor"
-                      className="bi bi-geo-alt-fill"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                    </Icon>
-                    <PlaceNum>5</PlaceNum>
-                  </Feed>
-                );
-              })}
-            </InfiniteScroll>
+            {myPick?.map((item: any) => {
+              return (
+                <Feed>
+                  <PostImage src={require('../전주맛집.jpg')} />
+                  <TopGradation></TopGradation>
+                  <Address>대구</Address>
+                  <Icon
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="50"
+                    height="50"
+                    fill="currentColor"
+                    className="bi bi-geo-alt-fill"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                  </Icon>
+                  <PlaceNum>5</PlaceNum>
+                </Feed>
+              );
+            })}
           </DibsList>
           <MyGroupList show={myGroup}>
-            <InfiniteScroll
-              dataLength={dataSource.length}
-              next={fetchMoreData}
-              hasMore={hasMore}
-              loader={<p>loading...</p>}
-              style={{ overflow: 'none' }}
-            >
-              {dataSource.map((item, index) => {
-                return (
-                  <GroupFeed onClick={() => navigate(`/${index + 1}`)}>
-                    <GroupProfile
-                      src={require('../빡빡이1.png')}
-                      alt="group-img"
-                    />{' '}
-                    <Title>전시에 미친 사람들</Title>
-                    <Description>
-                      전시 카페 정보를 공유하는 그룹 입니다.
-                    </Description>
-                  </GroupFeed>
-                );
-              })}
-            </InfiniteScroll>
+            {myGroupList?.map((item: any, index: any) => {
+              return (
+                <GroupFeed onClick={() => navigate(`/${index + 1}`)}>
+                  <GroupProfile
+                    src={require('../빡빡이1.png')}
+                    alt="group-img"
+                  />{' '}
+                  <Title>{item.group_name}</Title>
+                  <Description>{item.description}</Description>
+                </GroupFeed>
+              );
+            })}
           </MyGroupList>
         </FeedBox>
-        <AddPostBtn>+</AddPostBtn>
+        <FeedModal />
       </FeedContainer>
     </Container>
   );
@@ -314,8 +357,27 @@ const NameInput = styled.input<IAppState>`
   display: ${props => (props.show ? 'flex' : 'none')};
 `;
 
-const Edit = styled.button`
-  display: block;
+const Edit = styled.button<IAppState>`
+  display: ${props => (props.show ? 'none' : 'block')};
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 350px;
+  height: 35px;
+  background-color: #f2f2f2;
+  border: solid #e6e6e6 1px;
+  border-radius: 15px;
+  font-size: 20px;
+  &:hover {
+    background-color: #e6e6e6;
+  }
+  @media (max-width: 390px) {
+    width: 300px;
+  }
+`;
+
+const Editsend = styled.button<IAppState>`
+  display: ${props => (props.show ? 'block' : 'none')};
   margin-top: 20px;
   margin-left: auto;
   margin-right: auto;
@@ -430,63 +492,17 @@ const FeedBox = styled.div`
   }
 `;
 
-//modal
-const Modal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 10;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-//modal content
-const ModalContent = styled.div`
-  width: 60%;
-  height: 70%;
-  background-color: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
-`;
-const ModalCloseBtn = styled.button`
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50px;
-  height: 50px;
-  background-color: #ffffff;
-  border: none;
-  font-size: 30px;
-  font-weight: bold;
-  cursor: pointer;
-  &:hover {
-    color: #d9d9d9;
-  }
-`;
-//modal image
-const ModalImage = styled.img`
-  width: 60%;
-  height: 100%;
-  object-fit: cover;
-  background-color: black;
-  float: left;
-  border-radius: 15px;
-`;
-
 const MyFeed = styled.div<IAppState>`
-  display: ${props => (props.show ? 'flex' : 'none')};
+  display: ${props => (props.show ? 'inline-block' : 'none')};
 `;
 const ToGoList = styled.div<IAppState>`
-  display: ${props => (props.show ? 'flex' : 'none')};
+  display: ${props => (props.show ? 'inline-block' : 'none')};
 `;
 const DibsList = styled.div<IAppState>`
-  display: ${props => (props.show ? 'flex' : 'none')};
+  display: ${props => (props.show ? 'inline-block' : 'none')};
 `;
 const MyGroupList = styled.div<IAppState>`
-  display: ${props => (props.show ? 'flex' : 'none')};
+  display: ${props => (props.show ? 'inline-block' : 'none')};
 `;
 const Address = styled.div`
   display: flex;
@@ -496,6 +512,28 @@ const Address = styled.div`
   margin-left: 340px;
   font-size: 20px;
   width: 150px;
+  height: 40px;
+  background-color: #d9d9d9;
+  border: solid #d9d9d9 2px;
+  border-radius: 15px;
+  position: absolute;
+
+  z-index: 1;
+  @media (max-width: 412px) {
+    margin-top: 20px;
+    margin-left: 190px;
+    width: 140px;
+    height: 30px;
+  }
+`;
+const ToGoAddress = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  margin-left: 140px;
+  font-size: 20px;
+  width: 350px;
   height: 40px;
   background-color: #d9d9d9;
   border: solid #d9d9d9 2px;
@@ -556,6 +594,49 @@ const Feed = styled.div`
     margin-left: 30px;
   }
 `;
+
+const ToGoFeed = styled.div`
+  //css append row
+  display: inline-block;
+  margin-top: 20px;
+  margin-left: 20px;
+  width: 40%;
+  min-width: 500px;
+  height: 100px;
+  background-color: #f3f3f3;
+  border: solid #e6e6e6 1px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
+  //column append
+
+  @media (max-width: 412px) {
+    min-width: 350px;
+    height: 20%;
+    min-height: 350px;
+    margin-left: 30px;
+  }
+`;
+const TogoBox = styled.div`
+  //css append column
+  display: inline-block;
+  margin-top: 20px;
+  margin-left: 20px;
+  width: 40%;
+  min-width: 500px;
+  height: 40%;
+  min-height: 500px;
+  background-color: #f3f3f3;
+  border: solid #e6e6e6 1px;
+  border-radius: 15px;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
+  @media (max-width: 412px) {
+    min-width: 350px;
+    height: 20%;
+    min-height: 350px;
+    margin-left: 30px;
+  }
+`;
+
 const PostImage = styled.img`
   position: absolute;
   z-index: 1;
@@ -632,27 +713,6 @@ const Description = styled.div`
     font-size: 10px;
     margin-top: 70px;
     margin-left: 20px;
-  }
-`;
-
-const AddPostBtn = styled.button`
-  position: fixed;
-  bottom: 5%;
-  right: 15%;
-  background-color: #565656;
-  color: white;
-  border: #565656;
-  width: 60px;
-  height: 60px;
-  border-radius: 50px;
-  font-size: 50px;
-  z-index: 1;
-  &:hover {
-    background-color: #5a4545;
-  }
-  @media (max-width: 412px) {
-    right: 15%;
-    bottom: 15%;
   }
 `;
 

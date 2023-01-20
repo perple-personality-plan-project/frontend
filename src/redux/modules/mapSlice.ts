@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import nonTokenClient from '../../api/noClient';
+import loggedIn from '../../api/loggedIn';
 
 type mapState = {
   MapPost: any;
@@ -52,7 +53,7 @@ export const __RootMaker = createAsyncThunk<RootMaker, {}>(
   async (payload, thunkAPI) => {
     try {
       console.log(payload);
-      const { data } = await nonTokenClient.post(`api/map`, payload);
+      const { data } = await loggedIn.post(`api/map`, payload);
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
       thunkAPI.rejectWithValue(e);

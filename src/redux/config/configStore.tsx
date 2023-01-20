@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import groupSlice from '../modules/groupSlice';
 import postSlice from '../modules/postSlice';
 import mapSlice from '../modules/mapSlice';
+import mySlice from '../modules/mySlice';
 
 export const store = configureStore({
   reducer: {
     group: groupSlice,
     map: mapSlice,
     post: postSlice,
+    mypage: mySlice,
     // comments: commentsReducer,
     // users: usersReducer,
   },
