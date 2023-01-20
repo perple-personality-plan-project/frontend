@@ -14,13 +14,19 @@ import {
 } from '../../components/hooks/typescripthook/hooks';
 import { __groupFeedDetail } from '../../redux/modules/groupSlice';
 import nonTokenClient from '../../api/noClient';
+import loggedIn from '../../api/loggedIn';
 
 interface feedCardPreset {
   feed: groupFeedPreset;
   paramId: object;
+  groupSubscribe: object;
 }
 
-const GroupDetailCard: React.FC<feedCardPreset> = ({ feed, paramId }) => {
+const GroupDetailCard: React.FC<feedCardPreset> = ({
+  feed,
+  paramId,
+  groupSubscribe,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useAppDispatch();
   const {
@@ -29,6 +35,8 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({ feed, paramId }) => {
     feed_id,
     group_user_id,
     location,
+    mbti,
+    nickname,
     thumbnail,
     updated_at,
   } = feed;
@@ -45,18 +53,23 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({ feed, paramId }) => {
   //async/await로 동기처리 해줄 수 있음.
   //await가 끝난 후 다음 줄 실행함.
   const postComment = async () => {
-    await nonTokenClient.post(
-      `api/group-comment/group/${groupId}/feed/${feed_id}`,
-      {
-        comment,
-      },
-    );
-    dispatch(__groupFeedDetail({ groupId: groupId, feedId: feed_id }));
-    setComment('');
+    if (groupSubscribe) {
+      await loggedIn.post(
+        `api/group-comment/group/${groupId}/feed/${feed_id}`,
+        {
+          comment,
+        },
+      );
+      dispatch(__groupFeedDetail({ groupId: groupId, feedId: feed_id }));
+      setComment('');
+    } else {
+      alert('그룹을 구독해주세요!');
+      setComment('');
+    }
   };
 
   const deleteComment = async (commentId: string | number) => {
-    await nonTokenClient.delete(
+    await loggedIn.delete(
       `api/group-comment/group/${groupId}/feed/${feed_id}/${commentId}`,
     );
     dispatch(__groupFeedDetail({ groupId: groupId, feedId: feed_id }));
@@ -77,7 +90,8 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({ feed, paramId }) => {
               src={require('../../빡빡이1.png')}
               alt="group-img"
             />
-            <h3>{location}</h3>
+            <h3>{nickname}</h3>
+            <p>{mbti.toUpperCase()}</p>
           </div>
           <div className="post-header-route">{location}</div>
         </div>
@@ -119,14 +133,15 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({ feed, paramId }) => {
                 </SwiperSlide>
               );
             })}
-            <img src={thumbnail} alt="swiper-img" />
+            {/* <img src={thumbnail} alt="swiper-img" /> */}
           </Swiper>
           <StDetailInfo>
             <StDetailDesc>
               <img src={require('../../빡빡이1.png')} alt="detail-img" />
               <div className="detail-info">
                 <div className="detail-top" style={{ display: 'flex' }}>
-                  <h2>{location}</h2>
+                  <h2>{nickname}</h2>
+                  <p>{mbti.toUpperCase()}</p>
                 </div>
                 <p>{description}</p>
                 <div className="detail-bottom">
@@ -275,6 +290,7 @@ const StDetailDesc = styled.div`
       h2 {
         font-size: 15px;
         margin: 0 10px 0 0;
+        color: #555555;
       }
 
       p {
@@ -284,7 +300,9 @@ const StDetailDesc = styled.div`
         border-radius: 20px;
         width: 60px;
         height: 20px;
-        background-color: white;
+        background-color: #d9d9d9;
+        color: #9e9e9e;
+        letter-spacing: 1px;
       }
     }
 
@@ -292,6 +310,11 @@ const StDetailDesc = styled.div`
       display: flex;
       justify-content: space-between;
       margin-top: 30px;
+
+      p {
+        font-size: 13px;
+        color: #9e9e9e;
+      }
 
       .detail-btn {
         display: flex;
@@ -463,6 +486,22 @@ const StGroupPost = styled.div`
           margin: 0;
           font-size: 15px;
           margin-right: 10px;
+        }
+
+        p {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 30px;
+          height: 20px;
+          margin: 0;
+          /* background-color: white; */
+          border: 1px solid white;
+          color: white;
+          /* font-weight: bold; */
+          letter-spacing: 1px;
+          border-radius: 20px;
+          padding: 1px 10px;
         }
 
         div {

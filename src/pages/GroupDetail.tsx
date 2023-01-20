@@ -13,16 +13,16 @@ import {
 } from '../redux/modules/groupSlice';
 import GroupDetailCard from './subpages/GroupDetailCard';
 import { groupPreset } from './GroupPage';
-import nonTokenClient from '../api/noClient';
 import GroupDetailEmptyShow from './subpages/GroupDetailEmptyShow';
+import loggedIn from '../api/loggedIn';
 
-export interface groupPostPreset {
-  locationId: number;
-  locationName: string;
-  locationRoute: string;
-  postDetail: string;
-  thumbnail: string[];
-  index: number;
+export interface subscribeInfoPreset {
+  admin_flag?: number;
+  created_at?: string;
+  group_id?: number;
+  group_user_id?: number;
+  updated_at?: string;
+  user_id?: number;
 }
 
 export interface groupFeedPreset {
@@ -33,6 +33,8 @@ export interface groupFeedPreset {
   location: null;
   thumbnail: string;
   updated_at: string;
+  mbti: string;
+  nickname: string;
 }
 
 const GroupDetail = () => {
@@ -42,10 +44,14 @@ const GroupDetail = () => {
   const { groupRank } = useAppSelector(store => store.group);
   const { groupSubscribe } = useAppSelector(store => store.group);
   const { groupFeedList } = useAppSelector(store => store.group);
-  const [toggle, setToggle] = useState(false);
   const filteredByPage: any = groupRank.filter((group: groupPreset) =>
     paramId.id ? group.group_id === +paramId.id : null,
   );
+
+  // console.log(groupSubscribe.admin_flag);
+  // const groupSubscribeCheck: subscribeInfoPreset = groupSubscribe;
+
+  // console.log(groupSubscribeCheck.group_id);
 
   //페이지 시작할 때 그룹 정보와 그룹 게시글 정보들을 가져옴
   useEffect(() => {
@@ -59,7 +65,7 @@ const GroupDetail = () => {
   }, []);
 
   const onClickGroupSubscribe = async () => {
-    await nonTokenClient.put(`api/group/${paramId.id}`); //구독 or 구독 취소 => 나중에 thunk에 넣기
+    await loggedIn.put(`api/group/${paramId.id}`); //구독 or 구독 취소 => 나중에 thunk에 넣기
     await dispatch(__groupSubscribeCheck({ id: paramId.id })); //구독 확인
     await dispatch(__groupGetRank()); //여기서 그룹 정보 들고옴
     await dispatch(__groupFeedList({ id: paramId.id })); //그룹 게시글 들고옴
@@ -74,7 +80,6 @@ const GroupDetail = () => {
         <StMainContainer>
           <StGroupInfo>
             <div className="group-info">
-              {/* <img src={require('../빡빡이1.png')} alt="group-img" /> */}
               <img
                 src={
                   process.env.REACT_APP_IMG_SERVER +
@@ -92,8 +97,8 @@ const GroupDetail = () => {
             </div>
             <div className="group-tag-container">
               {filteredByPage[0]?.hashtags
-                .split(',')
-                .map((tag: string, index: number) => {
+                ?.split(',')
+                ?.map((tag: string, index: number) => {
                   return (
                     <div key={index} className="group-tag">
                       {tag}
@@ -108,20 +113,22 @@ const GroupDetail = () => {
               <p>{filteredByPage[0]?.description}</p>
             </div>
             {groupSubscribe ? (
-              <StSubscribeOn>
-                <button
-                  onClick={onClickGroupSubscribe}
-                  className="group-subscribe-on"
-                >
-                  구독중
-                </button>
-                <button
-                  onClick={onClickGroupSubscribe}
-                  className="group-subscribe-cancel"
-                >
-                  구독취소
-                </button>
-              </StSubscribeOn>
+              groupSubscribe.admin_flag ? null : (
+                <StSubscribeOn>
+                  <button
+                    onClick={onClickGroupSubscribe}
+                    className="group-subscribe-on"
+                  >
+                    구독중
+                  </button>
+                  <button
+                    onClick={onClickGroupSubscribe}
+                    className="group-subscribe-cancel"
+                  >
+                    구독취소
+                  </button>
+                </StSubscribeOn>
+              )
             ) : (
               <button
                 onClick={onClickGroupSubscribe}
@@ -141,6 +148,7 @@ const GroupDetail = () => {
                   key={feed.feed_id}
                   feed={feed}
                   paramId={paramId}
+                  groupSubscribe={groupSubscribe}
                 />
               ))
             ) : (
@@ -204,7 +212,7 @@ const StBgImages = styled.div`
 
 const StMainContainer = styled.div`
   width: 460px;
-  min-width: 400px;
+  min-width: 460px;
 
   @media screen and (max-width: 500px) {
     width: 100%;

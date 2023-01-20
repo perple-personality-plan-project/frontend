@@ -1,8 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useAppSelector } from '../../components/hooks/typescripthook/hooks';
 
 const GroupDetailEmptyShow = () => {
-  return <StContainer>구독 후 게시글을 작성해주세요!</StContainer>;
+  const { groupSubscribe } = useAppSelector(store => store.group);
+
+  console.log(groupSubscribe);
+  return (
+    <div>
+      {groupSubscribe ? (
+        <StContainer>게시글을 작성해주세요!</StContainer>
+      ) : (
+        <StContainer>구독 후 게시글을 작성해주세요!</StContainer>
+      )}
+    </div>
+  );
 };
 
 export default GroupDetailEmptyShow;

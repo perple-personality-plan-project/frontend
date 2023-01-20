@@ -10,6 +10,7 @@ import 'swiper/css/navigation';
 import nonTokenClient from '../../api/noClient';
 import { useAppDispatch } from '../hooks/typescripthook/hooks';
 import { __groupFeedList } from '../../redux/modules/groupSlice';
+import loggedIn from '../../api/loggedIn';
 
 interface Props {
   paramId: any;
@@ -58,7 +59,7 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
   };
 
   const fetchData = async (formData: any) => {
-    await nonTokenClient.post(`api/group/${paramId.id}/feed`, formData);
+    await loggedIn.post(`api/group/${paramId.id}/feed`, formData);
     await dispatch(__groupFeedList({ id: paramId.id }));
   };
 
