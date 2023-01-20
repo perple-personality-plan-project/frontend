@@ -8,6 +8,8 @@ import {
 } from '../components/hooks/typescripthook/hooks';
 import { __groupGetDate, __groupGetRank } from '../redux/modules/groupSlice';
 import GroupCard from './subpages/GroupCard';
+import GroupEmptyShow from './subpages/GroupEmptyShow';
+import nonTokenClient from '../api/noClient';
 
 export interface groupPreset {
   created_at: string;
@@ -30,6 +32,7 @@ const GroupPage = () => {
   const [filterGroup, setFilterGroup] = useState('인기순');
 
   const [groupByfilter, setGroupByfilter] = useState([]);
+  const [tags, setTags] = useState<{}[]>([]);
 
   useEffect(() => {
     if (filterGroup === '인기순') {
@@ -48,6 +51,15 @@ const GroupPage = () => {
     setGroupByfilter(groupDate);
   }, [groupDate]);
 
+  const fetchData = async () => {
+    const { data } = await nonTokenClient.get(`api/group/hashtag`);
+    setTags([...data.data]);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <StContainer>
       <StInputContainer>
@@ -55,56 +67,50 @@ const GroupPage = () => {
       </StInputContainer>
       <StRecommend>검색이 어려우시다고요? 추천해 드릴게요!</StRecommend>
       <StRecommendLists>
-        <StRecommendList>카페</StRecommendList>
-        <StRecommendList>카페</StRecommendList>
-        <StRecommendList>카페</StRecommendList>
-        <StRecommendList>카페</StRecommendList>
-        <StRecommendList>카페</StRecommendList>
-        <StRecommendList>카페</StRecommendList>
-        <StRecommendList>카페</StRecommendList>
-        <StRecommendList>카페</StRecommendList>
-        <StRecommendList>카페</StRecommendList>
-        <StRecommendList>카페</StRecommendList>
-        <StRecommendList>카페</StRecommendList>
-        <StRecommendList>카페</StRecommendList>
+        {tags.map((tag: any) => (
+          <StRecommendList>{tag.title}</StRecommendList>
+        ))}
       </StRecommendLists>
 
-      <StGroups>
-        {toggle ? (
-          <StCategoryGroup>
-            <StCategoryHead onClick={() => setToggle(prev => !prev)}>
-              {filterGroup}
-            </StCategoryHead>
-            <StCategory
-              onClick={() => {
-                setToggle(prev => !prev);
-                setFilterGroup('인기순');
-              }}
+      {groupByfilter.length !== 0 ? (
+        <StGroups>
+          {toggle ? (
+            <StCategoryGroup>
+              <StCategoryHead onClick={() => setToggle(prev => !prev)}>
+                {filterGroup}
+              </StCategoryHead>
+              <StCategory
+                onClick={() => {
+                  setToggle(prev => !prev);
+                  setFilterGroup('인기순');
+                }}
+              >
+                인기순
+              </StCategory>
+              <StCategory
+                onClick={() => {
+                  setToggle(prev => !prev);
+                  setFilterGroup('날짜순');
+                }}
+              >
+                날짜순
+              </StCategory>
+            </StCategoryGroup>
+          ) : (
+            <StCategoryGroup
+              style={{ display: 'flex', flexDirection: 'column' }}
             >
-              인기순
-            </StCategory>
-            <StCategory
-              onClick={() => {
-                setToggle(prev => !prev);
-                setFilterGroup('날짜순');
-              }}
-            >
-              날짜순
-            </StCategory>
-          </StCategoryGroup>
-        ) : (
-          <StCategoryGroup style={{ display: 'flex', flexDirection: 'column' }}>
-            <StCategoryHead onClick={() => setToggle(prev => !prev)}>
-              {filterGroup}
-            </StCategoryHead>
-          </StCategoryGroup>
-        )}
+              <StCategoryHead onClick={() => setToggle(prev => !prev)}>
+                {filterGroup}
+              </StCategoryHead>
+            </StCategoryGroup>
+          )}
 
-        {groupByfilter.map((group: groupPreset) => {
-          return <GroupCard key={group.group_id} group={group} />;
-        })}
+          {groupByfilter.map((group: groupPreset) => {
+            return <GroupCard key={group.group_id} group={group} />;
+          })}
 
-        {/* {groupRank.map((group: groupPreset) => {
+          {/* {groupRank.map((group: groupPreset) => {
           if (filterGroup === '인기순') {
             return <GroupCard key={group.group_id} group={group} />;
           }
@@ -115,10 +121,14 @@ const GroupPage = () => {
             return <GroupCard key={group.group_id} group={group} />;
           }
         })} */}
-      </StGroups>
+        </StGroups>
+      ) : (
+        <GroupEmptyShow />
+      )}
+
       <GroupCreateModal
         setGroupByfilter={setGroupByfilter}
-        groupByfilter={groupByfilter}
+        // groupByfilter={groupByfilter}
         filterGroup={filterGroup}
       />
     </StContainer>

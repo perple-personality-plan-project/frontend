@@ -10,6 +10,8 @@ import { useAppDispatch, useAppSelector } from '../hooks/typescripthook/hooks';
 import { __groupGetDate, __groupGetRank } from '../../redux/modules/groupSlice';
 import { useNavigate } from 'react-router';
 import nonTokenClient from '../../api/noClient';
+import client from '../../api/client';
+import loggedIn from '../../api/loggedIn';
 
 interface tagPreset {
   id: string;
@@ -18,7 +20,7 @@ interface tagPreset {
 
 interface Props {
   setGroupByfilter: React.Dispatch<any>;
-  groupByfilter: groupPreset[];
+  // groupByfilter: groupPreset[];
   filterGroup: string;
 }
 
@@ -106,8 +108,14 @@ const GroupCreateModal: React.FC<Props> = ({
       formData.append('thumbnail', thumbnail);
       formData.append('description', groupInfos.description);
       formData.append('hashtag', tagSetJSON);
-      await nonTokenClient.post(`api/group`, formData);
-      navigate('/group');
+      await loggedIn.post(`api/group`, formData);
+      if (filterGroup === '인기순') {
+        dispatch(__groupGetRank());
+      }
+      if (filterGroup === '날짜순') {
+        dispatch(__groupGetDate());
+      }
+      // navigate('/group');
     } catch (e) {
       console.log(e);
     }
@@ -125,9 +133,13 @@ const GroupCreateModal: React.FC<Props> = ({
     }
   };
 
+  const accessToken = localStorage.getItem('accessToken');
+
   return (
     <div>
-      <StModalIcon onClick={() => setIsOpen(true)}>+</StModalIcon>
+      {accessToken !== null ? (
+        <StModalIcon onClick={() => setIsOpen(true)}>+</StModalIcon>
+      ) : null}
 
       <GroupModalTemplate closeModal={closeModal} open={isOpen}>
         <StGroupContainer>
