@@ -23,8 +23,10 @@ const MainPage = () => {
   const paramId = useParams();
 
   const dispatch = useAppDispatch();
+
+  const [mbtiCheck, setMbtiCheck] = useState('All');
+
   const { mainFeedList } = useAppSelector(store => store.post);
-  console.log(mainFeedList);
   const [mainPosts, setMainPosts] = useState<mainPostPreset[]>([]);
 
   // useEffect(() => {
@@ -36,7 +38,7 @@ const MainPage = () => {
       <Backgr>
         <TitleWrap>
           <div className="gathered">
-            <MbtiTag>ENFP</MbtiTag>
+            <MbtiTag>{mbtiCheck}</MbtiTag>
             <MbtiTitle>뭐하고 놀까?</MbtiTitle>
             <div style={{ fontSize: '15px', padding: '20px 0 0 20px' }}>
               MBTI 검사하고 나에게 맞는 HOT PLACE 찾자!
@@ -53,9 +55,8 @@ const MainPage = () => {
               v MBTI 검사하기
             </div> */}
           </div>
-          <div>
-            <MainSlider />
-          </div>
+
+          <MainSlider setMbtiCheck={setMbtiCheck} />
         </TitleWrap>
       </Backgr>
       <PostListContainer>
