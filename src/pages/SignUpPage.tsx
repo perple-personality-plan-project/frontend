@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 import { useAppDispatch } from '../components/hooks/typescripthook/hooks';
@@ -17,33 +17,110 @@ const SignUpPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [LoginId, setLoginId] = useState('');
+  const [IdMessage, setIdMessage] = useState('');
   const [NickName, setNickName] = useState('');
+  const [nickNameMessage, setNickNameMessage] = useState('');
   const [Password, setPassword] = useState('');
+  const [PwMessage, setPwMessage] = useState('');
   const [ConfirmPassword, setConfirmPassword] = useState('');
+  const [PwConfirmMessage, setPwConfirmMessage] = useState('');
   const [Mbti, setMbti] = useState('');
+  const [mbtiMessage, setMbtiMessage] = useState('');
 
   const onLoginIdHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginId(e.currentTarget.value);
+    const RegExpId = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,10}$/;
+    if (!RegExpId.test(e.target.value)) {
+      setIdMessage('아이디는 영문자 + 숫자를 포함하여 5-10자를 포함해주세요!');
+    } else {
+      setIdMessage('성공!');
+      // setIdMessage('✔');
+    }
   };
+
   const onNickNameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickName(e.currentTarget.value);
+    const RegExpNick = /^[가-힣a-zA-Z]{4,8}$/;
+    if (!RegExpNick.test(e.target.value)) {
+      setNickNameMessage('닉네임은 한글 + 영어 4-8자를 포함해주세요!');
+    } else {
+      setNickNameMessage('성공!');
+      // setIdMessage('✔');
+    }
   };
 
   const onPasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.currentTarget.value);
+    const RegExpPw = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%]{4,10}$/;
+    if (!RegExpPw.test(e.target.value)) {
+      setPwMessage(
+        '비밀번호는 영문자 + 숫자 + 특수문자(!,@,#,$,%)를 포함해주세요!',
+      );
+    } else {
+      setPwMessage('성공!');
+      // setIdMessage('✔');
+    }
   };
-  const onConfirmPasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setConfirmPassword(e.currentTarget.value);
-  };
+
+  useEffect(() => {
+    if (Password !== ConfirmPassword) {
+      // setPwMessage()
+      setPwConfirmMessage('비번 다름 ㅋ');
+    } else {
+      setPwConfirmMessage('비번 같음 ㅋ');
+    }
+  }, [ConfirmPassword, Password]);
+
   const onMbtiHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMbti(e.currentTarget.value);
+    const mbtiList = [
+      'ENFJ',
+      'ENTJ',
+      'ENFP',
+      'ENTJ',
+      'ESFP',
+      'ESFJ',
+      'ESTP',
+      'ESTJ',
+      'INFP',
+      'INFJ',
+      'INTP',
+      'ISTP',
+      'ISFP',
+      'ISFJ',
+      'ISTJ',
+      'INTJ',
+    ];
+
+    if (!mbtiList.includes(e.target.value.toUpperCase())) {
+      setMbtiMessage('mbti 제대로 입력해쥬세용');
+    } else {
+      setMbtiMessage('성공!');
+      // setIdMessage('✔');
+    }
   };
-  const signUp = (payload: any) => {
-    nonTokenClient.post('api/user/signup', payload);
+
+  const signUp = async (payload: any) => {
+    try {
+      await nonTokenClient.post('api/user/signup', payload);
+      alert('회원 가입 성공!');
+      navigate('/signin');
+    } catch (error: any) {
+      console.log(error);
+      if (error.response.status === 409) {
+        alert('중복되는 아이디 또는 닉네임이 존재합니다');
+      } else if (error.response.status === 400) {
+        alert('닉네임은 한글 + 영어 4-8자를 포함해주세요!!');
+      }
+    }
   };
 
   const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (Password !== ConfirmPassword) {
+      alert('비밀번호와 비밀번호 확인이 같지 않습니다.');
+    }
+
     let body = {
       login_id: LoginId,
       nickname: NickName,
@@ -52,12 +129,7 @@ const SignUpPage = () => {
       mbti: Mbti,
       provider: 'local',
     };
-
     signUp(body);
-
-    if (Password !== ConfirmPassword) {
-      return alert('비밀번호와 비밀번호 확인이 같지 않습니다.');
-    }
   };
 
   return (
@@ -66,71 +138,82 @@ const SignUpPage = () => {
         <div className="title">회원 가입 중 이네요!</div>
       </Title>
       <FormWrap onSubmit={onSubmitHandler}>
-        <Label>아이디</Label>
-        <Input
-          pattern="^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,10}$"
-          required
-          type="text"
-          value={LoginId}
-          onChange={onLoginIdHandler}
-          placeholder="아이디"
-        />
-        <Label>닉네임</Label>
-        <Input
-          pattern="^[가-힣a-zA-Z]{4,8}$"
-          required
-          type="text"
-          value={NickName}
-          onChange={onNickNameHandler}
-          placeholder="닉네임"
-        />
-        <Label>비밀번호</Label>
-        <Input
-          pattern="^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%]{4,10}$"
-          required
-          type="password"
-          value={Password}
-          onChange={onPasswordHandler}
-          placeholder="비밀번호"
-        />
-        <Label>비밀번호 확인</Label>
-        <Input
-          pattern="^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%]{4,10}$"
-          required
-          type="password"
-          value={ConfirmPassword}
-          onChange={onConfirmPasswordHandler}
-          placeholder="비밀번호 확인"
-        />
-        <Label>MBTI </Label>
-        <div>
+        <div className="form-input">
+          <Label>아이디</Label>
           <Input
+            // pattern="^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,10}$"
+            // title="5-10자 사이만 가능 ㅋ"
             required
             type="text"
-            value={Mbti}
-            onChange={onMbtiHandler}
-            placeholder="MBTI를 적어주세요"
-            style={{ width: '366px', height: '18px' }}
+            value={LoginId}
+            onChange={onLoginIdHandler}
+            placeholder="아이디"
           />
-          <Button
-            style={{
-              height: '40px',
-              borderRadius: '10px',
-              color: 'white',
-              marginLeft: '10px',
-            }}
-            onClick={() => navigate('/mbti')}
-          >
-            검사하러가기✔
-          </Button>
+          {LoginId ? <p className="validation-text">{IdMessage}</p> : null}
+        </div>
+        <div className="form-input">
+          <Label>닉네임</Label>
+          <Input
+            // pattern="^[가-힣a-zA-Z]{4,8}$"
+            required
+            type="text"
+            value={NickName}
+            onChange={onNickNameHandler}
+            placeholder="닉네임"
+          />
+          {NickName ? (
+            <p className="validation-text">{nickNameMessage}</p>
+          ) : null}
+        </div>
+        <div className="form-input">
+          <Label>비밀번호</Label>
+          <Input
+            // pattern="^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%]{4,10}$"
+            required
+            type="password"
+            value={Password}
+            onChange={onPasswordHandler}
+            placeholder="비밀번호"
+          />
+          {Password ? <p className="validation-text">{PwMessage}</p> : null}
+        </div>
+        <div className="form-input">
+          <Label>비밀번호 확인</Label>
+          <Input
+            // pattern="^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%]{4,10}$"
+            required
+            type="password"
+            value={ConfirmPassword}
+            onChange={e => setConfirmPassword(e.currentTarget.value)}
+            placeholder="비밀번호 확인"
+          />
+          {ConfirmPassword ? (
+            <p className="validation-text">{PwConfirmMessage}</p>
+          ) : null}
+        </div>
+        <div
+          className="form-input"
+          style={{
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <div>
+            <Label>MBTI </Label>
+            <Input
+              required
+              type="text"
+              value={Mbti}
+              onChange={onMbtiHandler}
+              placeholder="MBTI를 적어주세요"
+            />
+            {Mbti ? <p className="validation-text">{mbtiMessage}</p> : null}
+          </div>
+          <StButton onClick={() => navigate('/mbti')}>검사하러가기✔</StButton>
         </div>
         <ButtonWrap>
-          <Button
-            style={{ width: '398px', height: '40px', marginTop: '7%' }}
-            onClick={() => navigate(`/signin`)}
-          >
-            모두 작성했어요!
-          </Button>
+          <Button>모두 작성했어요!</Button>
         </ButtonWrap>
       </FormWrap>
     </Wrap>
@@ -142,20 +225,21 @@ const Wrap = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 8%;
+  height: 100vh;
 
   @media screen and (max-width: 412px) {
-    display: flex;
+    /* display: flex; */
     /* text-align: center; */
-    flex-direction: column;
-    align-items: center;
-    margin: auto;
+    /* flex-direction: column; */
+    /* align-items: center; */
+    /* margin: auto; */
   }
 `;
 
 const Title = styled.div`
   font-size: 40px;
   font-weight: 500;
+  margin-bottom: 30px;
   .title {
     font-size: 20px;
     font-weight: 100;
@@ -165,19 +249,31 @@ const Title = styled.div`
 `;
 
 const FormWrap = styled.form`
-  width: fit-content;
+  width: 450px;
   height: fit-content;
   border-radius: 18px;
   margin: 10px;
-  padding: 0px 50px 90px 140px;
+  /* padding: 0px 50px 90px 140px; */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
-  @media screen and (max-width: 412px) {
-    /* text-align: center; */
-    display: flex;
-    margin-right: 23%;
+
+  .form-input {
+    margin-bottom: 15px;
+  }
+
+  .validation-text {
+    font-size: 12px;
+    color: red;
+    margin: 5px 0 0 5px;
+  }
+
+  @media screen and (max-width: 500px) {
+    width: 90%;
+    /* display: flex; */
+    /* margin: 0 5px; */
+    /* margin-right: 23%; */
   }
 `;
 
@@ -188,43 +284,78 @@ const Label = styled.label`
   line-height: 163.15%;
   font-weight: 500;
   color: #484848;
-  margin: 10px 0 0 5px;
+  margin: 0 0 7px 0;
 `;
 
 const Input = styled.input`
-  width: 366px;
+  /* width: 366px; */
+  /* box-sizing: border-box; */
+  width: 100%;
   height: 20px;
   border: none;
   background-color: #eeebeb;
   border-radius: 50px;
-  padding: 11px 16px;
-  min-width: 120px;
+  padding: 11px 0;
+  /* min-width: 120px; */
   font-size: 16px;
+  text-indent: 30px;
 `;
 
 const ButtonWrap = styled.div`
-  padding-top: 20px;
+  /* padding-top: 20px; */
   display: flex;
   flex-direction: column;
   width: '20vw';
   height: '10vh';
   justify-content: space-between;
-  @media screen and (max-width: 412px) {
-    .gathered {
-      display: flex;
-      flex-direction: row;
-    }
+  @media screen and (max-width: 700px) {
+    display: flex;
+    flex-direction: row;
+  }
+`;
+
+const StButton = styled.button`
+  background-color: white;
+  padding: 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  color: #644eee;
+  border: 1px solid #644eee;
+  border-radius: 10px;
+  position: absolute;
+  top: 32px;
+  right: -125px;
+  /* transform: translate(0, 50%); */
+
+  :hover {
+    background-color: #644eee;
+    color: white;
+    /* opacity: 0.75; */
+  }
+
+  @media screen and (max-width: 700px) {
+    position: initial;
+    margin-top: 10px;
+    width: 150px;
   }
 `;
 
 const Button = styled.button`
   cursor: pointer;
-  background-color: #bcbaba;
+  color: white;
+  background-color: #644eee;
   border-radius: 50px;
   border: none;
-  :hover {
-    opacity: 0.75;
+  height: 40px;
+  margin-top: 20px;
+  width: 100%;
+
+  @media screen and (max-width: 700px) {
+    margin-top: 10px;
   }
+  /* :hover {
+    opacity: 0.75;
+  } */
 `;
 
 export default SignUpPage;

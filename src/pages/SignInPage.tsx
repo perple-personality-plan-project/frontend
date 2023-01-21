@@ -1,9 +1,6 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { json } from 'stream/consumers';
 import styled from 'styled-components';
-import client from '../api/client';
 import nonTokenClient from '../api/noClient';
 
 const SignInPage = () => {
@@ -25,17 +22,13 @@ const SignInPage = () => {
         password: Password,
       });
 
-      // localStorage.setItem(
-      //   'user',
-      //   JSON.stringify(data.data, ['accessToken', 'refreshToken']),
-      // );
       localStorage.setItem('accessToken', data.data.accessToken);
       localStorage.setItem('refreshToken', data.data.refreshToken);
 
       alert('로그인 성공');
       navigate('/');
-    } catch (error) {
-      alert('아이디와 비밀번호를 다시 확인해주세요');
+    } catch (error: any) {
+      alert(error.response.data.message);
     }
   };
 
@@ -46,7 +39,6 @@ const SignInPage = () => {
         <div className="title">서비스 이용을 위한 로그인을 해주세요!</div>
       </Title>
       <FormWrap>
-        <Label></Label>
         <Input
           width="366px"
           height="20px"
@@ -54,7 +46,7 @@ const SignInPage = () => {
           onChange={onLoginIdHandler}
           required
         />
-        <Label></Label>
+
         <Input
           width="366px"
           height="20px"
@@ -65,23 +57,19 @@ const SignInPage = () => {
         />
         <ButtonWrap>
           <div className="gathered">
-            <Button
-              type="button"
-              style={{ width: '200px', height: '40px' }}
-              onClick={login}
-            >
+            <ButtonLogin className="login" type="button" onClick={login}>
               로그인
-            </Button>
-            <Button
-              style={{ width: '200px', height: '40px' }}
+            </ButtonLogin>
+            <ButtonSignUp
+              className="signup"
               onClick={() => navigate(`/signup`)}
             >
               회원가입
-            </Button>
+            </ButtonSignUp>
           </div>
-          <Button style={{ height: '40px', marginTop: '15%' }}>
+          <ButtonKakao style={{ height: '40px', marginTop: '15%' }}>
             카카오로 로그인하기
-          </Button>
+          </ButtonKakao>
         </ButtonWrap>
       </FormWrap>
     </Wrap>
@@ -89,17 +77,20 @@ const SignInPage = () => {
 };
 
 const Wrap = styled.div`
+  width: 450px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 10%;
+  height: 100vh;
+  text-align: center;
+
+  margin: 0 auto;
   @media screen and (max-width: 412px) {
     display: flex;
     text-align: center;
     flex-direction: column;
     align-items: center;
-    margin-top: 10%;
   }
 `;
 
@@ -109,50 +100,48 @@ const Title = styled.span`
   .title {
     font-size: 20px;
     font-weight: 300;
-    margin-top: 10%;
+    margin: 40px 0 30px 0;
     color: gray;
   }
 `;
 
 const FormWrap = styled.form`
-  width: fit-content;
+  width: 90%;
   height: fit-content;
-  /* border: 1px solid #ffffff; */
   border-radius: 18px;
-  /* box-shadow: 1px 1px 3px 0px; */
   margin: 10px;
-  padding: 0px 50px 90px 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
 `;
 
-const Label = styled.label`
-  display: block;
-  font-size: 18px;
-  line-height: 163.15%;
-  font-weight: 500;
-  color: grey;
-  margin: 10px 0 0 5px;
-`;
-
 const Input = styled.input`
+  outline: 0;
+  text-indent: 10px;
   border: none;
-  background-color: #c7c6c6;
+  background-color: #f5f5f5;
   border-radius: 50px;
   padding: 11px 16px;
   min-width: 120px;
   font-size: 16px;
+  margin-bottom: 20px;
 `;
 
 const ButtonWrap = styled.div`
-  padding-top: 20px;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
   width: '20vw';
   height: '10vh';
-  justify-content: space-between;
+
+  .gathered {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    gap: 15px;
+  }
+
   @media screen and (max-width: 412px) {
     .gathered {
       display: flex;
@@ -161,14 +150,47 @@ const ButtonWrap = styled.div`
   }
 `;
 
-const Button = styled.button`
+const ButtonLogin = styled.button`
+  /* width: 215px; */
+  width: 100%;
+  height: 40px;
   cursor: pointer;
 
   border-radius: 50px;
   border: none;
-  :hover {
-    opacity: 0.75;
+
+  background-color: #c4c9f6;
+  color: white;
+
+  &:hover {
+    background-color: #644eee;
   }
+`;
+
+const ButtonSignUp = styled.button`
+  /* width: 215px; */
+  width: 100%;
+  height: 40px;
+  cursor: pointer;
+
+  border-radius: 50px;
+  border: none;
+
+  background-color: #644eee;
+  color: white;
+`;
+
+const ButtonKakao = styled.button`
+  /* width: 215px; */
+  width: 100%;
+  height: 40px;
+  cursor: pointer;
+
+  border-radius: 50px;
+  border: none;
+
+  background-color: #fedf3c;
+  color: black;
 `;
 
 export default SignInPage;
