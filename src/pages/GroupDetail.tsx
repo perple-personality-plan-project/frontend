@@ -48,6 +48,8 @@ const GroupDetail = () => {
     paramId.id ? group.group_id === +paramId.id : null,
   );
 
+  const accessToken = localStorage.getItem('accessToken');
+
   // console.log(groupSubscribe.admin_flag);
   // const groupSubscribeCheck: subscribeInfoPreset = groupSubscribe;
 
@@ -65,10 +67,14 @@ const GroupDetail = () => {
   }, []);
 
   const onClickGroupSubscribe = async () => {
-    await loggedIn.put(`api/group/${paramId.id}`); //구독 or 구독 취소 => 나중에 thunk에 넣기
-    await dispatch(__groupSubscribeCheck({ id: paramId.id })); //구독 확인
-    await dispatch(__groupGetRank()); //여기서 그룹 정보 들고옴
-    await dispatch(__groupFeedList({ id: paramId.id })); //그룹 게시글 들고옴
+    if (accessToken !== null) {
+      await loggedIn.put(`api/group/${paramId.id}`); //구독 or 구독 취소 => 나중에 thunk에 넣기
+      await dispatch(__groupSubscribeCheck({ id: paramId.id })); //구독 확인
+      await dispatch(__groupGetRank()); //여기서 그룹 정보 들고옴
+      await dispatch(__groupFeedList({ id: paramId.id })); //그룹 게시글 들고옴
+    } else {
+      alert('로그인 후 구독해주세요!');
+    }
   };
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ImagePreviewMultiHook from '../hooks/ImagePreviewMultiHook';
 import styled from 'styled-components';
 import GroupModalTemplate from './GroupModalTemplate';
@@ -7,7 +7,6 @@ import { Navigation } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-import nonTokenClient from '../../api/noClient';
 import { useAppDispatch } from '../hooks/typescripthook/hooks';
 import { __groupFeedList } from '../../redux/modules/groupSlice';
 import loggedIn from '../../api/loggedIn';
@@ -43,6 +42,8 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
   const closeModal = () => {
     setIsOpen(false);
     setImageSrc([]);
+    setRoute('');
+    setThumbnail([]);
   };
 
   const handleGroupInfo = (e: any) => {
@@ -65,21 +66,25 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
 
   const sendData = async () => {
     const formData = new FormData();
-    for (let i = 0; i < thumbnail.length; i++) {
+    for (let i = 0; i < thumbnail?.length; i++) {
       formData.append('thumbnail', thumbnail[i]);
     }
     formData.append('location', route);
     formData.append('description', groupInfos.description);
 
-    if (groupInfos.description && route !== '') {
+    if (groupInfos.description === '') {
+      alert('게시글 내용을 작성해주세요!');
+    } else if (route === '') {
+      alert('루트를 추가해주세요!');
+    } else if (thumbnail?.length === 0) {
+      alert('사진을 최소 한장 이상 등록해주세요!');
+    } else if (groupInfos.description && route !== '' && thumbnail) {
       fetchData(formData);
       setIsOpen(false);
       setImageSrc([]);
       setRoute('');
-
+      setThumbnail([]);
       alert('게시글 작성 완료!');
-    } else {
-      alert('형식을 모두 작성해주세요');
     }
   };
 
@@ -370,6 +375,7 @@ const StGroupImg = styled.div`
   }
 
   label {
+    /* max-width: 330px; */
     aspect-ratio: 1 / 1;
     display: flex;
     justify-content: center;
@@ -522,7 +528,8 @@ const StGroupTextArea = styled.div`
     margin: 0 0 5px 0;
   }
   textarea {
-    aspect-ratio: 5/3;
+    outline: none;
+    aspect-ratio: 5/3.5;
     border-radius: 10px;
     border: 1px solid #d9d9d9;
     margin: 0;
