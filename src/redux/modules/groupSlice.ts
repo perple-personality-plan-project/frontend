@@ -54,17 +54,12 @@ export const __groupGetDate = createAsyncThunk(
   },
 );
 
-interface subscribePreset {
-  id: number;
-}
-
 export const __groupSubscribeCheck = createAsyncThunk<
   {},
   { id: string | undefined }
 >('group/subscribeCheck', async (payload, thunkAPI) => {
   try {
     const { data } = await loggedIn.get(`api/group/${payload.id}`);
-    console.log(data);
     return thunkAPI.fulfillWithValue(data.data);
   } catch (e) {
     thunkAPI.rejectWithValue(e);
