@@ -5,7 +5,6 @@ import { useAppSelector } from '../../components/hooks/typescripthook/hooks';
 const GroupDetailEmptyShow = () => {
   const { groupSubscribe } = useAppSelector(store => store.group);
 
-  console.log(groupSubscribe);
   return (
     <div>
       {groupSubscribe ? (
