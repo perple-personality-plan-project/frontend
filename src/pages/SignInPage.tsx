@@ -24,6 +24,7 @@ const SignInPage = () => {
 
       localStorage.setItem('accessToken', data.data.accessToken);
       localStorage.setItem('refreshToken', data.data.refreshToken);
+      localStorage.setItem('mbti', data.data.mbti);
 
       alert('로그인 성공');
       navigate('/');

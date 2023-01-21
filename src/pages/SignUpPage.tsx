@@ -126,7 +126,7 @@ const SignUpPage = () => {
       nickname: NickName,
       password: Password,
       confirm_password: ConfirmPassword,
-      mbti: Mbti,
+      mbti: Mbti.toUpperCase(),
       provider: 'local',
     };
     signUp(body);
