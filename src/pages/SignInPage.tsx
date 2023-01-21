@@ -62,6 +62,7 @@ const SignInPage = () => {
             </ButtonLogin>
             <ButtonSignUp
               className="signup"
+              type="button"
               onClick={() => navigate(`/signup`)}
             >
               회원가입
