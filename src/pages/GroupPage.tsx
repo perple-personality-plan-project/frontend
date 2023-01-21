@@ -33,6 +33,7 @@ const GroupPage = () => {
 
   const [groupByfilter, setGroupByfilter] = useState([]);
   const [tags, setTags] = useState<{}[]>([]);
+  const [word, setWord] = useState('');
 
   useEffect(() => {
     if (filterGroup === '인기순') {
@@ -53,7 +54,8 @@ const GroupPage = () => {
 
   const fetchData = async () => {
     const { data } = await nonTokenClient.get(`api/group/hashtag`);
-    setTags([...data.data]);
+    const randomTags = data.data.sort(() => Math.random() - 0.5).splice(0, 20);
+    setTags([...randomTags]);
   };
 
   useEffect(() => {
@@ -63,12 +65,15 @@ const GroupPage = () => {
   return (
     <StContainer>
       <StInputContainer>
-        <StUpperInput placeholder="원하는 그룹을 검색해 보세요!" />
+        <StUpperInput
+          onChange={e => setWord(e.target.value)}
+          placeholder="원하는 그룹을 검색해 보세요!"
+        />
       </StInputContainer>
       <StRecommend>검색이 어려우시다고요? 추천해 드릴게요!</StRecommend>
       <StRecommendLists>
-        {tags.map((tag: any) => (
-          <StRecommendList>{tag.title}</StRecommendList>
+        {tags?.map((tag: any, index) => (
+          <StRecommendList key={index}>{tag.title}</StRecommendList>
         ))}
       </StRecommendLists>
 
@@ -107,7 +112,17 @@ const GroupPage = () => {
           )}
 
           {groupByfilter.map((group: groupPreset) => {
-            return <GroupCard key={group.group_id} group={group} />;
+            const tags = group.hashtags;
+            const groupNames = group.group_name;
+            if (word === '') {
+              return <GroupCard key={group.group_id} group={group} />;
+            }
+            if (groupNames.includes(word) || tags.includes(word)) {
+              return <GroupCard key={group.group_id} group={group} />;
+            } else {
+              return null;
+            }
+            // return <GroupCard key={group.group_id} group={group} />;
           })}
 
           {/* {groupRank.map((group: groupPreset) => {

@@ -75,6 +75,7 @@ const GroupCreateModal: React.FC<Props> = ({
     setIsOpen(false);
     setImageSrc('');
     setTagSet([]);
+    setThumbnail('');
   };
 
   const addTag = () => {
@@ -122,15 +123,29 @@ const GroupCreateModal: React.FC<Props> = ({
   };
 
   const sendData = () => {
-    if (tagSet.length > 0 && groupInfos.group_name && groupInfos.description) {
+    if (!thumbnail) {
+      alert('그룹 이미지를 넣어주세요!');
+    } else if (tagSet.length < 1) {
+      alert('태그를 1-3개까지 추가해주세요!');
+    } else if (groupInfos.group_name === '') {
+      alert('그룹명을 작성해주세요!');
+    } else if (groupInfos.description === '') {
+      alert('그룹 소개를 작성해주세요!');
+    } else if (
+      tagSet.length > 0 &&
+      groupInfos.group_name &&
+      groupInfos.description &&
+      thumbnail
+    ) {
       postDataToServer();
       setIsOpen(false);
       setImageSrc('');
       setTagSet([]);
       alert('그룹 작성 완료!');
-    } else {
-      alert('형식을 모두 작성해주세요');
     }
+    // else {
+    //   alert('형식을 모두 작성해주세요');
+    // }
   };
 
   const accessToken = localStorage.getItem('accessToken');
@@ -324,6 +339,7 @@ const StGroupInput = styled.div`
     margin-bottom: 5px;
   }
   input {
+    outline: none;
     width: 100%;
     height: 35px;
     box-sizing: border-box;
@@ -393,6 +409,7 @@ const StGroupTextArea = styled.div`
     margin: 0 0 5px 0;
   }
   textarea {
+    outline: none;
     aspect-ratio: 5/3;
     border-radius: 10px;
     border: 1px solid #d9d9d9;

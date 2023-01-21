@@ -5,7 +5,6 @@ import styled from 'styled-components';
 const GroupEmptyShow = () => {
   const navigate = useNavigate();
   const accessToken = localStorage.getItem('accessToken');
-  console.log(accessToken);
 
   return (
     <div>
