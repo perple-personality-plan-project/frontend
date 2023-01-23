@@ -12,6 +12,7 @@ import {
 import { __RemoveItem } from '../redux/modules/mapSlice';
 import { __RootMaker } from '../redux/modules/mapSlice';
 import client from '../api/client';
+import MapNav from '../components/MapNav';
 
 // Window 인터페이스에 Kakao API를 위한 kakao 객체 정의
 declare global {
@@ -327,6 +328,7 @@ const MapPage = () => {
   return (
     <div className="map-page">
       <Header>
+        {/* <MapNav /> */}
         <Hamburger src="https://w7.pngwing.com/pngs/909/687/png-transparent-hamburger-button-hot-dog-computer-icons-pancake-hot-dog-share-icon-navbar-menu-thumbnail.png"></Hamburger>
         <Logo onClick={() => navigate(`/`)}>PLATTER</Logo>
         <Cart onClick={ModalShow}>장바구니</Cart>
