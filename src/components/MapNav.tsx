@@ -12,7 +12,7 @@ import 'swiper/css';
 import Sidebar from '../pages/subpages/Sidebar';
 import SidebarCompelete from '../pages/subpages/SidebarCompelete';
 
-const NaviBar = () => {
+const MapNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const token = localStorage.getItem('accessToken');
   const navigate = useNavigate();
@@ -26,8 +26,8 @@ const NaviBar = () => {
       await client.post('api/user/logout');
       localStorage.clear();
       // setTrigger(!trigger);
-      // window.location.reload();
-      navigate('/community');
+      window.location.reload();
+      // navigate('/signin');
     }
   };
 
@@ -74,6 +74,7 @@ const NaviBar = () => {
         </StHorizontalLists>
         {token ? (
           <StBtnGroup>
+            <i className="ri-shopping-basket-line"></i>
             <button onClick={logout}>로그아웃 </button>
           </StBtnGroup>
         ) : (
@@ -108,7 +109,7 @@ const NaviBar = () => {
   );
 };
 
-export default NaviBar;
+export default MapNav;
 
 const StNavContainer = styled.nav`
   .swiper-bgColor {
