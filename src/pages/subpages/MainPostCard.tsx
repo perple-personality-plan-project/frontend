@@ -185,6 +185,7 @@ export default MainPostCard;
 
 const StGroupPost = styled.div`
   .post-container {
+    overflow: hidden;
     position: relative;
     width: 430px;
 
@@ -195,6 +196,7 @@ const StGroupPost = styled.div`
     cursor: pointer;
 
     img {
+      aspect-ratio: 1/1;
       width: 100%;
       background-color: #f0f0f0;
     }
@@ -287,12 +289,16 @@ const StGroupPost = styled.div`
     @media screen and (max-width: 900px) {
       width: 400px;
     }
+
+    @media screen and (max-width: 500px) {
+      width: 350px;
+    }
   }
 
-  .post-img-size {
+  /* .post-img-size {
     width: 350px;
     height: 350px;
-  }
+  } */
 `;
 
 const Arrow = styled.div`

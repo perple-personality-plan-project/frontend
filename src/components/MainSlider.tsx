@@ -27,16 +27,25 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
     'ENFJ',
     'ENFP',
   ];
+  const mbti = localStorage.getItem('mbti');
+  let mbtiIdx: number;
+  if (mbti) {
+    mbtiIdx = mbtiCategory.indexOf(mbti);
+  } else {
+    mbtiIdx = 0;
+  }
 
   return (
     <StSwiper>
       <Swiper
         effect={'cards'}
+        slidesPerView={1}
         grabCursor={true}
         navigation={true}
         pagination={true}
         mousewheel={true}
         keyboard={true}
+        initialSlide={mbtiIdx}
         onSlideChange={swiperCore => {
           const { activeIndex, snapIndex, previousIndex, realIndex } =
             swiperCore;
@@ -46,7 +55,14 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
         className="mySwiper"
       >
         {mbtiCategory.map((mbti: any, index) => {
-          return <SwiperSlide key={index}>{mbti}</SwiperSlide>;
+          return (
+            <SwiperSlide key={index}>
+              <div>
+                <img src={require('../../src/빡빡이1.png')} />
+              </div>
+              {mbti}
+            </SwiperSlide>
+          );
         })}
       </Swiper>
     </StSwiper>
@@ -56,20 +72,62 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
 export default MainSlider;
 
 const StSwiper = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  padding-right: 120px;
   .swiper {
-    width: 500px;
-    height: 500px;
+    aspect-ratio: 4.5/5;
+    max-width: 460px;
+    min-width: 400px;
+    /* height: 500px; */
+    /* width: 100%; */
     margin-right: 20%;
     transform: translate3d(0px, 0px, 0px) rotateZ(0deg) scale(1);
+
+    @media screen and (max-width: 1024px) {
+      max-width: 350px;
+      margin: 50px auto;
+      width: 100%;
+    }
+
+    @media screen and (max-width: 600px) {
+      max-width: 280px;
+      min-width: 0;
+      width: 100%;
+    }
   }
 
-  @media screen and (max-width: 800px) {
+  .swiper-button-prev {
+    background-image: url('/asset/rightArrow.png') !important;
+    transform: rotate(180deg);
+    z-index: 1000;
+    background-size: cover;
+    left: -50px;
+    top: 60%;
+    width: 59px;
+    height: 59px;
+    color: transparent;
+    /* display: hidden; */
+    /* visibility: hidden; */
+  }
+
+  .swiper-button-next {
+    background-image: url('/asset/rightArrow.png') !important;
+    background-size: cover;
+    right: -50px;
+    top: 60%;
+    width: 59px;
+    height: 59px;
+    color: transparent;
+  }
+
+  /* @media screen and (max-width: 800px) {
     .swiper {
       width: 300px;
       height: 300px;
       margin: auto;
     }
-  }
+  } */
 
   .swiper-slide {
     display: flex;
@@ -89,7 +147,7 @@ const StSwiper = styled.div`
     z-index: 2;
     transform: translate3d(0px, 0px, 0px) rotateZ(0deg) scale(1);
   }
-  .swiper-slide.swiper-slide-next {
+  .swiper-slide .swiper-slide-next {
     z-index: 1;
     transform: translate3d(calc(-500px + 10%), 0px, -100px) rotateZ(0deg)
       scale(1);
@@ -123,37 +181,37 @@ const StSwiper = styled.div`
     content: 'next';
   }
 
-  .swiper-button-next:after {
+  /* .swiper-button-next:after {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    /* background-color: gray; */
     font-family: swiper-icons;
     font-size: var(--swiper-navigation-size);
     color: gray;
     text-transform: none !important;
     letter-spacing: 0;
-    /* font-feature-settings: ; */
     font-variant: initial;
     line-height: 1;
     position: absolute;
     margin-left: 100px;
-  }
+  } */
 
-  .swiper-button-prev:after {
+  /* .swiper-button-prev:after {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    /* background-color: gray; */
     font-family: swiper-icons;
     font-size: var(--swiper-navigation-size);
     color: gray;
     text-transform: none !important;
     letter-spacing: 0;
-    /* font-feature-settings: ; */
     font-variant: initial;
     line-height: 1;
     position: absolute;
     margin-right: 100px;
+  } */
+
+  @media screen and (max-width: 1024px) {
+    padding: 0;
   }
 `;

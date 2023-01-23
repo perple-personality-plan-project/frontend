@@ -21,11 +21,10 @@ export interface mainPostPreset {
 
 const MainPage = () => {
   const paramId = useParams();
-
   const dispatch = useAppDispatch();
 
-  const [mbtiCheck, setMbtiCheck] = useState('All');
-
+  const mbti = localStorage.getItem('mbti');
+  const [mbtiCheck, setMbtiCheck] = useState(mbti || '사람들');
   const { mainFeedList } = useAppSelector(store => store.post);
   const [mainPosts, setMainPosts] = useState<mainPostPreset[]>([]);
 
@@ -37,12 +36,25 @@ const MainPage = () => {
     <Wrap>
       <Backgr>
         <TitleWrap>
-          <div className="gathered">
-            <MbtiTag>{mbtiCheck}</MbtiTag>
+          <StHeader>
+            <StTagHeader>
+              <StMbti>{mbtiCheck === 'All' ? '사람들' : mbtiCheck}</StMbti>
+              <div style={{ margin: '10px 0 0 10px' }}>
+                {/* {mbtiCheck === '사람들' ? '은' : '는'} */}
+              </div>
+            </StTagHeader>
+            <StTagText>뭐하고 놀까?</StTagText>
+            <StHeaderText>
+              MBTI 검사하고 나에게 맞는 HOT PLACE 찾자!
+            </StHeaderText>
+            {/* <StMbtiUpper>
+              <MbtiTag>{mbtiCheck}</MbtiTag>
+              <p className="mbti-tag-text">는 </p>
+            </StMbtiUpper>
             <MbtiTitle>뭐하고 놀까?</MbtiTitle>
             <div style={{ fontSize: '15px', padding: '20px 0 0 20px' }}>
               MBTI 검사하고 나에게 맞는 HOT PLACE 찾자!
-            </div>
+            </div> */}
             {/* <div
               style={{
                 width: '110px',
@@ -54,7 +66,7 @@ const MainPage = () => {
             >
               v MBTI 검사하기
             </div> */}
-          </div>
+          </StHeader>
 
           <MainSlider setMbtiCheck={setMbtiCheck} />
         </TitleWrap>
@@ -68,6 +80,71 @@ const MainPage = () => {
   );
 };
 export default MainPage;
+
+const StHeaderText = styled.div`
+  font-size: 20px;
+  color: white;
+  margin-top: 20px;
+`;
+
+const StMbti = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
+  height: 90px;
+  color: #644eee;
+  border-radius: 50px;
+  background-color: white;
+  font-weight: 500;
+
+  /* @media screen and (max-width: 800px) {
+    justify-content: center;
+    width: 120px;
+    height: 50px;
+    margin: auto;
+  } */
+
+  @media screen and (max-width: 1024px) {
+    width: 120px;
+    height: 50px;
+  }
+`;
+
+const StHeader = styled.div`
+  box-sizing: border-box;
+  padding-left: 120px;
+  width: 100%;
+  min-width: 400px;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 25px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+`;
+
+const StTagHeader = styled.div`
+  color: white;
+  display: flex;
+  width: 100%;
+
+  @media screen and (max-width: 1024px) {
+    justify-content: center;
+  }
+`;
+
+const StTagText = styled.div`
+  color: white;
+
+  margin: 20px 0 0 20%;
+
+  @media screen and (max-width: 1024px) {
+    margin: 10px 0 0 0;
+  }
+`;
 
 const Wrap = styled.div`
   margin: auto;
@@ -91,23 +168,30 @@ const Backgr = styled.div`
   padding-top: 10vh;
   background-color: #644eee;
 
-  @media screen and (max-width: 800px) {
+  /* @media screen and (max-width: 800px) {
     font-size: 1.5em;
     text-align: center;
     flex-direction: column;
+  } */
+  @media screen and (max-width: 1024px) {
+    padding-top: 30px;
   }
 `;
 
 const TitleWrap = styled.div`
+  width: 100%;
   display: flex;
+  /* justify-content: space-between; */
   margin: auto;
+  /* margin: auto; */
   gap: 150px;
 
   .gathered {
-    margin-top: 10px;
+    /* margin-top: 10px; */
     color: white;
+    margin: 10px 0 0 130px;
   }
-  @media screen and (max-width: 800px) {
+  /* @media screen and (max-width: 800px) {
     text-align: center;
     flex-direction: column;
     width: 100%;
@@ -121,6 +205,11 @@ const TitleWrap = styled.div`
       .div {
       }
     }
+  } */
+  @media screen and (max-width: 1024px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
   }
 `;
 
@@ -135,16 +224,16 @@ const MbtiTag = styled.div`
   background-color: white;
   font-weight: 500;
 
-  @media screen and (max-width: 800px) {
+  /* @media screen and (max-width: 800px) {
     justify-content: center;
-    /* margin-left: 15%; */
     width: 120px;
     height: 50px;
     margin: auto;
-  }
+  } */
 `;
 
 const MbtiTitle = styled.div`
+  position: absolute;
   margin-left: 55px;
   .div {
     font-size: 10px;
@@ -165,8 +254,16 @@ const PostListContainer = styled.div`
   gap: 25px;
   border: 5px soild red;
 
+  @media screen and (max-width: 1024px) {
+    margin-top: 34vh;
+  }
+
+  @media screen and (max-width: 600px) {
+    margin-top: 20vh;
+  }
+  /*   
   @media screen and (max-width: 412px) {
     flex-direction: column;
     justify-content: center;
-  }
+  } */
 `;
