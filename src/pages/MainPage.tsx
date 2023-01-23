@@ -7,7 +7,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../components/hooks/typescripthook/hooks';
-import { __mainFeedlist } from '../redux/modules/postSlice';
+import { __mainFeedlist, __mainMbtilist } from '../redux/modules/postSlice';
 
 export interface mainPostPreset {
   feed_id: number;
@@ -26,11 +26,16 @@ const MainPage = () => {
   const mbti = localStorage.getItem('mbti');
   const [mbtiCheck, setMbtiCheck] = useState(mbti || '사람들');
   const { mainFeedList } = useAppSelector(store => store.post);
+  const { mainMbtiList } = useAppSelector(store => store.post);
   const [mainPosts, setMainPosts] = useState<mainPostPreset[]>([]);
 
   useEffect(() => {
-    dispatch(__mainFeedlist());
-  }, []);
+    if (mbtiCheck === 'All' || mbtiCheck === '사람들') {
+      dispatch(__mainFeedlist());
+    } else {
+      dispatch(__mainMbtilist({ mbtiCheck }));
+    }
+  }, [mbtiCheck]);
 
   return (
     <Wrap>
@@ -72,9 +77,13 @@ const MainPage = () => {
         </TitleWrap>
       </Backgr>
       <PostListContainer>
-        {mainFeedList.map((post: any) => (
-          <MainPostCard key={post.feed_id} post={post} />
-        ))}
+        {mbtiCheck === '사람들' || mbtiCheck === 'All'
+          ? mainFeedList.map((post: any) => (
+              <MainPostCard key={post.feed_id} post={post} />
+            ))
+          : mainMbtiList.map((post: any) => (
+              <MainPostCard key={post.feed_id} post={post} />
+            ))}
       </PostListContainer>
     </Wrap>
   );

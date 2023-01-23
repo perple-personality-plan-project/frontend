@@ -5,6 +5,7 @@ import nonTokenClient from '../../api/noClient';
 //타입지정
 type mainPostState = {
   mainFeedList: [];
+  mainMbtiList: [];
   mainFeedDetail: object;
   isLoading: boolean;
   error: string | unknown;
@@ -13,19 +14,35 @@ type mainPostState = {
 //초기값설정
 const initialState: mainPostState = {
   mainFeedList: [],
+  mainMbtiList: [],
   mainFeedDetail: {},
   isLoading: false,
   error: null,
 };
 
 //thunk 함수
+
 export const __mainFeedlist = createAsyncThunk(
   'main/feedlist',
 
   async (payload, thunkAPI) => {
     try {
       const { data } = await nonTokenClient.get(`api/feed`);
-      console.log(data);
+      return thunkAPI.fulfillWithValue(data.data);
+    } catch (e) {
+      thunkAPI.rejectWithValue(e);
+    }
+  },
+);
+
+export const __mainMbtilist = createAsyncThunk<[], { mbtiCheck: string }>(
+  'main/feedlist/mbti',
+
+  async (payload, thunkAPI) => {
+    try {
+      const { data } = await nonTokenClient.get(
+        `api/feed/search?mbti=${payload.mbtiCheck}`,
+      );
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
       thunkAPI.rejectWithValue(e);
@@ -64,8 +81,7 @@ const postSlice = createSlice({
       })
       .addCase(__mainFeedlist.rejected, state => {
         state.isLoading = false;
-      });
-    builder
+      })
       .addCase(__mainFeedDetail.pending, state => {
         state.isLoading = true;
       })
@@ -74,6 +90,16 @@ const postSlice = createSlice({
         state.mainFeedDetail = action.payload;
       })
       .addCase(__mainFeedDetail.rejected, state => {
+        state.isLoading = false;
+      })
+      .addCase(__mainMbtilist.pending, state => {
+        state.isLoading = true;
+      })
+      .addCase(__mainMbtilist.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.mainMbtiList = action.payload;
+      })
+      .addCase(__mainMbtilist.rejected, state => {
         state.isLoading = false;
       });
   },
