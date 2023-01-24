@@ -28,7 +28,7 @@ const StContainer = styled.div`
   height: 400px;
 
   @media screen and (max-width: 500px) {
-    width: 100%;
+    width: 350px;
     background-color: #d1cdcd;
   }
 `;

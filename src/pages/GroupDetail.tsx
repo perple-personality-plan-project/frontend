@@ -232,27 +232,34 @@ const StSubscribeOn = styled.div`
   .group-subscribe-on {
     display: block;
     width: 100%;
-    border: 1px solid gray;
+    border: 0;
+    /* border: 1px solid gray; */
     border-radius: 5px;
-    color: white;
+    color: #9d9d9d;
     cursor: pointer;
     padding: 10px 0;
     font-size: 18px;
     font-weight: bold;
-    background-color: #644eee;
+    background-color: #f3f1f8;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    /* fill: #6E57F6; */
   }
 
   .group-subscribe-cancel {
     display: none;
     width: 100%;
-    border: 1px solid gray;
+    /* border: 1px solid gray; */
+    border: 0;
     border-radius: 5px;
     color: white;
     cursor: pointer;
     padding: 10px 0;
     font-size: 18px;
     font-weight: bold;
-    background-color: pink;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    background-color: #644eee;
+
+    /* background-color: pink; */
   }
 
   &:hover {
@@ -335,13 +342,15 @@ const StGroupInfo = styled.div`
 
   .group-subscribe {
     width: 100%;
-    border: 1px solid gray;
+    /* border: 1px solid gray; */
+    border: 0;
     border-radius: 5px;
     color: white;
     cursor: pointer;
     padding: 10px 0;
     font-size: 18px;
     font-weight: bold;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
     background-color: #644eee;
   }
 `;
