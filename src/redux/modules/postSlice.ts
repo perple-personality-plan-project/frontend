@@ -50,12 +50,15 @@ export const __mainMbtilist = createAsyncThunk<[], { mbtiCheck: string }>(
   },
 );
 
-export const __mainFeedDetail = createAsyncThunk(
+export const __mainFeedDetail = createAsyncThunk<
+  {},
+  { feedId: number | string }
+>(
   'main/feedDetail',
 
   async (payload, thunkAPI) => {
     try {
-      const { data } = await nonTokenClient.get(`/api/feed/:feed_id`);
+      const { data } = await nonTokenClient.get(`/api/feed/${payload.feedId}`);
       console.log(data);
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {

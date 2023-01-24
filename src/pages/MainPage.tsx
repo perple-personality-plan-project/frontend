@@ -258,7 +258,7 @@ const MbtiTitle = styled.div`
 const PostListContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin-top: 15vh;
+  margin-top: 20vh;
   justify-content: center;
   gap: 25px;
   border: 5px soild red;
@@ -268,11 +268,10 @@ const PostListContainer = styled.div`
   }
 
   @media screen and (max-width: 600px) {
+    margin-top: 25vh;
+  }
+
+  @media screen and (max-width: 500px) {
     margin-top: 20vh;
   }
-  /*   
-  @media screen and (max-width: 412px) {
-    flex-direction: column;
-    justify-content: center;
-  } */
 `;

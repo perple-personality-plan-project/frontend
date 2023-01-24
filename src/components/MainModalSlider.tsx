@@ -27,8 +27,11 @@ export const MainModalSlider: React.FC<Props> = ({ id, imageData }) => {
           className="mySwiper"
         >
           {imageData.map((image, index) => (
-            <SwiperSlide key={index}>
-              <img src={process.env.REACT_APP_IMG_SERVER + image} />
+            <SwiperSlide style={{ width: '100%' }} key={index}>
+              <img
+                src={process.env.REACT_APP_IMG_SERVER + image}
+                alt="main-imgs"
+              />
             </SwiperSlide>
           ))}
         </Swiper>
@@ -40,9 +43,15 @@ export const MainModalSlider: React.FC<Props> = ({ id, imageData }) => {
 export default MainModalSlider;
 
 const StSwiper = styled.div`
+  width: 100%;
+  aspect-ratio: 1/1;
+  img {
+    width: 100%;
+  }
   .swiper {
+    width: 100%;
     /* max-width: 625px; */
-    width: 625px;
+    /* width: 625px; */
     aspect-ratio: '1/1.2';
     border-radius: 20px 0 0 20px;
     @media screen and (max-width: 1024px) {
@@ -101,10 +110,10 @@ const StSwiper = styled.div`
   }
 
   .swiper-slide img {
+    aspect-ratio: 1/1;
     display: block;
     width: 100%;
-    height: 625px;
-    object-fit: cover;
+    /* height: 625px; */
     border-radius: 20px 0 0 20px;
     @media screen and (max-width: 1024px) {
       height: 290px;
