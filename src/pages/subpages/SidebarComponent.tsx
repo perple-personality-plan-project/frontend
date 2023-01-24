@@ -48,6 +48,7 @@ const SidebarComponent: React.FC<props> = ({ sidebar, closeSidebar }) => {
 export default SidebarComponent;
 
 const StSidebar = styled.div`
+  z-index: 10000;
   .sidebar {
     position: absolute;
     /* background-color: #222f3e; */

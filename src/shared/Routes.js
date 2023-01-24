@@ -16,6 +16,7 @@ import TogoUserlist from '../pages/Togolist';
 
 import { store } from '../redux/config/configStore';
 import { Provider } from 'react-redux';
+import MainNav from '../components/MainNav';
 
 const Router = () => {
   return (
@@ -59,7 +60,7 @@ const Router = () => {
             path="/"
             element={
               <div style={{ maxWidth: '1440px', margin: 'auto' }}>
-                <Header />
+                <MainNav />
                 <MainPage />
               </div>
             }
@@ -69,7 +70,7 @@ const Router = () => {
             path="/community"
             element={
               <div style={{ maxWidth: '1440px', margin: 'auto' }}>
-                <Header />
+                <MainNav />
                 <MainPage />
               </div>
             }

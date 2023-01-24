@@ -20,6 +20,7 @@ const Backdrop: React.FC<props> = ({ sidebar, closeSidebar }) => {
 export default Backdrop;
 
 const StBackDrop = styled.div`
+  z-index: 9999;
   .backdrop {
     position: fixed;
     top: 0;
