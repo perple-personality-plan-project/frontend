@@ -43,6 +43,16 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
 
   const { groupFeedDetail }: any = useAppSelector(store => store.group);
   const [comment, setComment] = useState('');
+  const created = created_at.split('T');
+
+  const date = created_at
+    .replace('T', '. ')
+    .split(' ')[0]
+    .split('-')
+    .join('.')
+    .replace('.', '년 ')
+    .replace('.', '월 ')
+    .replace('.', '일');
 
   const param: any = paramId;
   const groupId = param.id;
@@ -53,18 +63,22 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
   //async/await로 동기처리 해줄 수 있음.
   //await가 끝난 후 다음 줄 실행함.
   const postComment = async () => {
-    if (groupSubscribe) {
-      await loggedIn.post(
-        `api/group-comment/group/${groupId}/feed/${feed_id}`,
-        {
-          comment,
-        },
-      );
-      dispatch(__groupFeedDetail({ groupId: groupId, feedId: feed_id }));
-      setComment('');
+    if (comment) {
+      if (groupSubscribe) {
+        await loggedIn.post(
+          `api/group-comment/group/${groupId}/feed/${feed_id}`,
+          {
+            comment,
+          },
+        );
+        dispatch(__groupFeedDetail({ groupId: groupId, feedId: feed_id }));
+        setComment('');
+      } else {
+        alert('그룹을 구독해주세요!');
+        setComment('');
+      }
     } else {
-      alert('그룹을 구독해주세요!');
-      setComment('');
+      alert('댓글을 입력해주세요!');
     }
   };
 
@@ -103,7 +117,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
         <div className="post-desc">
           <p>{description}</p>
           <div className="post-bottom">
-            <p className="post-date">{created_at}</p>
+            <p className="post-date">{date}</p>
             <div className="post-bottom-right">
               <div className="post-bottom-icon">A</div>
               <div className="post-bottom-icon">B</div>
@@ -143,9 +157,9 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                   <h2>{nickname}</h2>
                   <p>{mbti.toUpperCase()}</p>
                 </div>
-                <p>{description}</p>
+                <p style={{ fontSize: '14px' }}>{description}</p>
                 <div className="detail-bottom">
-                  <p>2012.12.29</p>
+                  <p>{date}</p>
                   <div style={{ display: 'flex' }}>
                     <div className="detail-btn">좋</div>
                     <div className="detail-btn">댓</div>
@@ -155,35 +169,50 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
               </div>
             </StDetailDesc>
             <StDetailBorder></StDetailBorder>
-            <StDetailComments>
-              {groupFeedDetail?.comment?.map((comment: any) => {
-                return (
-                  <StDetailComment key={comment.comment_id}>
-                    <img src={require('../../빡빡이1.png')} alt="detail-img" />
-                    <div className="detail-info">
-                      <div className="detail-top" style={{ display: 'flex' }}>
-                        <h2>{comment.nickname}</h2>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+                justifyContent: 'space-between',
+                backgroundColor: ' white',
+              }}
+            >
+              <StDetailComments>
+                {groupFeedDetail?.comment?.map((comment: any) => {
+                  return (
+                    <StDetailComment key={comment.comment_id}>
+                      <img
+                        src={require('../../빡빡이1.png')}
+                        alt="detail-img"
+                      />
+                      <div className="detail-info">
+                        <div className="detail-top" style={{ display: 'flex' }}>
+                          <h2 className="detail-nickname">
+                            {comment.nickname}
+                          </h2>
+                          <div
+                            onClick={() => deleteComment(comment.comment_id)}
+                            className="detail-del"
+                          >
+                            X
+                          </div>
+                        </div>
+                        <p>{comment.comment}</p>
                       </div>
-                      <p>{comment.comment}</p>
-                    </div>
-                    <div
-                      onClick={() => deleteComment(comment.comment_id)}
-                      className="detail-del"
-                    >
-                      X
-                    </div>
-                  </StDetailComment>
-                );
-              })}
-            </StDetailComments>
-            <StDetailInput>
-              <input
-                value={comment}
-                onChange={e => setComment(e.target.value)}
-                placeholder="댓글을 입력하세요"
-              />
-              <button onClick={postComment}>완료</button>
-            </StDetailInput>
+                    </StDetailComment>
+                  );
+                })}
+              </StDetailComments>
+              <StDetailInput>
+                <input
+                  value={comment}
+                  onChange={e => setComment(e.target.value)}
+                  placeholder="댓글을 입력하세요"
+                />
+                <button onClick={postComment}>완료</button>
+              </StDetailInput>
+            </div>
           </StDetailInfo>
         </StDetailContainer>
       </GroupDetailCardModal>
@@ -198,6 +227,7 @@ const StDetailContainer = styled.div`
   justify-content: center;
   border-radius: 20px;
   overflow: hidden;
+  background-color: white;
   /* max-width: 800px; */
 
   img {
@@ -227,10 +257,17 @@ const StDetailInput = styled.div`
   box-sizing: border-box;
   display: flex;
   align-items: center;
+  height: 10%;
   width: 100%;
-  padding: 10px;
-  margin: auto 0;
+  padding: 30px 20px;
 
+  input {
+    outline: 0;
+  }
+
+  @media screen and (max-width: 1024px) {
+    padding: 10px 20px;
+  }
   input {
     border: 1px solid gray;
     border-radius: 20px;
@@ -254,7 +291,7 @@ const StDetailInfo = styled.div`
   flex-direction: column;
   max-width: 400px;
   width: 60%;
-  background-color: #f0f0f0;
+  background-color: white;
 
   @media screen and (max-width: 1024px) {
     width: 100%;
@@ -288,7 +325,7 @@ const StDetailDesc = styled.div`
       margin: 0 0 10px 0;
       font-size: 15px;
       h2 {
-        font-size: 15px;
+        font-size: 18px;
         margin: 0 10px 0 0;
         color: #555555;
       }
@@ -345,12 +382,18 @@ const StDetailComments = styled.div`
 `;
 
 const StDetailComment = styled.div`
+  width: 100%;
+  /* max-width: 30ch; */
   display: flex;
   margin-bottom: 15px;
   position: relative;
 
+  p {
+    font-size: 14px;
+  }
+
   img {
-    margin-right: 10px;
+    margin: 10px 10px 0 0;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -367,12 +410,11 @@ const StDetailComment = styled.div`
 
     .detail-top {
       display: flex;
-      /* justify-content: center; */
+      justify-content: space-between;
       align-items: center;
-      margin: 0 0 10px 0;
       font-size: 15px;
       h2 {
-        font-size: 15px;
+        font-size: 18px;
         margin: 0 10px 0 0;
       }
 
@@ -386,27 +428,22 @@ const StDetailComment = styled.div`
         background-color: white;
       }
     }
-  }
 
-  .detail-del {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translate(0, -50%);
+    .detail-del {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
 
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+      &:hover {
+        background-color: #f54e4e;
+        color: white;
 
-    &:hover {
-      background-color: white;
-      color: black;
-
-      cursor: pointer;
+        cursor: pointer;
+      }
     }
   }
 `;
@@ -443,6 +480,7 @@ const StGroupPost = styled.div`
 
     background-color: white;
     border: 1px solid #d9d9d9;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.25);
     border-radius: 10px;
     overflow: hidden;
     cursor: pointer;
@@ -470,6 +508,7 @@ const StGroupPost = styled.div`
       /* backdrop-filter: blur(5px); */
 
       .post-header-info {
+        text-shadow: 0px 0px 2px gray, 0px 0px 2px gray;
         display: flex;
         justify-content: flex-start;
         align-items: center;
