@@ -1,71 +1,95 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { MainModal } from '../../components/modal/MainModal';
-import MainModalSlider from '../../components/MainModalSlider';
-import InfiniteScroll from 'react-infinite-scroll-component';
 
-import { __mainFeedDetail } from '../../redux/modules/postSlice';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper';
+import 'swiper/css';
+import 'swiper/css/navigation';
+
+import { GroupDetailCardModal } from '../../components/modal/GroupDetailCardModal';
+import { groupFeedPreset } from '../GroupDetail';
 import {
   useAppDispatch,
   useAppSelector,
 } from '../../components/hooks/typescripthook/hooks';
+import { __groupFeedDetail } from '../../redux/modules/groupSlice';
+import nonTokenClient from '../../api/noClient';
+import loggedIn from '../../api/loggedIn';
+import { __mainFeedDetail } from '../../redux/modules/postSlice';
 
 interface Props {
   post: {
-    feed_id: number;
-    thumbnail: string;
-    description: string;
-    like_count: number;
-    mbti: string;
     created_at: string;
+    description: string;
+    feed_id: number;
+    like_count: number;
+    location: string;
+    mbti: string;
+    thumbnail: string;
     updated_at: string;
+    user_id: number;
   };
-}
-
-interface commentPreset {
-  id: number;
-  content: string;
 }
 
 const MainPostCard: React.FC<Props> = ({ post }) => {
-  // const dispatch = useAppDispatch();
-
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const {
+    created_at,
+    description,
+    feed_id,
+    like_count,
+    location,
+    mbti,
+    thumbnail,
+    updated_at,
+    user_id,
+  } = post;
 
-  // const { mainFeedDetail }: any = useAppSelector(store => store.post);
-  const [comments, setComments] = useState<commentPreset[]>([]);
-  const [content, setContent] = useState('');
+  const { mainFeedDetail }: any = useAppSelector(store => store.post);
+  const date = created_at
+    .replace('T', '. ')
+    .split(' ')[0]
+    .split('-')
+    .join('.')
+    .replace('.', '년 ')
+    .replace('.', '월 ')
+    .replace('.', '일');
+  const [comment, setComment] = useState('');
+  const accessToken = localStorage.getItem('accessToken');
 
-  const [dataSource, setDataSource] = useState(Array.from({ length: 4 }));
-  const [hasMore, setHasMore] = useState(true);
+  const thumbnailArray = thumbnail.split(',');
+  const imgLink = process.env.REACT_APP_IMG_SERVER;
 
-  const addHandler = () => {
-    const newComment = {
-      id: comments.length + 1,
-      content: content,
-    };
-    if (content === '') {
-      return;
+  const postComment = async () => {
+    if (comment) {
+      if (accessToken) {
+        await loggedIn.post(`api/comment/${feed_id}`, {
+          comment,
+        });
+        dispatch(__mainFeedDetail({ feedId: feed_id }));
+        setComment('');
+      } else {
+        alert('로그인 해주세요!');
+        setComment('');
+      }
+    } else {
+      alert('댓글을 입력해주세요!');
     }
-    setComments([...comments, newComment]);
-    setContent('');
   };
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setContent(e.target.value);
+  const deleteComment = async (commentId: string | number) => {
+    await loggedIn.delete(`api/comment/${feed_id}/${commentId}`);
+    dispatch(__mainFeedDetail({ feedId: feed_id }));
   };
 
-  const fetchMoreData = () => {
-    setTimeout(() => {
-      setDataSource(dataSource.concat(Array.from({ length: 2 })));
-    }, 1000);
+  const openModal = () => {
+    setIsOpen(true);
+    dispatch(__mainFeedDetail({ feedId: feed_id }));
   };
-  // console.log(post.thumbnail);
-  const splited = post.thumbnail.split(',');
-  // console.log(splited);
   return (
-    <StGroupPost key={post.feed_id}>
-      <div className="post-container" onClick={() => setIsOpen(true)}>
+    <StGroupPost>
+      <div onClick={openModal} className="post-container">
         <div className="post-header">
           <div className="post-header-info">
             <img
@@ -73,136 +97,402 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
               src={require('../../빡빡이1.png')}
               alt="group-img"
             />
-            {/* <h3>{post.locationName}</h3> */}
-            <p>{post.mbti}</p>
+            <h3>유저 아이디: {user_id}</h3>
+            <p>{mbti?.toUpperCase()}</p>
           </div>
-          {/* <div className="post-header-route">{post.locationRoute}</div> */}
-          <div className="post-header-route">왕십리</div>
+          <div className="post-header-route">{location}</div>
         </div>
+
         <img
-          className="post-img-size"
-          src={process.env.REACT_APP_IMG_SERVER + splited[0]}
+          src={process.env.REACT_APP_IMG_SERVER + thumbnail.split(',')[0]}
           alt="group-img"
         />
         <div className="post-desc">
-          <p>{post.description}</p>
+          <p>{description}</p>
           <div className="post-bottom">
-            <p className="post-date">2022.12.29</p>
+            <p className="post-date">{date}</p>
             <div className="post-bottom-right">
-              <div className="post-bottom-icon">좋</div>
-              <div className="post-bottom-icon">저장</div>
-              <div className="post-bottom-icon">공</div>
+              <div className="post-bottom-icon">A</div>
+              <div className="post-bottom-icon">B</div>
+              <div className="post-bottom-icon">C</div>
             </div>
           </div>
         </div>
       </div>
 
-      <MainModal
+      <GroupDetailCardModal
         onClose={() => setIsOpen(false)}
         open={isOpen}
-        id={post.feed_id}
+        id={mainFeedDetail?.feed_id}
       >
         <StXIcon onClick={() => setIsOpen(false)}>X</StXIcon>
-        <Arrow>
-          <div className="button-prev" />
-          <StDetailContainer>
-            <MainModalSlider id={post.feed_id} imageData={splited} />
-            <StDetailInfo>
-              <StDetailDesc>
-                <img src={require('../../빡빡이1.png')} alt="detail-img" />
-                <div className="detail-info">
-                  <div className="detail-top" style={{ display: 'flex' }}>
-                    {/* <h2>{post.locationName}</h2> */}
-                    <h2>왕십리</h2>
-                    <p>{post.mbti}</p>
-                  </div>
-                  <p>{post.description}</p>
-                  <div className="detail-bottom">
-                    <p>2022.12.29</p>
-                    <div style={{ display: 'flex' }}>
-                      <div className="detail-btn">좋</div>
-                      <div className="detail-btn">댓</div>
-                      <div className="detail-btn">공유</div>
-                    </div>
+        <StDetailContainer>
+          <Swiper
+            navigation={true}
+            modules={[Navigation]}
+            className="mySwiper"
+            style={{ width: '100%', aspectRatio: '1/1' }}
+          >
+            {thumbnailArray.map((thumbnail, index) => {
+              return (
+                <SwiperSlide key={index}>
+                  <img src={`${imgLink}${thumbnail}`} alt="swiper-img" />
+                </SwiperSlide>
+              );
+            })}
+            {/* <img src={thumbnail} alt="swiper-img" /> */}
+          </Swiper>
+          <StDetailInfo>
+            <StDetailDesc>
+              <img src={require('../../빡빡이1.png')} alt="detail-img" />
+              <div className="detail-info">
+                <div className="detail-top" style={{ display: 'flex' }}>
+                  {/* <h2>{nickname}</h2> */}
+                  <h2>{mainFeedDetail.nickname}</h2>
+                  <p>{mbti?.toUpperCase()}</p>
+                </div>
+                <p>{description}</p>
+                <div className="detail-bottom">
+                  <p>{date}</p>
+                  <div style={{ display: 'flex' }}>
+                    <div className="detail-btn">좋</div>
+                    <div className="detail-btn">댓</div>
+                    <div className="detail-btn">저장</div>
                   </div>
                 </div>
-              </StDetailDesc>
-              <StDetailBorder></StDetailBorder>
+              </div>
+            </StDetailDesc>
+            <StDetailBorder></StDetailBorder>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+                justifyContent: 'space-between',
+                backgroundColor: ' white',
+              }}
+            >
               <StDetailComments>
-                <StDetailComment>
-                  <InfiniteScroll
-                    dataLength={dataSource.length}
-                    next={fetchMoreData}
-                    hasMore={hasMore}
-                    loader={<p></p>}
-                    style={{ overflow: 'auto', height: '100%' }}
-                  >
-                    {comments.map(comment => {
-                      return (
-                        <StDetailDesc key={comment.id}>
-                          <img
-                            src={require('../../빡빡이1.png')}
-                            alt="detail-img"
-                          />
-                          <div className="detail-info">
-                            <div
-                              className="detail-top"
-                              style={{ display: 'flex' }}
-                            >
-                              {/* <h2>{post.locationName}</h2> */}
-                              {/* <p>{post.postTag}</p> */}
-                            </div>
-                            <p>{comment.content}</p>
-                            <div className="comment-bottom">
-                              <p>댓글</p>
-                              <div style={{ display: 'flex' }}>
-                                <div className="commentDel-btn">삭</div>
-                              </div>
-                            </div>
+                {mainFeedDetail?.comment?.map((comment: any) => {
+                  return (
+                    <StDetailComment key={comment.comment_id}>
+                      <img
+                        src={require('../../빡빡이1.png')}
+                        alt="detail-img"
+                      />
+                      <div className="detail-info">
+                        <div className="detail-top" style={{ display: 'flex' }}>
+                          <h2>{comment.nickname}</h2>
+                          <div
+                            onClick={() => deleteComment(comment.comment_id)}
+                            className="detail-del"
+                          >
+                            X
                           </div>
-                        </StDetailDesc>
-                      );
-                    })}
-                  </InfiniteScroll>
-                </StDetailComment>
+                        </div>
+                        <p>{comment.comment}</p>
+                      </div>
+                    </StDetailComment>
+                  );
+                })}
               </StDetailComments>
               <StDetailInput>
-                <input value={content} onChange={onChange} />
-                <button className="input-btn" onClick={addHandler}>
-                  완료
-                </button>
+                <input
+                  value={comment}
+                  onChange={e => setComment(e.target.value)}
+                  placeholder="댓글을 입력하세요"
+                />
+                <button onClick={postComment}>완료</button>
               </StDetailInput>
-            </StDetailInfo>
-          </StDetailContainer>
-          <div className="button-after" />
-        </Arrow>
-      </MainModal>
+            </div>
+          </StDetailInfo>
+        </StDetailContainer>
+      </GroupDetailCardModal>
     </StGroupPost>
   );
 };
 
 export default MainPostCard;
 
+const StDetailContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  border-radius: 20px;
+  overflow: hidden;
+  /* max-width: 800px; */
+
+  img {
+    /* max-width: 600px; */
+    width: 100%;
+    height: 100%;
+    background-color: #b6b6b6;
+  }
+
+  @media screen and (max-width: 1024px) {
+    /* aspect-ratio: 1/1; */
+    width: 350px;
+    /* height: 100%; */
+    flex-direction: column;
+    margin: 0 auto;
+
+    img {
+      width: 350px;
+      height: 350px;
+    }
+  }
+`;
+
+const StDetailInput = styled.div`
+  background-color: #f2f2f2;
+  border-top: 1px solid #b6b6b6;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  height: 10%;
+  width: 100%;
+  padding: 30px 20px;
+
+  input {
+    outline: 0;
+  }
+
+  @media screen and (max-width: 1024px) {
+    padding: 10px 20px;
+  }
+  input {
+    border: 1px solid gray;
+    border-radius: 20px;
+    text-indent: 10px;
+    width: 100%;
+    height: 30px;
+  }
+
+  button {
+    width: 80px;
+    height: 30px;
+    border: 0;
+    background-color: #f2f2f2;
+
+    cursor: pointer;
+  }
+`;
+
+const StDetailInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  width: 60%;
+  background-color: #f2f2f2;
+
+  @media screen and (max-width: 1024px) {
+    width: 100%;
+  }
+`;
+
+const StDetailDesc = styled.div`
+  box-sizing: border-box;
+  padding: 20px 20px 10px 20px;
+  display: flex;
+  background-color: white;
+  img {
+    margin-right: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+
+  p {
+    font-size: 14px;
+  }
+
+  .detail-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    p {
+      margin: 0;
+      /* width: 20ch; */
+    }
+
+    .detail-top {
+      display: flex;
+      /* justify-content: center; */
+      align-items: center;
+      margin: 0 0 10px 0;
+      font-size: 15px;
+
+      h2 {
+        font-size: 18px;
+        margin: 0 10px 0 0;
+        color: #555555;
+      }
+
+      p {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 20px;
+        width: 60px;
+        height: 20px;
+        background-color: #d9d9d9;
+        color: #9e9e9e;
+        letter-spacing: 1px;
+      }
+    }
+
+    .detail-bottom {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+
+      p {
+        font-size: 13px;
+        color: #9e9e9e;
+      }
+
+      .detail-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 20px;
+        height: 20px;
+        background-color: #d9d9d9;
+        color: black;
+        margin-left: 10px;
+      }
+    }
+  }
+`;
+
+const StDetailComments = styled.div`
+  aspect-ratio: 1/1;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 20px 20px 10px 20px;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+
+  @media screen and (max-width: 1024px) {
+    width: 100%;
+    height: 300px;
+  }
+`;
+
+const StDetailComment = styled.div`
+  width: 100%;
+  /* max-width: 30ch; */
+  display: flex;
+  margin-bottom: 15px;
+  position: relative;
+
+  p {
+    font-size: 14px;
+  }
+
+  img {
+    margin: 10px 10px 0 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  .detail-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    p {
+      margin: 0;
+      /* width: 20ch; */
+    }
+
+    .detail-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 15px;
+      h2 {
+        font-size: 18px;
+        margin: 0 10px 0 0;
+      }
+
+      p {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 20px;
+        width: 60px;
+        height: 20px;
+        background-color: white;
+      }
+    }
+
+    .detail-del {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &:hover {
+        background-color: #f54e4e;
+        color: white;
+
+        cursor: pointer;
+      }
+    }
+  }
+`;
+
+const StDetailBorder = styled.div`
+  border-bottom: 1px solid #b6b6b6;
+  /* margin-top: 10px; */
+`;
+
+const StXIcon = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  border-radius: 50%;
+
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  cursor: pointer;
+`;
+
 const StGroupPost = styled.div`
+  /* width: 100%; */
+
   .post-container {
-    overflow: hidden;
     position: relative;
+    /* margin: 20px; */
     width: 430px;
+
+    /* height: 400px; */
 
     background-color: white;
     border: 1px solid #d9d9d9;
     border-radius: 10px;
-    /* overflow: hidden; */
+    overflow: hidden;
     cursor: pointer;
 
     img {
       aspect-ratio: 1/1;
       width: 100%;
       background-color: #f0f0f0;
+      /* filter: brightness(50%); */
     }
 
     .post-header {
-      background-color: white;
+      color: white;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -211,7 +501,7 @@ const StGroupPost = styled.div`
       padding: 20px;
       box-sizing: border-box;
       background-color: rgba(0, 0, 0, 0.05);
-      border-radius: 10px;
+      /* backdrop-filter: blur(5px); */
 
       .post-header-info {
         display: flex;
@@ -219,22 +509,46 @@ const StGroupPost = styled.div`
         align-items: center;
 
         img {
-          background-color: gray;
+          /* background-color: pink; */
           border-radius: 50%;
           margin-right: 10px;
         }
 
         h3 {
+          text-shadow: 0px 0px 2px gray, 0px 0px 2px gray;
+          color: white;
+
           margin: 0;
           font-size: 15px;
           margin-right: 10px;
         }
 
         p {
-          background-color: white;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 30px;
+          height: 20px;
+          margin: 0;
+          /* background-color: white; */
+          border: 1px solid white;
+          color: white;
+          /* font-weight: bold; */
+          letter-spacing: 1px;
           border-radius: 20px;
-          font-size: 12px;
-          padding: 5px 15px;
+          padding: 1px 10px;
+        }
+
+        div {
+          display: flex;
+          flex-wrap: wrap;
+          p {
+            background-color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            padding: 5px 15px;
+            margin: 5px 5px 5px 0;
+          }
         }
       }
 
@@ -285,266 +599,15 @@ const StGroupPost = styled.div`
         margin: 0 5px;
       }
     }
-
     @media screen and (max-width: 900px) {
-      width: 400px;
+      margin: 0 auto;
+      width: 460px;
     }
-
     @media screen and (max-width: 500px) {
-      width: 350px;
+      width: 90%;
     }
   }
-
-  /* .post-img-size {
-    width: 350px;
-    height: 350px;
-  } */
-`;
-
-const Arrow = styled.div`
-  display: flex;
-  flex-direction: row;
-  .button-prev:after {
-    content: '';
-    display: inline-block;
-    width: 2rem;
-    height: 2rem;
-    margin-top: 18rem;
-    border-top: 0.2rem solid white;
-    border-right: 0.2rem solid white;
-    -webkit-transform: rotate(225deg);
-    -ms-transform: rotate(225deg);
-    transform: rotate(225deg);
-  }
-  .button-after:after {
-    content: '';
-    display: inline-block;
-    width: 2rem;
-    height: 2rem;
-    margin-top: 18rem;
-    border-top: 0.2rem solid white;
-    border-right: 0.2rem solid white;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-  }
-`;
-
-const StXIcon = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  width: 30px;
-  height: 30px;
-  background-color: white;
-  border-radius: 50%;
-
-  position: absolute;
-  top: -35px;
-  right: -2px;
-  cursor: pointer;
-`;
-
-const StDetailContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  border-radius: 20px;
-  overflow: hidden;
-
-  img {
-    /* max-width: 600px; */
+  @media screen and (max-width: 900px) {
     width: 100%;
-    height: 100%;
-    /* border-radius: 20px 0 0 20px; */
-    background-color: #b6b6b6;
-  }
-
-  @media screen and (max-width: 1024px) {
-    /* aspect-ratio: 1/1; */
-    width: 400px;
-    /* height: 100%; */
-    flex-direction: column;
-    margin: 0 auto;
-
-    img {
-      width: 350px;
-      height: 350px;
-    }
-  }
-`;
-
-const StDetailInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  max-width: 400px;
-  width: 70%;
-  background-color: #f0f0f0;
-
-  @media screen and (max-width: 1024px) {
-    width: 100%;
-  }
-`;
-
-const StDetailDesc = styled.div`
-  box-sizing: border-box;
-  padding: 20px 20px 20px 10px;
-  display: flex;
-  img {
-    margin-right: 10px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-  }
-  .detail-info {
-    display: flex;
-    flex-direction: column;
-
-    p {
-      margin: 0;
-    }
-  }
-
-  .detail-top {
-    display: flex;
-    align-items: center;
-    margin: 0 0 10px 0;
-    font-size: 15px;
-    h2 {
-      font-size: 15px;
-      margin: 0 10px 0 0;
-    }
-
-    p {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 20px;
-      width: 60px;
-      height: 20px;
-      background-color: white;
-    }
-  }
-  .commentDel-btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 20px;
-    height: 20px;
-    background-color: #d9d9d9;
-    color: black;
-    margin-left: 8rem;
-    font-size: 10px;
-  }
-  .comment-bottom {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    font-size: 12px;
-  }
-  .detail-bottom {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    font-size: 12px;
-  }
-  .detail-btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 30px;
-    height: 30px;
-    background-color: #d9d9d9;
-    color: black;
-    margin-left: 10px;
-    font-size: 10px;
-  }
-`;
-
-const StDetailBorder = styled.div`
-  border-bottom: 1px solid #b6b6b6;
-  margin-top: 10px;
-`;
-
-const StDetailComments = styled.div`
-  aspect-ratio: 1/1.2;
-  overflow: auto;
-  box-sizing: border-box;
-  padding: 20px 10px 20px 10px;
-  display: flex;
-  flex-direction: column;
-
-  @media screen and (max-width: 1024px) {
-    width: 100%;
-    height: 200px;
-  }
-`;
-
-const StDetailComment = styled.div`
-  display: flex;
-  margin-bottom: 15px;
-  img {
-    margin-right: 10px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-  }
-  .detail-info {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-
-    p {
-      margin: 0;
-      /* width: 20ch; */
-    }
-
-    .detail-top {
-      display: flex;
-      /* justify-content: center; */
-      align-items: center;
-      margin: 0 0 10px 0;
-      font-size: 15px;
-      h2 {
-        font-size: 15px;
-        margin: 0 10px 0 0;
-      }
-
-      p {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 20px;
-        width: 60px;
-        height: 20px;
-        background-color: white;
-      }
-    }
-  }
-`;
-
-const StDetailInput = styled.div`
-  background-color: #f2f2f2;
-  border-top: 1px solid #b6b6b6;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 10px;
-  margin: auto 0;
-
-  input {
-    border: 1px solid gray;
-    border-radius: 20px;
-    text-indent: 10px;
-    width: 85%;
-    height: 30px;
-  }
-
-  .input-btn {
-    width: 30px;
-    height: 30px;
-    font-size: 10px;
-    margin-left: 5px;
   }
 `;

@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import styled from 'styled-components';
-import { EffectCards, Navigation, Pagination } from 'swiper';
-import 'swiper/css/effect-cards';
+import { EffectCards, EffectCoverflow, Navigation, Pagination } from 'swiper';
+import 'swiper/css/bundle';
 
 interface props {
   setMbtiCheck: any;
@@ -39,12 +39,17 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
     <StSwiper>
       <Swiper
         effect={'cards'}
-        slidesPerView={1}
+        // slidesPerView={1}
         grabCursor={true}
         navigation={true}
         pagination={true}
         mousewheel={true}
         keyboard={true}
+        cardsEffect={{
+          perSlideOffset: 15,
+          rotate: false,
+          //   slideShadows: true,
+        }}
         initialSlide={mbtiIdx}
         onSlideChange={swiperCore => {
           const { activeIndex, snapIndex, previousIndex, realIndex } =
@@ -56,7 +61,11 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
       >
         {mbtiCategory.map((mbti: any, index) => {
           return (
-            <SwiperSlide key={index}>
+            <SwiperSlide
+              className="slide-style"
+              style={{ boxShadow: '0 4px 4px rgba(0,0,0,0.25)' }}
+              key={index}
+            >
               <div>
                 <img src={require('../../src/빡빡이1.png')} />
               </div>
@@ -75,6 +84,44 @@ const StSwiper = styled.div`
   box-sizing: border-box;
   width: 100%;
   padding-right: 120px;
+  /* .swiper-slide:nth-child(1n) {
+    background-color: rgb(206, 17, 17);
+  }
+  .swiper-slide:nth-child(2n) {
+    background-color: rgb(0, 140, 255);
+  }
+
+  .swiper-slide:nth-child(3n) {
+    background-color: rgb(10, 184, 111);
+  }
+
+  .swiper-slide:nth-child(4n) {
+    background-color: rgb(211, 122, 7);
+  }
+
+  .swiper-slide:nth-child(5n) {
+    background-color: rgb(118, 163, 12);
+  }
+
+  .swiper-slide:nth-child(6n) {
+    background-color: rgb(180, 10, 47);
+  }
+
+  .swiper-slide:nth-child(7n) {
+    background-color: rgb(35, 99, 19);
+  }
+
+  .swiper-slide:nth-child(8n) {
+    background-color: rgb(0, 68, 255);
+  }
+
+  .swiper-slide:nth-child(9n) {
+    background-color: rgb(218, 12, 218);
+  }
+
+  .swiper-slide:nth-child(10n) {
+    background-color: rgb(54, 94, 77);
+  } */
   .swiper {
     aspect-ratio: 4.5/5;
     max-width: 460px;
@@ -91,6 +138,12 @@ const StSwiper = styled.div`
     }
 
     @media screen and (max-width: 600px) {
+      max-width: 350px;
+      min-width: 0;
+      width: 100%;
+    }
+
+    @media screen and (max-width: 500px) {
       max-width: 280px;
       min-width: 0;
       width: 100%;
@@ -137,41 +190,11 @@ const StSwiper = styled.div`
     font-size: 40px;
     font-weight: bold;
     color: #151414;
+    background-color: white;
   }
 
   .swiper-wrapper {
     transform: translate3d(calc(0%), -30px, -100px) rotateZ(0deg) scale(1);
-  }
-
-  .swiper-slide.swiper-slide-visible.swiper-slide-active {
-    z-index: 2;
-    transform: translate3d(0px, 0px, 0px) rotateZ(0deg) scale(1);
-  }
-  .swiper-slide .swiper-slide-next {
-    z-index: 1;
-    transform: translate3d(calc(-500px + 10%), 0px, -100px) rotateZ(0deg)
-      scale(1);
-    transition-duration: 0ms;
-  }
-  .swiper-slide.swiper-slide-prev {
-    z-index: 1;
-    transform: translate3d(calc(0px + 10%), 0px, -100px) rotateZ(0deg) scale(1);
-    transition-duration: 0ms;
-  }
-
-  .swiper-slide:nth-child(1n) {
-    border: 1px gray;
-    background-color: white;
-  }
-
-  .swiper-slide:nth-child(2n) {
-    border: 1px gray;
-    background-color: white;
-  }
-
-  .swiper-slide:nth-child(2n) {
-    border: 1px gray;
-    background-color: white;
   }
 
   //버튼
