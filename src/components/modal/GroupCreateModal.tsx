@@ -460,16 +460,26 @@ const StModalIcon = styled.div`
 
   width: 60px;
   height: 60px;
-  background-color: #565656;
+  background-color: #644eee;
   color: white;
 
   position: fixed;
   bottom: 50px;
   right: 50px;
-
-  z-index: 3;
+  z-index: 20000;
 
   cursor: pointer;
+
+  p {
+    position: absolute;
+    top: -22px;
+  }
+
+  @media screen and (min-width: 1440px) {
+    bottom: 50%;
+    left: 50%;
+    transform: translate(600px, 400px);
+  }
 
   @media screen and (max-width: 500px) {
     bottom: 60px;
