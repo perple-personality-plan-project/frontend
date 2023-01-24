@@ -12,7 +12,7 @@ import 'swiper/css';
 import Sidebar from '../pages/subpages/Sidebar';
 import SidebarCompelete from '../pages/subpages/SidebarCompelete';
 
-const NaviBar = () => {
+const MainNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const token = localStorage.getItem('accessToken');
   const navigate = useNavigate();
@@ -90,7 +90,7 @@ const NaviBar = () => {
 
       {/* <SwiperSlides /> */}
 
-      <StLine />
+      {/* <StLine /> */}
       {/* <Modal closeModal={() => setIsOpen(false)} open={isOpen}>
         <StVerticalLists>
           <ul>
@@ -108,7 +108,7 @@ const NaviBar = () => {
   );
 };
 
-export default NaviBar;
+export default MainNav;
 
 const StNavContainer = styled.nav`
   background-color: #644eee;
@@ -185,7 +185,6 @@ const StHorizontalLists = styled.div`
     list-style: none;
     /* margin-right: 30px; */
     margin: 0 30px;
-    /* color: gray; */
     color: white;
 
     @media screen and (max-width: 800px) {
@@ -194,9 +193,8 @@ const StHorizontalLists = styled.div`
   }
 
   li a {
-    /* color: gray; */
-    text-decoration: none;
     color: white;
+    text-decoration: none;
   }
 
   li a:hover {
@@ -258,12 +256,12 @@ const StVerticalLists = styled.div`
 
 const StBtnGroup = styled.div`
   button {
+    background-color: #644eee;
     font-size: 16px;
     font-weight: bold;
     /* background-color: white; */
-    background-color: #644eee;
-    color: white;
     border: 0;
+    color: white;
 
     cursor: pointer;
   }
