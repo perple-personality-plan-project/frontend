@@ -99,14 +99,19 @@ const StIcons = styled.div`
 
 const StGroup = styled.div`
   display: flex;
-  padding: 20px;
+  padding: 15px;
   background-color: white;
   box-shadow: 0px 0px 13.6122px rgba(0, 0, 0, 0.14);
   border-radius: 10px;
   cursor: pointer;
-  width: 550px;
+  width: 612px;
+  height: 135px;
   position: relative;
   /* height: 276px; */
+
+  @media screen and (max-width: 800px) {
+    height: stretch;
+  }
 
   h2 {
     font-size: 20px;
@@ -128,8 +133,8 @@ const StGroup = styled.div`
     img {
       /* aspect-ratio: 1/1;
       width: 100%; */
-      width: 130px;
-      height: 130px;
+      width: 135px;
+      height: 135px;
       border-radius: 10px;
     }
 
@@ -163,6 +168,11 @@ const StGroup = styled.div`
     flex-direction: column;
     justify-content: center;
     margin-left: 20px;
+
+    h2 {
+      font-family: 'Nanum_EB';
+      margin-bottom: 10px;
+    }
   }
 
   @media screen and (max-width: 800px) {
