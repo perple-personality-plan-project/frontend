@@ -92,7 +92,8 @@ const MapList = ({ places, pagination }: MapListProps) => {
               </svg>
               <div>
                 <span className="place-mark">
-                  {String.fromCharCode(65 + index)}
+                  {index + 1}
+                  {/* {String.fromCharCode(65 + index)} */}
                 </span>
                 <strong className="place-name">{kakaoPlace.place_name}</strong>
                 <span className="place-address">{kakaoPlace.address_name}</span>

@@ -51,10 +51,6 @@ const Navbar = () => {
             <CustomLink to="/mypage">마이페이지</CustomLink>
           </ul>
           <ul>
-            <i
-              style={{ alignSelf: 'center', fontSize: '20px' }}
-              className="ri-shopping-basket-line"
-            ></i>
             {token ? (
               <button onClick={logout}>로그아웃 </button>
             ) : (

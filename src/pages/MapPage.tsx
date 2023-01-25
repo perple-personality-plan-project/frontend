@@ -12,7 +12,7 @@ import {
 import { __RemoveItem } from '../redux/modules/mapSlice';
 import { __RootMaker } from '../redux/modules/mapSlice';
 import client from '../api/client';
-import MapNav from '../components/MapNav';
+import NaviBar from '../components/NaviBar';
 
 // Window 인터페이스에 Kakao API를 위한 kakao 객체 정의
 declare global {
@@ -106,8 +106,6 @@ const MapPage = () => {
 
   const stringRoot = JSON.stringify(maplist);
 
-  const token = localStorage.getItem('accessToken');
-
   //onchange Root Title
   const onChangeRoot = (e: any) => {
     setRoot([...Root, e]);
@@ -115,17 +113,21 @@ const MapPage = () => {
   const onChangeRootTitle = (e: any) => {
     setRootTitle(e);
   };
-
+  const accessToken = localStorage.getItem('accessToken');
   //dispatch __RootMaker
   const dispatchRoot = (event: any) => {
-    event.preventDefault();
-
-    const Roots: RootType = {
-      place_group: stringRoot,
-      place_group_name: RootTitle,
-    };
-    console.log(Roots);
-    dispatch(__RootMaker(Roots));
+    if (accessToken === null) {
+      event.preventDefault();
+      alert('로그인이 필요합니다.');
+    } else {
+      event.preventDefault();
+      const Roots: RootType = {
+        place_group: stringRoot,
+        place_group_name: RootTitle,
+      };
+      dispatch(__RootMaker(Roots));
+      alert('루트가 생성되었습니다.');
+    }
   };
 
   const changeHandler = (checked: any, id: any) => {
@@ -327,52 +329,59 @@ const MapPage = () => {
 
   return (
     <div className="map-page">
-      <Header>
-        {/* <MapNav /> */}
-        <Hamburger src="https://w7.pngwing.com/pngs/909/687/png-transparent-hamburger-button-hot-dog-computer-icons-pancake-hot-dog-share-icon-navbar-menu-thumbnail.png"></Hamburger>
-        <Logo onClick={() => navigate(`/`)}>PLATTER</Logo>
-        <Cart onClick={ModalShow}>장바구니</Cart>
-        <Modal show={Modals}>
-          <SelectAll onClick={togglechange}>□ 전체 선택</SelectAll>
-          <CartIcon onClick={ModalShow}>장바구니아이콘</CartIcon>
-          <BoxContainer>
-            <Box>
-              <form onSubmit={dispatchRoot}>
-                {maplist.map((item: any, index: number) => {
-                  return (
-                    <CheckBoxForm key={index}>
-                      <CheckBox
-                        required
-                        type="checkbox"
-                        name="checkbox"
-                        value={index + 1}
-                        onChange={e => {
-                          changeHandler(e.currentTarget.checked, index);
-                          onChangeRoot({
-                            place_name: item.place_name,
-                            address_name: item.address_name,
-                            x: item.x,
-                            y: item.y,
-                          });
-                        }}
-                        checked={checkedInputs.includes(index) ? true : false}
-                      />
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="50"
-                        height="50"
-                        color="#644EEE"
-                        fill="currentColor"
-                        className="bi bi-geo-alt-fill"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                      </svg>
-                      <Desc>
-                        <ID>{index + 1}</ID>
-                        <CheckLabel>{item.place_name}</CheckLabel>
-                        <CheckDesc>{item.address_name}</CheckDesc>
-                      </Desc>
+      <Cart onClick={ModalShow}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="32"
+          height="32"
+        >
+          <path fill="none" d="M0 0h24v24H0z" />
+          <path
+            d="M4 15V8.5a4.5 4.5 0 0 1 9 0v7a2.5 2.5 0 1 0 5 0V8.83a3.001 3.001 0 1 1 2 0v6.67a4.5 4.5 0 1 1-9 0v-7a2.5 2.5 0 0 0-5 0V15h3l-4 5-4-5h3zm15-8a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"
+            fill="rgba(255,255,255,1)"
+          />
+        </svg>
+      </Cart>
+      <Modal show={Modals}>
+        <SelectAll onClick={togglechange}>
+          <input type="checkbox"></input>전체 선택
+        </SelectAll>
+        <BoxContainer>
+          <Box>
+            <form onSubmit={dispatchRoot}>
+              {maplist.map((item: any, index: number) => {
+                return (
+                  <CheckBoxForm key={index}>
+                    <CheckBox
+                      required
+                      type="checkbox"
+                      name="checkbox"
+                      value={index + 1}
+                      onChange={e => {
+                        changeHandler(e.currentTarget.checked, index);
+                        onChangeRoot({
+                          place_name: item.place_name,
+                          address_name: item.address_name,
+                          x: item.x,
+                          y: item.y,
+                        });
+                      }}
+                      checked={checkedInputs.includes(index) ? true : false}
+                    />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="70"
+                      height="70"
+                      color="#B2A7F7"
+                      fill="currentColor"
+                      className="bi bi-geo-alt-fill"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                    </svg>
+                    <Desc>
+                      <ID>{index + 1}</ID>
                       <Delete
                         onClick={e => {
                           dispatchPlaceName(item.place_name);
@@ -380,24 +389,26 @@ const MapPage = () => {
                       >
                         X
                       </Delete>
-                    </CheckBoxForm>
-                  );
-                })}
-                <RootName
-                  placeholder="루트이름"
-                  onChange={e => onChangeRootTitle(e.target.value)}
-                ></RootName>
-                <RootBtn>루트 만들기</RootBtn>
-              </form>
-            </Box>
-          </BoxContainer>
-        </Modal>
-        {token ? (
-          <Login onClick={logout}>로그아웃 </Login>
-        ) : (
-          <Login onClick={() => navigate('/signin')}>로그인 </Login>
-        )}
-      </Header>
+                      <CheckLabel>{item.place_name}</CheckLabel>
+                      <CheckDesc>{item.address_name}</CheckDesc>
+                    </Desc>
+                  </CheckBoxForm>
+                );
+              })}
+
+              <RootName
+                placeholder="이름을 입력해 주세요"
+                onChange={e => onChangeRootTitle(e.target.value)}
+                required
+              ></RootName>
+              <RootBtn>루트 만들기</RootBtn>
+            </form>
+          </Box>
+          <BorderBox>
+            <Indicator>루트이름</Indicator>
+          </BorderBox>
+        </BoxContainer>
+      </Modal>
       <Map forwardRef={mapContainer} />
       <div
         className="map-control"
@@ -406,7 +417,8 @@ const MapPage = () => {
           left: 0,
           top: 0,
           width: '100%',
-          height: '100%',
+          height: '90%',
+          marginTop: '70px',
         }}
       >
         <MapForm handleSubmit={handleSearchPlaceSubmit} />
@@ -416,67 +428,23 @@ const MapPage = () => {
   );
 };
 
-const Header = styled.div`
-  //header
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 80px;
-  z-index: 100;
-  //css translucent gradient black
-  background: white;
-  background: -moz-linear-gradient(
-    top,
-    rgba(0, 0, 0, 0.5) 0%,
-    rgba(0, 0, 0, 0) 100%
-  );
-`;
-const Hamburger = styled.img`
-  position: absolute;
-  top: 50%;
-  left: 5%;
-  transform: translate(-50%, -50%);
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  z-index: 100;
-`;
-const Logo = styled.div`
-  //position middle
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-weight: bold;
-  cursor: pointer;
-`;
 const Cart = styled.div`
   //position right
   position: absolute;
-  top: 50%;
-  right: 120px;
+  top: 4%;
+  right: 100px;
   transform: translate(0, -50%);
   font-weight: bold;
   cursor: pointer;
   z-index: 100;
 `;
-const Login = styled.div`
-  //position right
-  position: absolute;
-  top: 50%;
-  right: 30px;
-  transform: translate(0, -50%);
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 100;
-`;
+
 const Modal = styled.div<any>`
   position: absolute;
-  top: 0;
+  top: 70px;
   right: 0;
   width: 500px;
-  height: 100vh;
+  height: 92vh;
   background-color: white;
   z-index: 100;
   display: ${props => (props.show ? 'none' : '')};
@@ -485,9 +453,8 @@ const Modal = styled.div<any>`
 const SelectAll = styled.div`
   //position top left
   position: absolute;
-  top: 60px;
+  top: 30px;
   left: 50px;
-  cursor: pointer;
   font-weight: bold;
 `;
 const CartIcon = styled.button`
@@ -500,71 +467,130 @@ const CartIcon = styled.button`
 const BoxContainer = styled.div`
   //box with border
   position: absolute;
-  top: 100px;
+  top: 70px;
   left: 50%;
   transform: translate(-50%, 0);
   width: 450px;
-  height: 800px;
-  border: 1px solid black;
+  height: 750px;
 `;
 //Box stye
 const Box = styled.div`
-  display: flex;
+  height: 500px;
   align-items: center;
   margin: 20px 0;
   padding: 0 20px;
+  border-top: 1px solid #e2e2e2;
+  border-bottom: 1px solid #e2e2e2;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  z-index: 100;
+  //box gradation at bottom
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 90%,
+    #c7b9b9 120%
+  );
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const Desc = styled.div`
-  display: flex;
+  display: inline-block;
   flex-direction: column;
   margin-left: 20px;
 `;
 const Delete = styled.div`
-  position: absolute;
-  margin-left: 370px;
-  margin-bottom: 50px;
+  margin-left: 220px;
+  font-size: 20px;
+  display: inline;
   cursor: pointer;
 `;
 
 const CheckBoxForm = styled.div`
   //box with border
   width: 400px;
-  height: 100px;
-  border: 1px solid black;
+  height: 130px;
   border-radius: 15px;
   display: flex;
   align-items: center;
-  cursor: pointer;
   margin-top: 20px;
+  //box shadow black
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+`;
+const BorderBox = styled.div`
+  width: 450px;
+  z-index: 100;
+  height: 100px;
+  border-bottom: 1px solid #e2e2e2;
+`;
+
+const Indicator = styled.div`
+  z-index: 100;
+  margin-top: 20px;
+  margin-left: 20px;
+  font-size: 15px;
+  color: #828282;
 `;
 const ID = styled.div`
   font-size: 20px;
+  display: inline;
 `;
 
 //Radio button style
 const CheckBox = styled.input`
   margin-right: 10px;
+  //check box style
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  &:checked {
+    background-color: #644eee;
+    //css checked content
+    &:after {
+      content: '✔';
+      display: block;
+      width: 10px;
+      height: 10px;
+      border-radius: 5px;
+      margin: auto;
+      color: white;
+    }
+  }
 `;
+
 //Radio button label style
-const CheckLabel = styled.label`
-  font-size: 20px;
+const CheckLabel = styled.div`
+  //css font size fit box
+  height: 20px;
   font-weight: bold;
+  width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 10px;
 `;
 
 const CheckDesc = styled.div`
   font-size: 15px;
+  margin-top: 10px;
 `;
 const RootName = styled.input`
   //position bottom
   position: absolute;
-  bottom: 80px;
-  left: 50%;
+  bottom: 130px;
+  left: 47%;
   transform: translate(-50%, 0);
-  width: 400px;
+  width: 350px;
   height: 50px;
-  background-color: white;
-  border: 1px solid black;
+  background-color: #f1f1f1;
+  border: 1px #f1f1f1;
   border-radius: 15px;
   font-size: 20px;
   padding: 0 20px;
@@ -572,18 +598,18 @@ const RootName = styled.input`
 
 //Root button style
 const RootBtn = styled.button`
-  //position bottom
   position: absolute;
-  bottom: 20px;
-  left: 50%;
+  bottom: 30px;
+  left: 48%;
   transform: translate(-50%, 0);
   width: 400px;
   height: 50px;
-  background-color: black;
+  background-color: #644eee;
   color: white;
   font-size: 20px;
   font-weight: bold;
   border-radius: 15px;
+  border: 1px solid rgba(0, 0, 0, 0);
   cursor: pointer;
 `;
 
