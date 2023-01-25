@@ -110,6 +110,7 @@ const GroupCreateModal: React.FC<Props> = ({
       formData.append('description', groupInfos.description);
       formData.append('hashtag', tagSetJSON);
       await loggedIn.post(`api/group`, formData);
+      await alert('그룹 작성 완료!');
       if (filterGroup === '인기순') {
         dispatch(__groupGetRank());
       }
@@ -117,15 +118,15 @@ const GroupCreateModal: React.FC<Props> = ({
         dispatch(__groupGetDate());
       }
       // navigate('/group');
-    } catch (e) {
-      console.log(e);
+    } catch (e: any) {
+      if (e.response.status === 400) {
+        alert(e.response.data.message);
+      }
     }
   };
 
   const sendData = () => {
-    if (!thumbnail) {
-      alert('그룹 이미지를 넣어주세요!');
-    } else if (tagSet.length < 1) {
+    if (tagSet.length < 1) {
       alert('태그를 1-3개까지 추가해주세요!');
     } else if (groupInfos.group_name === '') {
       alert('그룹명을 작성해주세요!');
@@ -134,14 +135,14 @@ const GroupCreateModal: React.FC<Props> = ({
     } else if (
       tagSet.length > 0 &&
       groupInfos.group_name &&
-      groupInfos.description &&
-      thumbnail
+      groupInfos.description
     ) {
+      // console.log(thumbnail);
       postDataToServer();
       setIsOpen(false);
       setImageSrc('');
       setTagSet([]);
-      alert('그룹 작성 완료!');
+      setThumbnail('');
     }
     // else {
     //   alert('형식을 모두 작성해주세요');
