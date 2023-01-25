@@ -112,7 +112,15 @@ const Router = () => {
               </div>
             }
           />
-          <Route path="/map" element={<MapPage />} />
+          <Route
+            path="/map"
+            element={
+              <div>
+                <Navbar />
+                <MapPage />
+              </div>
+            }
+          />
           <Route
             path="/mypage"
             element={

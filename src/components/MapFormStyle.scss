@@ -1,12 +1,12 @@
 .map-form {
   position: relative;
   z-index: 1;
-  
+
   form {
     position: absolute;
     left: 50px;
-    top: 100px;
-    
+    top: 50px;
+
     i {
       position: absolute;
       top: 50%;
@@ -17,15 +17,20 @@
       background: url(../assets/icon/geo-alt-fill.svg) no-repeat center/contain;
     }
 
-    input[name="keyword"] {
+    input[name='keyword'] {
       font: inherit;
       font-size: 12px;
       line-height: 1.25;
-      width: 300px;
-      border: 1px solid #ccc;
-      border-radius: 100px;
-      padding: 10px 30px;
+      width: 25vw;
+      height: 20px;
+      padding: 10px 25px;
       box-shadow: 0 0 20px #888;
+      border: double 4px transparent;
+      border-radius: 100px;
+      background-image: linear-gradient(white, white),
+        linear-gradient(to right, #644eee, #4583ff);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
     }
   }
 }
