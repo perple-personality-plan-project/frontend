@@ -227,7 +227,7 @@ const StUpperInput = styled.input`
   border-radius: 20px;
   border: 0;
   background-color: #f1f1f1;
-
+  outline: 0;
   text-indent: 12px;
   margin: 0 0 20px 0;
 
