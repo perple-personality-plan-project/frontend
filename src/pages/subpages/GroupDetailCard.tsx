@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -12,8 +12,10 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../components/hooks/typescripthook/hooks';
-import { __groupFeedDetail } from '../../redux/modules/groupSlice';
-import nonTokenClient from '../../api/noClient';
+import {
+  __groupFeedDetail,
+  __groupFeedList,
+} from '../../redux/modules/groupSlice';
 import loggedIn from '../../api/loggedIn';
 
 interface feedCardPreset {
@@ -28,6 +30,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
   groupSubscribe,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [openSubModal, setOpenSubModal] = useState(false);
   const dispatch = useAppDispatch();
   const {
     created_at,
@@ -39,11 +42,17 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
     nickname,
     thumbnail,
     updated_at,
+    likeCount,
   } = feed;
 
   const { groupFeedDetail }: any = useAppSelector(store => store.group);
+  const { groupFeedLike }: any = useAppSelector(store => store.group);
+  const [toggle, setToggle] = useState(false);
   const [comment, setComment] = useState('');
   const created = created_at.split('T');
+
+  // console.log(groupFeedLike, feed_id);
+  // console.log(feed_id);
 
   const date = created_at
     .replace('T', '. ')
@@ -94,36 +103,76 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
     dispatch(__groupFeedDetail({ groupId: groupId, feedId: feed_id }));
   };
 
+  const toggleHeart = async (feedId: number) => {
+    await loggedIn.put(`/api/group/${groupId}/feed/${feedId}/like`); //좋아요 / 좋아요 취소 api
+    setToggle(!toggle); //좋아요를 누를 때 마다 좋아요 / 좋아요 취소 api와 setToggles가 같이
+    //작동하여 싱크 하는 것 처럼 보임.
+    //이후에 리프레쉬를 하면 useEffect과정부터 다시 실행.
+    dispatch(__groupFeedList({ id: groupId }));
+  };
+
+  const fetchLikes = async () => {
+    const { data } = await loggedIn.get(`/api/feed/${feed_id}/like`); //좋아요 확인 api
+    //전역변수로 두니까 모든 컴포넌트들이 쉐어해서 전부 같은 결과값을 가짐;;;
+    //이런 경우에는 떵크 말고 그냥 이렇게 바로 써 버리기.
+    setToggle(data.data); //좋아요 확인한 정보(boolean 값)를 setToggle에 이니셜 값으로 저장.
+  };
+
+  useEffect(() => {
+    fetchLikes();
+    //렌더링 할 때 fetchLikes를 불러 좋아요를 눌렀는지 아닌지 확인.
+  }, []);
+
   return (
     <StGroupPost>
-      <div onClick={openModal} className="post-container">
-        <div className="post-header">
-          <div className="post-header-info">
-            <img
-              style={{ width: '40px', height: '40px' }}
-              src={require('../../빡빡이1.png')}
-              alt="group-img"
-            />
-            <h3>{nickname}</h3>
-            <p>{mbti.toUpperCase()}</p>
+      <div className="post-container">
+        <div onClick={openModal}>
+          <div className="post-header">
+            <div className="post-header-info">
+              <img
+                style={{ width: '40px', height: '40px' }}
+                src={require('../../빡빡이1.png')}
+                alt="group-img"
+              />
+              <h3>{nickname}</h3>
+              <p>{mbti.toUpperCase()}</p>
+            </div>
+            <div className="post-header-route">{location}</div>
           </div>
-          <div className="post-header-route">{location}</div>
-        </div>
 
-        <img
-          src={process.env.REACT_APP_IMG_SERVER + thumbnail.split(',')[0]}
-          alt="group-img"
-        />
-        <div className="post-desc">
-          <p>{description}</p>
-          <div className="post-bottom">
-            <p className="post-date">{date}</p>
-            <div className="post-bottom-right">
-              <div className="post-bottom-icon">A</div>
-              <div className="post-bottom-icon">B</div>
-              <div className="post-bottom-icon">C</div>
+          <img
+            src={process.env.REACT_APP_IMG_SERVER + thumbnail.split(',')[0]}
+            alt="group-img"
+          />
+          <div className="post-desc">
+            <p>{description}</p>
+            <div className="post-bottom">
+              <p className="post-date">{date}</p>
             </div>
           </div>
+        </div>
+        <div className="post-bottom-right">
+          <div className="post-bottom-heart">
+            {toggle ? (
+              <StHeart>
+                <i
+                  className="ri-heart-3-fill"
+                  onClick={() => toggleHeart(feed_id)}
+                ></i>
+                <p className="heart-number">{likeCount}</p>
+              </StHeart>
+            ) : (
+              <StHeart>
+                <i
+                  className="ri-heart-3-line"
+                  onClick={() => toggleHeart(feed_id)}
+                ></i>
+                <p className="heart-number">{likeCount}</p>
+              </StHeart>
+            )}
+          </div>
+          <div className="post-bottom-icon">B</div>
+          <div className="post-bottom-icon">C</div>
         </div>
       </div>
 
@@ -161,7 +210,12 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                 <div className="detail-bottom">
                   <p>{date}</p>
                   <div style={{ display: 'flex' }}>
-                    <div className="detail-btn">좋</div>
+                    <div
+                      className="detail-btn"
+                      onClick={() => setOpenSubModal(true)}
+                    >
+                      좋
+                    </div>
                     <div className="detail-btn">댓</div>
                     <div className="detail-btn">저장</div>
                   </div>
@@ -221,6 +275,19 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
 };
 
 export default GroupDetailCard;
+
+const StHeart = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  .heart-number {
+    position: absolute;
+    top: -35px;
+    right: 4px;
+    /* font-size: 20px; */
+  }
+`;
 
 const StDetailContainer = styled.div`
   display: flex;
@@ -588,26 +655,41 @@ const StGroupPost = styled.div`
       align-items: center;
     }
 
-    .post-bottom-right {
-      display: flex;
-
-      .post-bottom-icon {
-        width: 30px;
-        height: 30px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: pink;
-
-        /* border-radius: 50%; */
-        margin: 0 5px;
-      }
-    }
     @media screen and (max-width: 900px) {
       width: 460px;
     }
     @media screen and (max-width: 500px) {
       width: 100%;
+    }
+  }
+
+  .post-bottom-right {
+    display: flex;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+
+    .post-bottom-heart {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      /* border-radius: 50%; */
+      margin: 0 5px;
+    }
+
+    .post-bottom-icon {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: pink;
+
+      /* border-radius: 50%; */
+      margin: 0 5px;
     }
   }
   @media screen and (max-width: 900px) {
