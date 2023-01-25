@@ -79,6 +79,10 @@ const SignInPage = () => {
             onClick={kakaoLogin}
             style={{ height: '40px', marginTop: '15%' }}
           >
+            <i
+              style={{ fontSize: '20px', paddingRight: '5px' }}
+              className="ri-kakao-talk-fill"
+            ></i>
             카카오로 로그인하기
           </ButtonKakao>
         </ButtonWrap>
@@ -192,6 +196,9 @@ const ButtonSignUp = styled.button`
 `;
 
 const ButtonKakao = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   /* width: 215px; */
   width: 100%;
   height: 40px;
