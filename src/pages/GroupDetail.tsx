@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import styled from 'styled-components';
 import {
   useAppDispatch,
@@ -8,6 +8,7 @@ import {
 import GroupDetailCreateModal from '../components/modal/GroupDetailCreateModal';
 import {
   __groupFeedList,
+  __groupGetDate,
   __groupGetRank,
   __groupSubscribeCheck,
 } from '../redux/modules/groupSlice';
@@ -23,6 +24,7 @@ export interface subscribeInfoPreset {
   group_user_id?: number;
   updated_at?: string;
   user_id?: number;
+  likeCount?: number;
 }
 
 export interface groupFeedPreset {
@@ -35,11 +37,12 @@ export interface groupFeedPreset {
   updated_at: string;
   mbti: string;
   nickname: string;
+  likeCount: number;
 }
 
 const GroupDetail = () => {
   const paramId = useParams();
-
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { groupRank } = useAppSelector(store => store.group);
   const { groupSubscribe } = useAppSelector(store => store.group);
@@ -74,6 +77,17 @@ const GroupDetail = () => {
       await dispatch(__groupFeedList({ id: paramId.id })); //그룹 게시글 들고옴
     } else {
       alert('로그인 후 구독해주세요!');
+    }
+  };
+
+  const postDelete = async () => {
+    if (window.confirm('정말로 이 그룹을 삭제하시겠습니까?')) {
+      await loggedIn.delete(`/api/group/${paramId.id}`);
+      dispatch(__groupGetRank());
+      dispatch(__groupGetDate());
+      navigate('/group');
+    } else {
+      // alert('취소합니다.');
     }
   };
 
@@ -119,7 +133,13 @@ const GroupDetail = () => {
               <p>{filteredByPage[0]?.description}</p>
             </div>
             {groupSubscribe ? (
-              groupSubscribe.admin_flag ? null : (
+              groupSubscribe.admin_flag ? (
+                <StSubscribeOn>
+                  <button onClick={postDelete} className="group-subscribe-del">
+                    삭제하기
+                  </button>
+                </StSubscribeOn>
+              ) : (
                 <StSubscribeOn>
                   <button
                     onClick={onClickGroupSubscribe}
@@ -243,6 +263,26 @@ const StSubscribeOn = styled.div`
     background-color: #f3f1f8;
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
     /* fill: #6E57F6; */
+  }
+
+  .group-subscribe-del {
+    display: block;
+    width: 100%;
+    /* border: 1px solid gray; */
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    background-color: white;
+    color: red;
+    border: 1px solid red;
+
+    &:hover {
+      background-color: red;
+      color: white;
+    }
   }
 
   .group-subscribe-cancel {
