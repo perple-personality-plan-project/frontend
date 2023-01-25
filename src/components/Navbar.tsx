@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useMatch, useResolvedPath } from 'react-router-dom';
 import SidebarCompelete from '../pages/subpages/SidebarCompelete';
 import 'remixicon/fonts/remixicon.css';
 import { useNavigate } from 'react-router-dom';
@@ -17,10 +17,12 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const CustomLink: React.FC<linkProps> = ({ to, children, ...props }) => {
-    const path = window.location.pathname;
+    // const path = window.location.pathname;
+    const resolvedPath = useResolvedPath(to);
+    const isActive = useMatch({ path: resolvedPath.pathname, end: true });
 
     return (
-      <li className={path === to ? 'active' : ''}>
+      <li className={isActive ? 'active' : ''}>
         <Link to={to} {...props}>
           {children}
         </Link>
@@ -75,7 +77,7 @@ const StNavContainer = styled.div`
     margin: 0;
   }
   .nav {
-    height: 70px;
+    height: 90px;
     background-color: #644eee;
     color: white;
     display: flex;
@@ -129,9 +131,10 @@ const StNavContainer = styled.div`
       align-self: center;
       background-color: #644eee;
       border: 1px solid white;
-      border-radius: 15px;
+      border-radius: 20px;
       color: white;
-      height: 25px;
+      width: 85px;
+      height: 35px;
       cursor: pointer;
     }
   }
