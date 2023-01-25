@@ -17,12 +17,15 @@ import TogoUserlist from '../pages/Togolist';
 import { store } from '../redux/config/configStore';
 import { Provider } from 'react-redux';
 import MainNav from '../components/MainNav';
+import KakaoRedirect from '../pages/subpages/KakaoRedirect';
+import Navbar from '../components/Navbar';
 
 const Router = () => {
   return (
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
+          <Route path="/kakaocallback" element={<KakaoRedirect />} />
           <Route
             path="/:id"
             element={
@@ -50,7 +53,7 @@ const Router = () => {
                   // justifyContent: 'center',
                 }}
               >
-                <NaviBar />
+                <Navbar />
                 <GroupPage />
               </div>
             }
@@ -60,7 +63,7 @@ const Router = () => {
             path="/"
             element={
               <div style={{ maxWidth: '1440px', margin: 'auto' }}>
-                <MainNav />
+                <Navbar />
                 <MainPage />
               </div>
             }
@@ -70,7 +73,7 @@ const Router = () => {
             path="/community"
             element={
               <div style={{ maxWidth: '1440px', margin: 'auto' }}>
-                <MainNav />
+                <Navbar />
                 <MainPage />
               </div>
             }
@@ -110,7 +113,21 @@ const Router = () => {
             }
           />
           <Route path="/map" element={<MapPage />} />
-          <Route path="/mypage" element={<MyPage />} />
+          <Route
+            path="/mypage"
+            element={
+              <div
+                style={{
+                  maxWidth: '1440px',
+                  margin: '0 auto',
+                  position: 'relative',
+                  // justifyContent: 'center',
+                }}
+              >
+                <MyPage />
+              </div>
+            }
+          />
           <Route path="/togolist" element={<TogoUserlist />} />
         </Routes>
       </BrowserRouter>
