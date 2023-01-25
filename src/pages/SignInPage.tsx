@@ -27,10 +27,16 @@ const SignInPage = () => {
       localStorage.setItem('mbti', data.data.mbti);
 
       alert('로그인 성공');
-      navigate('/');
+      navigate('/community');
     } catch (error: any) {
       alert(error.response.data.message);
     }
+  };
+
+  const kakaoLogin = async () => {
+    const Redirect_URI = process.env.REACT_APP_KAKAO_REDIRECT_URI;
+    const Client_id = process.env.REACT_APP_KAKAO_CLIENT_ID;
+    window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${Client_id}&redirect_uri=${Redirect_URI}`;
   };
 
   return (
@@ -69,7 +75,10 @@ const SignInPage = () => {
               회원가입
             </ButtonSignUp>
           </div>
-          <ButtonKakao style={{ height: '40px', marginTop: '15%' }}>
+          <ButtonKakao
+            onClick={kakaoLogin}
+            style={{ height: '40px', marginTop: '15%' }}
+          >
             카카오로 로그인하기
           </ButtonKakao>
         </ButtonWrap>
