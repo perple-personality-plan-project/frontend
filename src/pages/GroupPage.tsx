@@ -54,7 +54,7 @@ const GroupPage = () => {
 
   const fetchData = async () => {
     const { data } = await nonTokenClient.get(`api/group/hashtag`);
-    const randomTags = data.data.sort(() => Math.random() - 0.5).splice(0, 20);
+    const randomTags = data.data.sort(() => Math.random() - 0.5).splice(0, 18);
     setTags([...randomTags]);
   };
 
@@ -65,10 +65,16 @@ const GroupPage = () => {
   return (
     <StContainer>
       <StInputContainer>
-        <StUpperInput
-          onChange={e => setWord(e.target.value)}
-          placeholder="원하는 그룹을 검색해 보세요!"
-        />
+        <StInput>
+          <StUpperInput
+            value={word}
+            onChange={e => setWord(e.target.value)}
+            placeholder="원하는 그룹을 검색해 보세요!"
+          />
+          <div className="input-clear" onClick={() => setWord('')}>
+            x
+          </div>
+        </StInput>
       </StInputContainer>
       <StRecommend>검색이 어려우시다고요? 추천해 드릴게요!</StRecommend>
       <StRecommendLists>
@@ -76,6 +82,8 @@ const GroupPage = () => {
           <StRecommendList key={index}>{tag.title}</StRecommendList>
         ))}
       </StRecommendLists>
+
+      <StLine></StLine>
 
       {groupByfilter.length !== 0 ? (
         <StGroups>
@@ -152,13 +160,48 @@ const GroupPage = () => {
 
 export default GroupPage;
 
-const StContainer = styled.div`
-  background-color: #f8f8f8;
-  /* position: relative; */
+const StInput = styled.div`
+  position: relative;
   width: 100%;
-  min-height: 100vh;
+
+  .input-clear {
+    display: flex;
+    justify-content: center;
+    border-radius: 50%;
+    color: white;
+    background-color: #e2e1ea;
+    width: 28px;
+    height: 28px;
+    position: absolute;
+    top: 17px;
+    left: 40%;
+    font-size: 25px;
+
+    @media screen and (max-width: 800px) {
+      left: 72%;
+    }
+
+    @media screen and (max-width: 600px) {
+      left: 71%;
+    }
+  }
+
+  @media screen and (max-width: 800px) {
+    display: flex;
+    justify-content: center;
+  }
+`;
+
+const StLine = styled.div`
+  border: 1px solid #f2f2f2;
+`;
+const StContainer = styled.div`
+  * {
+    font-family: 'Nanum_R';
+  }
+  background-color: #f8f8f8;
+  width: 100%;
   height: 100%;
-  /* padding: 10px; */
   margin: 0 auto;
 `;
 
@@ -166,7 +209,7 @@ const StContainer = styled.div`
 const StInputContainer = styled.div`
   box-sizing: border-box;
   background-color: white;
-  padding: 20px 0 0 50px;
+  padding: 50px 0 0 68px;
   @media screen and (max-width: 800px) {
     display: flex;
     justify-content: center;
@@ -186,13 +229,18 @@ const StCategoryGroup = styled.div`
   border-radius: 20px;
   overflow: hidden;
   position: absolute;
-  top: 20px;
-  left: -10px;
+  top: 50px;
+  left: 55px;
 
   z-index: 2;
 
+  @media screen and (max-width: 1315px) {
+    left: 50%;
+    transform: translate(-330px, 0);
+  }
   @media screen and (max-width: 800px) {
-    left: 0;
+    left: 333px;
+    /* transform: translate(-380px, 0); */
   }
 `;
 
@@ -223,19 +271,34 @@ const StUpperInput = styled.input`
   width: 95%;
   max-width: 40%;
   height: 20px;
-  padding: 10px;
-  border-radius: 20px;
-  border: 0;
-  background-color: #f1f1f1;
+  padding: 20px;
+  background-color: white;
   outline: 0;
   text-indent: 12px;
-  margin: 0 0 20px 0;
+  margin: 0 0 51px 0;
+  font-size: 20px;
+
+  border: double 3px transparent;
+  border-radius: 40px;
+  background-image: linear-gradient(white, white),
+    linear-gradient(to right, #644eee, #4584ff);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
 
   @media screen and (max-width: 800px) {
     text-align: center;
     margin: 0 auto 20px auto;
     max-width: 50%;
     width: 100%;
+    text-indent: 0;
+  }
+
+  @media screen and (max-width: 600px) {
+    font-size: 17px;
+  }
+
+  @media screen and (max-width: 500px) {
+    font-size: 14px;
   }
 `;
 
@@ -243,12 +306,13 @@ const StUpperInput = styled.input`
 const StRecommend = styled.p`
   background-color: white;
   color: #7a7a7a;
-  font-size: 12px;
-  padding: 0 0 20px 50px;
+  font-size: 22px;
+  padding: 0 0 25px 69px;
   margin: 0;
 
   @media screen and (max-width: 800px) {
-    padding-bottom: 10px;
+    padding: 0 0 10px 0;
+    font-size: 15px;
     text-align: center;
   }
 `;
@@ -258,11 +322,10 @@ const StRecommendLists = styled.div`
   background-color: white;
   display: flex;
   flex-wrap: wrap;
-  padding-bottom: 20px;
-  margin-bottom: 30px;
+  padding-bottom: 49px;
   div {
     &:first-of-type {
-      margin-left: 45px;
+      margin-left: 61px;
     }
   }
 `;
@@ -272,31 +335,38 @@ const StRecommendList = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 90px;
-  height: 30px;
+  width: 140px;
+  height: 47px;
   color: #7a7a7a;
   margin: 5px;
 
-  border-radius: 20px;
+  border-radius: 30px;
   background-color: #f5f5f5;
+
+  @media screen and (max-width: 500px) {
+    width: 125px;
+    height: 35px;
+  }
 `;
 
 //그룹 컨테이너
 const StGroups = styled.div`
+  background-color: white;
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
 
   margin: 0 auto;
-  padding: 70px 0;
+  padding: 110px 0;
   gap: 15px;
   position: relative;
-  max-width: 1200px;
+  /* max-width: 1200px; */
 
-  @media screen and (max-width: 1250px) {
+  /* @media screen and (max-width: 1250px) {
     margin: 0 auto;
     padding: 70px 0;
     max-width: 600px;
-  }
+  } */
 `;
 
 const StGroupContainer = styled.div`
