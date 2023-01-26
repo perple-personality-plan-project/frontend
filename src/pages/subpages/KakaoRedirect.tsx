@@ -11,9 +11,9 @@ const KakaoRedirect = () => {
       `/api/user/auth/kakao?code=${kakaoCode}`,
     );
     console.log(data);
-    console.log(data.data.accessToken);
     localStorage.setItem('accessToken', data.data.accessToken);
     localStorage.setItem('refreshToken', data.data.refreshToken);
+    localStorage.setItem('userId', data.data.user_id);
     navigate('/community');
   };
 
