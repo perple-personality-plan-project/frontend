@@ -25,6 +25,7 @@ const SignInPage = () => {
       localStorage.setItem('accessToken', data.data.accessToken);
       localStorage.setItem('refreshToken', data.data.refreshToken);
       localStorage.setItem('mbti', data.data.mbti);
+      localStorage.setItem('userId', data.data.user_id);
 
       alert('로그인 성공');
       navigate('/community');
