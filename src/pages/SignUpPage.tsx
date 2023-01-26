@@ -210,7 +210,11 @@ const SignUpPage = () => {
             />
             {Mbti ? <p className="validation-text">{mbtiMessage}</p> : null}
           </div>
-          <StButton onClick={() => navigate('/mbti')}>검사하러가기✔</StButton>
+          <StButton
+            onClick={() => window.open('http://localhost:3000/mbti', '_blank')}
+          >
+            <div>검사하러가기✔</div>
+          </StButton>
         </div>
         <ButtonWrap>
           <Button>모두 작성했어요!</Button>
