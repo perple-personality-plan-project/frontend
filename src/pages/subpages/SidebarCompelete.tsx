@@ -23,7 +23,7 @@ export default SidebarCompelete;
 
 const StContainer = styled.div`
   width: 70px;
-  height: 70px;
+  height: stretch;
   display: none;
 
   @media screen and (max-width: 800px) {
