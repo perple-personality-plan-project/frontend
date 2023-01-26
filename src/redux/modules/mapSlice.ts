@@ -92,7 +92,6 @@ export const mapSlice = createSlice({
       state.MapPost = state.MapPost.filter(
         (item: any) => item.place_name !== action.payload,
       );
-      console.log(state.MapPost);
     });
 
     builder.addCase(__RemoveItem.rejected, (state, action) => {

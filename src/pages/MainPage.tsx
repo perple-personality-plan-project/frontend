@@ -29,11 +29,17 @@ const MainPage = () => {
   const { mainMbtiList } = useAppSelector(store => store.post);
   const [mainPosts, setMainPosts] = useState<mainPostPreset[]>([]);
 
+  const userId = localStorage.getItem('userId');
+
+  if (localStorage.getItem('userId') === null) {
+    localStorage.setItem('userId', '0');
+  }
+
   useEffect(() => {
     if (mbtiCheck === 'All' || mbtiCheck === '사람들') {
-      dispatch(__mainFeedlist());
+      dispatch(__mainFeedlist({ userId }));
     } else {
-      dispatch(__mainMbtilist({ mbtiCheck }));
+      dispatch(__mainMbtilist({ mbtiCheck, userId }));
     }
   }, [mbtiCheck]);
 
@@ -78,10 +84,10 @@ const MainPage = () => {
       </Backgr>
       <PostListContainer>
         {mbtiCheck === '사람들' || mbtiCheck === 'All'
-          ? mainFeedList.map((post: any) => (
+          ? mainFeedList?.map((post: any) => (
               <MainPostCard key={post.feed_id} post={post} />
             ))
-          : mainMbtiList.map((post: any) => (
+          : mainMbtiList?.map((post: any) => (
               <MainPostCard key={post.feed_id} post={post} />
             ))}
       </PostListContainer>
