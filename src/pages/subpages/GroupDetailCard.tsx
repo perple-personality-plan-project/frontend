@@ -12,11 +12,9 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../components/hooks/typescripthook/hooks';
-import {
-  __groupFeedDetail,
-  __groupFeedList,
-} from '../../redux/modules/groupSlice';
+import { __groupFeedList } from '../../redux/modules/groupSlice';
 import loggedIn from '../../api/loggedIn';
+import nonTokenClient from '../../api/noClient';
 
 interface feedCardPreset {
   feed: groupFeedPreset;
@@ -30,7 +28,6 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
   groupSubscribe,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [openSubModal, setOpenSubModal] = useState(false);
   const dispatch = useAppDispatch();
   const {
     created_at,
@@ -43,16 +40,12 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
     thumbnail,
     updated_at,
     likeCount,
+    isLike,
   } = feed;
 
-  const { groupFeedDetail }: any = useAppSelector(store => store.group);
-  const { groupFeedLike }: any = useAppSelector(store => store.group);
-  const [toggle, setToggle] = useState(false);
   const [comment, setComment] = useState('');
-  const created = created_at.split('T');
-
-  // console.log(groupFeedLike, feed_id);
-  // console.log(feed_id);
+  const [comments, setComments] = useState<{}[]>([]);
+  const userId: number = Number(localStorage.getItem('userId'));
 
   const date = created_at
     .replace('T', '. ')
@@ -80,7 +73,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
             comment,
           },
         );
-        dispatch(__groupFeedDetail({ groupId: groupId, feedId: feed_id }));
+        fetchData();
         setComment('');
       } else {
         alert('그룹을 구독해주세요!');
@@ -95,38 +88,36 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
     await loggedIn.delete(
       `api/group-comment/group/${groupId}/feed/${feed_id}/${commentId}`,
     );
-    dispatch(__groupFeedDetail({ groupId: groupId, feedId: feed_id }));
+    fetchData();
+  };
+
+  const fetchData = async () => {
+    const { data } = await nonTokenClient.get(
+      `/api/group-comment/group/${groupId}/feed/${feed_id}`,
+    );
+    setComments([...data.data]);
   };
 
   const openModal = () => {
     setIsOpen(true);
-    dispatch(__groupFeedDetail({ groupId: groupId, feedId: feed_id }));
+    fetchData();
   };
 
   const toggleHeart = async (feedId: number) => {
     await loggedIn.put(`/api/group/${groupId}/feed/${feedId}/like`); //좋아요 / 좋아요 취소 api
-    setToggle(!toggle); //좋아요를 누를 때 마다 좋아요 / 좋아요 취소 api와 setToggles가 같이
-    //작동하여 싱크 하는 것 처럼 보임.
-    //이후에 리프레쉬를 하면 useEffect과정부터 다시 실행.
     dispatch(__groupFeedList({ id: groupId }));
   };
 
-  const fetchLikes = async () => {
-    const { data } = await loggedIn.get(`/api/feed/${feed_id}/like`); //좋아요 확인 api
-    //전역변수로 두니까 모든 컴포넌트들이 쉐어해서 전부 같은 결과값을 가짐;;;
-    //이런 경우에는 떵크 말고 그냥 이렇게 바로 써 버리기.
-    setToggle(data.data); //좋아요 확인한 정보(boolean 값)를 setToggle에 이니셜 값으로 저장.
+  const deletePost = async () => {
+    // await loggedIn.put(`/api/group/${groupId}/feed/${feedId}/like`); //좋아요 / 좋아요 취소 api
+    // dispatch(__groupFeedList({ id: groupId }));
+    console.log('delete');
   };
-
-  useEffect(() => {
-    fetchLikes();
-    //렌더링 할 때 fetchLikes를 불러 좋아요를 눌렀는지 아닌지 확인.
-  }, []);
 
   return (
     <StGroupPost>
       <div className="post-container">
-        <div onClick={openModal}>
+        <div onClick={openModal} style={{ height: 'stretch' }}>
           <div className="post-header">
             <div className="post-header-info">
               <img
@@ -145,43 +136,59 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
             alt="group-img"
           />
           <div className="post-desc">
-            <p>{description}</p>
+            <p className="desc-title">{description}</p>
             <div className="post-bottom">
-              <p className="post-date">{date}</p>
+              <p className="post-date ">{date}</p>
             </div>
           </div>
         </div>
         <div className="post-bottom-right">
-          <div className="post-bottom-heart">
-            {toggle ? (
-              <StHeart>
+          <div className="post-bottom-icon">
+            {isLike === '0' ? (
+              <StIcon>
                 <i
                   className="ri-heart-3-fill"
+                  style={{ color: 'red', fontSize: '25px' }}
                   onClick={() => toggleHeart(feed_id)}
                 ></i>
                 <p className="heart-number">{likeCount}</p>
-              </StHeart>
+              </StIcon>
             ) : (
-              <StHeart>
+              <StIcon>
                 <i
                   className="ri-heart-3-line"
                   onClick={() => toggleHeart(feed_id)}
+                  style={{ color: 'red', fontSize: '25px' }}
                 ></i>
                 <p className="heart-number">{likeCount}</p>
-              </StHeart>
+              </StIcon>
             )}
           </div>
-          <div className="post-bottom-icon">B</div>
-          <div className="post-bottom-icon">C</div>
+          {/* <div className="post-bottom-icon">B</div>
+          <div className="post-bottom-icon">C</div> */}
+          <div className="post-bottom-icon">
+            <StIcon>
+              <i
+                onClick={() => deletePost()}
+                className="ri-delete-bin-line"
+                style={{ fontSize: '25px' }}
+              ></i>
+            </StIcon>
+          </div>
         </div>
       </div>
 
       <GroupDetailCardModal
         onClose={() => setIsOpen(false)}
         open={isOpen}
-        id={groupFeedDetail?.feed_id}
+        id={feed_id}
       >
-        <StXIcon onClick={() => setIsOpen(false)}>X</StXIcon>
+        <StXIcon onClick={() => setIsOpen(false)}>
+          <i
+            style={{ color: '#5B5B5B', fontSize: '20px' }}
+            className="ri-close-line"
+          ></i>
+        </StXIcon>
         <StDetailContainer>
           <Swiper
             navigation={true}
@@ -210,14 +217,37 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                 <div className="detail-bottom">
                   <p>{date}</p>
                   <div style={{ display: 'flex' }}>
-                    <div
-                      className="detail-btn"
-                      onClick={() => setOpenSubModal(true)}
-                    >
-                      좋
-                    </div>
+                    {isLike === '0' ? (
+                      <StIcon>
+                        <i
+                          className="ri-heart-3-fill"
+                          style={{ color: 'red', fontSize: '25px' }}
+                          onClick={() => toggleHeart(feed_id)}
+                        ></i>
+                        <p className="heart-number heart-position">
+                          {likeCount}
+                        </p>
+                      </StIcon>
+                    ) : (
+                      <StIcon>
+                        <i
+                          className="ri-heart-3-line"
+                          style={{ color: 'red', fontSize: '25px' }}
+                          onClick={() => toggleHeart(feed_id)}
+                        ></i>
+                        <p className="heart-number heart-position">
+                          {likeCount}
+                        </p>
+                      </StIcon>
+                    )}
                     <div className="detail-btn">댓</div>
-                    <div className="detail-btn">저장</div>
+                    <StIcon>
+                      <i
+                        onClick={() => deletePost()}
+                        className="ri-delete-bin-line"
+                        style={{ fontSize: '25px' }}
+                      ></i>
+                    </StIcon>
                   </div>
                 </div>
               </div>
@@ -233,7 +263,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
               }}
             >
               <StDetailComments>
-                {groupFeedDetail?.comment?.map((comment: any) => {
+                {comments.map((comment: any) => {
                   return (
                     <StDetailComment key={comment.comment_id}>
                       <img
@@ -245,12 +275,17 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                           <h2 className="detail-nickname">
                             {comment.nickname}
                           </h2>
-                          <div
-                            onClick={() => deleteComment(comment.comment_id)}
-                            className="detail-del"
-                          >
-                            X
-                          </div>
+                          {userId === comment.user_id ? (
+                            <div
+                              onClick={() => deleteComment(comment.comment_id)}
+                              className="detail-del"
+                            >
+                              <i
+                                style={{ color: '#5B5B5B', fontSize: '20px' }}
+                                className="ri-close-line hover-color"
+                              ></i>
+                            </div>
+                          ) : null}
                         </div>
                         <p>{comment.comment}</p>
                       </div>
@@ -276,7 +311,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
 
 export default GroupDetailCard;
 
-const StHeart = styled.div`
+const StIcon = styled.div`
   display: flex;
   align-items: center;
   position: relative;
@@ -284,8 +319,13 @@ const StHeart = styled.div`
   .heart-number {
     position: absolute;
     top: -35px;
-    right: 4px;
+    right: 9px;
     /* font-size: 20px; */
+  }
+
+  .heart-position {
+    top: -13px;
+    right: 9px;
   }
 `;
 
@@ -510,6 +550,10 @@ const StDetailComment = styled.div`
         color: white;
 
         cursor: pointer;
+
+        .hover-color {
+          color: white !important;
+        }
       }
     }
   }
@@ -525,6 +569,7 @@ const StXIcon = styled.div`
   justify-content: center;
   align-items: center;
 
+  font-weight: bold;
   width: 30px;
   height: 30px;
   background-color: white;
@@ -537,12 +582,13 @@ const StXIcon = styled.div`
 `;
 
 const StGroupPost = styled.div`
+  box-sizing: border-box;
   /* width: 100%; */
   .post-container {
     position: relative;
     /* margin: 20px; */
-    width: 430px;
-
+    width: 419px;
+    aspect-ratio: 4.2/5.6;
     /* height: 400px; */
 
     background-color: white;
@@ -555,7 +601,7 @@ const StGroupPost = styled.div`
     filter: brightness(100%);
 
     img {
-      aspect-ratio: 1/1;
+      aspect-ratio: 4.2/4.3;
       width: 100%;
       background-color: #f0f0f0;
     }
@@ -635,15 +681,22 @@ const StGroupPost = styled.div`
     }
 
     .post-desc {
-      margin: 15px;
+      margin: 15px 22px;
       p {
-        max-width: 25ch;
+        max-width: 60%;
         margin: 0 0 40px 0;
         overflow: auto;
       }
 
+      .desc-title {
+        font-family: 'Nanum_B';
+        font-size: 18px;
+      }
+
       .post-date {
-        font-size: 14px;
+        position: absolute;
+        bottom: 11px;
+        font-size: 13.61px;
         color: #9e9e9e;
         margin: 0;
       }
@@ -669,24 +722,13 @@ const StGroupPost = styled.div`
     bottom: 10px;
     right: 10px;
 
-    .post-bottom-heart {
-      width: 30px;
-      height: 30px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      /* border-radius: 50%; */
-      margin: 0 5px;
-    }
-
     .post-bottom-icon {
       width: 30px;
       height: 30px;
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: pink;
+      /* background-color: pink; */
 
       /* border-radius: 50%; */
       margin: 0 5px;

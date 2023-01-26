@@ -37,7 +37,7 @@ const Router = () => {
                   // justifyContent: 'center',
                 }}
               >
-                <NaviBar />
+                <Navbar />
                 <GroupDetail />
               </div>
             }
