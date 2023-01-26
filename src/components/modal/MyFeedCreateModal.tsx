@@ -10,6 +10,8 @@ import 'swiper/css/navigation';
 import nonTokenClient from '../../api/noClient';
 import { useAppDispatch } from '../hooks/typescripthook/hooks';
 import { __FeedPost } from '../../redux/modules/mySlice';
+import { __myFeed } from '../../redux/modules/mySlice';
+import { useAppSelector } from '../hooks/typescripthook/hooks';
 
 interface detailCreatePreset {
   location: string;
@@ -24,7 +26,8 @@ interface tnumbnailPreset {
 const FeedModal: React.FC = () => {
   const { imageSrc, setImageSrc, handleImagePreview } = ImagePreviewMultiHook();
   const [toggle, setToggle] = useState(false);
-  const [route, setRoute] = useState('');
+  const [route, setRoute] = useState<any>();
+  const [routeName, setRouteName] = useState<any>();
   const [isOpen, setIsOpen] = useState(false);
   const [thumbnail, setThumbnail] = useState<tnumbnailPreset['thumbnail']>();
   const [groupInfos, setgroupInfos] = useState<detailCreatePreset>({
@@ -32,6 +35,7 @@ const FeedModal: React.FC = () => {
     location: '',
     thumbnail: [],
   });
+  const mapList = useAppSelector((store: any) => store.mypage.maplist);
 
   const dispatch = useAppDispatch();
 
@@ -56,6 +60,7 @@ const FeedModal: React.FC = () => {
   const fetchData = async (formData: any) => {
     // await nonTokenClient.post(`api/group/${paramId.id}/feed`, formData);
     await dispatch(__FeedPost(formData));
+    await dispatch(__myFeed());
   };
 
   const sendData = async () => {
@@ -63,7 +68,14 @@ const FeedModal: React.FC = () => {
     for (let i = 0; i < thumbnail.length; i++) {
       formData.append('thumbnail', thumbnail[i]);
     }
-    formData.append('location', route);
+    formData.append(
+      'location',
+      JSON.stringify({
+        place_group_name: routeName,
+        place_group: route,
+      }),
+    );
+
     formData.append('description', groupInfos.description);
 
     if (groupInfos.description && route !== '') {
@@ -77,6 +89,8 @@ const FeedModal: React.FC = () => {
       alert('형식을 모두 작성해주세요');
     }
   };
+
+  const myfeed = useAppSelector((store: any) => store.mypage.myFeed);
 
   return (
     <div>
@@ -135,54 +149,26 @@ const FeedModal: React.FC = () => {
                 />
               </StGroupImg>
             )}
-
             <StGroupInfo>
               <StGroupInput>
                 <p>루트 추가</p>
-
                 {toggle ? (
                   <div style={{ display: 'flex' }}>
                     <StCategoryGroup>
-                      <StCategory
-                        onClick={() => {
-                          setToggle(prev => !prev);
-                          setRoute('A');
-                        }}
-                      >
-                        A
-                      </StCategory>
-                      <StCategory
-                        onClick={() => {
-                          setToggle(prev => !prev);
-                          setRoute('B');
-                        }}
-                      >
-                        B
-                      </StCategory>
-                      <StCategory
-                        onClick={() => {
-                          setToggle(prev => !prev);
-                          setRoute('C');
-                        }}
-                      >
-                        C
-                      </StCategory>
-                      <StCategory
-                        onClick={() => {
-                          setToggle(prev => !prev);
-                          setRoute('D');
-                        }}
-                      >
-                        D
-                      </StCategory>
-                      <StCategory
-                        onClick={() => {
-                          setToggle(prev => !prev);
-                          setRoute('E');
-                        }}
-                      >
-                        E
-                      </StCategory>
+                      {mapList.map((map: any, index: any) => {
+                        return (
+                          <StCategory
+                            key={index}
+                            onClick={() => {
+                              setRoute(map.place_group);
+                              setRouteName(map.place_group_name);
+                              setToggle(prev => !prev);
+                            }}
+                          >
+                            {map.place_group_name}
+                          </StCategory>
+                        );
+                      })}
                     </StCategoryGroup>
                     <div
                       onClick={() => setToggle(prev => !prev)}
@@ -201,7 +187,7 @@ const FeedModal: React.FC = () => {
                           setToggle(prev => !prev);
                         }}
                       >
-                        {route}
+                        {routeName}
                       </StCategory>
                     </StCategoryGroup>
                     <div
@@ -213,7 +199,6 @@ const FeedModal: React.FC = () => {
                   </div>
                 )}
               </StGroupInput>
-
               <StGroupTextArea>
                 <p>내용 작성</p>
                 <textarea
@@ -563,13 +548,11 @@ const StModalIcon = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  font-size: 30px;
-
+  font-size: 34px;
   width: 60px;
   height: 60px;
   background-color: #644eee;
   color: white;
-
   position: fixed;
   bottom: 50px;
   right: 50px;
