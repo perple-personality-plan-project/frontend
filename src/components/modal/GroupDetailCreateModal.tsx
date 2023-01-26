@@ -91,12 +91,17 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
   return (
     <div>
       <StModalIcon onClick={() => setIsOpen(true)}>
-        <p>+</p>
+        <i
+          className="ri-add-circle-fill"
+          style={{ fontSize: '69px', color: '#644eee' }}
+        ></i>
       </StModalIcon>
 
       <GroupModalTemplate closeModal={closeModal} open={isOpen}>
         <StGroupContainer>
-          <StCloseIcon onClick={closeModal}>X</StCloseIcon>
+          <StCloseIcon onClick={closeModal}>
+            <i style={{ color: '#5B5B5B' }} className="ri-close-line"></i>
+          </StCloseIcon>
           <h1>게시글 생성하기</h1>
           <StGroup>
             {imageSrc.length !== 0 ? (
@@ -542,7 +547,7 @@ const StGroupTextArea = styled.div`
 
 const StGroupBtn = styled.div`
   width: 100%;
-  background-color: #636363;
+  background-color: #5f4cd2;
   border-radius: 20px;
   color: white;
   font-size: 13px;
@@ -556,32 +561,22 @@ const StCloseIcon = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 14px;
+  font-size: 20px;
 
   position: absolute;
   border-radius: 50%;
   border: 0;
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
+  font-weight: bold;
 
-  top: -25px;
-  right: -25px;
+  top: -30px;
+  right: -30px;
 
   cursor: pointer;
 `;
 
 const StModalIcon = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  font-size: 30px;
-
-  width: 60px;
-  height: 60px;
-  background-color: #644eee;
-  color: white;
-
   position: fixed;
   bottom: 50px;
   right: 50px;

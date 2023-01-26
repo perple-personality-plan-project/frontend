@@ -38,6 +38,7 @@ export interface groupFeedPreset {
   mbti: string;
   nickname: string;
   likeCount: number;
+  isLike: number | string;
 }
 
 const GroupDetail = () => {
@@ -125,6 +126,9 @@ const GroupDetail = () => {
                     </div>
                   );
                 })}
+              {filteredByPage[0]?.hashtags === null ? (
+                <div className="group-no-tag">태그가 없습니다</div>
+              ) : null}
             </div>
             <div className="group-horizontal-line" />
 
@@ -135,7 +139,10 @@ const GroupDetail = () => {
             {groupSubscribe ? (
               groupSubscribe.admin_flag ? (
                 <StSubscribeOn>
-                  <button onClick={postDelete} className="group-subscribe-del">
+                  <button
+                    onClick={postDelete}
+                    className="group-subscribe group-subscribe-del"
+                  >
                     삭제하기
                   </button>
                 </StSubscribeOn>
@@ -143,13 +150,13 @@ const GroupDetail = () => {
                 <StSubscribeOn>
                   <button
                     onClick={onClickGroupSubscribe}
-                    className="group-subscribe-on"
+                    className="group-subscribe group-subscribe-on"
                   >
                     구독중
                   </button>
                   <button
                     onClick={onClickGroupSubscribe}
-                    className="group-subscribe-cancel"
+                    className="group-subscribe group-subscribe-cancel"
                   >
                     구독취소
                   </button>
@@ -194,7 +201,7 @@ export default GroupDetail;
 const StContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin: 20px;
+  margin: 56px 40px 0 40px;
 
   @media screen and (max-width: 900px) {
     flex-direction: column;
@@ -227,11 +234,11 @@ const StPostContainer = styled.div`
 
 const StBgImages = styled.div`
   background-color: #f3f3f3;
-  height: 300px;
+  height: 316px;
 
   img {
     width: 100%;
-    height: 300px;
+    height: stretch;
     object-fit: cover;
   }
 `;
@@ -250,56 +257,23 @@ const StSubscribeOn = styled.div`
   text-align: center;
 
   .group-subscribe-on {
-    display: block;
-    width: 100%;
-    border: 0;
-    /* border: 1px solid gray; */
-    border-radius: 5px;
-    color: #9d9d9d;
-    cursor: pointer;
-    padding: 10px 0;
-    font-size: 18px;
-    font-weight: bold;
-    background-color: #f3f1f8;
-    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-    /* fill: #6E57F6; */
+    color: #9d9d9d !important;
+    background-color: #f3f1f8 !important;
   }
 
   .group-subscribe-del {
-    display: block;
-    width: 100%;
-    /* border: 1px solid gray; */
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 10px 0;
-    font-size: 18px;
-    font-weight: bold;
-    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-    background-color: white;
-    color: red;
-    border: 1px solid red;
+    background-color: white !important;
+    color: red !important;
+    border: 1px solid red !important;
 
     &:hover {
-      background-color: red;
-      color: white;
+      background-color: red !important;
+      color: white !important;
     }
   }
 
   .group-subscribe-cancel {
     display: none;
-    width: 100%;
-    /* border: 1px solid gray; */
-    border: 0;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    padding: 10px 0;
-    font-size: 18px;
-    font-weight: bold;
-    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-    background-color: #644eee;
-
-    /* background-color: pink; */
   }
 
   &:hover {
@@ -315,8 +289,8 @@ const StSubscribeOn = styled.div`
 
 const StGroupInfo = styled.div`
   img {
-    width: 80px;
-    height: 80px;
+    width: 68px;
+    height: 68px;
     /* margin: 0 10px 10px 0; */
     border-radius: 10px;
   }
@@ -328,7 +302,7 @@ const StGroupInfo = styled.div`
   .group-text {
     display: flex;
     flex-direction: column;
-    margin-left: 10px;
+    margin-left: 25px;
 
     h1,
     p {
@@ -358,6 +332,11 @@ const StGroupInfo = styled.div`
       margin: 0 10px 10px 0;
       font-size: 13px;
     }
+
+    .group-no-tag {
+      color: #888888;
+      font-size: 13px;
+    }
   }
 
   .group-horizontal-line {
@@ -366,6 +345,7 @@ const StGroupInfo = styled.div`
   }
 
   .group-intro {
+    margin-bottom: 34px;
     h2,
     p {
       font-size: 13px;
@@ -382,13 +362,14 @@ const StGroupInfo = styled.div`
 
   .group-subscribe {
     width: 100%;
+    height: 48px;
     /* border: 1px solid gray; */
     border: 0;
     border-radius: 5px;
     color: white;
     cursor: pointer;
     padding: 10px 0;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
     background-color: #644eee;
@@ -400,7 +381,7 @@ const StGroupPosts = styled.div`
   /* flex-direction: column; */
   /* justify-content: center; */
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 18px;
   margin-left: 50px;
   position: relative;
   width: 100%;
