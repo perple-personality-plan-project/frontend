@@ -90,7 +90,15 @@ const GroupPage = () => {
           {toggle ? (
             <StCategoryGroup>
               <StCategoryHead onClick={() => setToggle(prev => !prev)}>
-                {filterGroup}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  {filterGroup} <i className="ri-arrow-down-s-fill"></i>
+                </div>
               </StCategoryHead>
               <StCategory
                 onClick={() => {
@@ -114,7 +122,15 @@ const GroupPage = () => {
               style={{ display: 'flex', flexDirection: 'column' }}
             >
               <StCategoryHead onClick={() => setToggle(prev => !prev)}>
-                {filterGroup}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  {filterGroup} <i className="ri-arrow-down-s-fill"></i>
+                </div>
               </StCategoryHead>
             </StCategoryGroup>
           )}
@@ -125,7 +141,7 @@ const GroupPage = () => {
             if (word === '') {
               return <GroupCard key={group.group_id} group={group} />;
             }
-            if (groupNames.includes(word) || tags.includes(word)) {
+            if (groupNames?.includes(word) || tags?.includes(word)) {
               return <GroupCard key={group.group_id} group={group} />;
             } else {
               return null;
@@ -199,7 +215,7 @@ const StContainer = styled.div`
   * {
     font-family: 'Nanum_R';
   }
-  background-color: #f8f8f8;
+  background-color: white;
   width: 100%;
   height: 100%;
   margin: 0 auto;
@@ -230,7 +246,7 @@ const StCategoryGroup = styled.div`
   overflow: hidden;
   position: absolute;
   top: 50px;
-  left: 55px;
+  left: 0;
 
   z-index: 2;
 
@@ -353,7 +369,8 @@ const StRecommendList = styled.div`
 const StGroups = styled.div`
   background-color: white;
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
+  width: 1300px;
   flex-wrap: wrap;
 
   margin: 0 auto;
@@ -362,11 +379,11 @@ const StGroups = styled.div`
   position: relative;
   /* max-width: 1200px; */
 
-  /* @media screen and (max-width: 1250px) {
-    margin: 0 auto;
-    padding: 70px 0;
-    max-width: 600px;
-  } */
+  @media screen and (max-width: 1315px) {
+    display: flex;
+    justify-content: center;
+    width: initial;
+  }
 `;
 
 const StGroupContainer = styled.div`

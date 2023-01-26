@@ -39,16 +39,15 @@ const GroupCard: React.FC<groupCardPreset> = ({ group }): JSX.Element => {
         <div className="info-vertical">
           <h2>{group_name}</h2>
           <p>
-            게시글 {feedCount}개 / {group_user_count}명이 구독중이에요
+            게시글 {feedCount}개 / {group_user_count}명이 소통중이에요
           </p>
           <div className="btn-group">
-            {hashtags?.length !== 0 ? (
-              hashtags
-                ?.split(',')
-                ?.map((tag, index) => <button key={index}>{tag}</button>)
-            ) : (
-              <p>태그가 없습니다</p>
-            )}
+            {hashtags?.length !== 0
+              ? hashtags
+                  ?.split(',')
+                  ?.map((tag, index) => <button key={index}>{tag}</button>)
+              : null}
+            {hashtags?.length === undefined ? <p>태그가 없습니다</p> : null}
           </div>
         </div>
       </StGroup>
@@ -152,6 +151,7 @@ const StGroup = styled.div`
     margin-top: 30px;
 
     button {
+      height: 26px;
       font-size: 12px;
       color: #888888;
       max-width: 20ch;
