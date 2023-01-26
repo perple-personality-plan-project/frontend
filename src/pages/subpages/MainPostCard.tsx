@@ -15,19 +15,26 @@ import {
 import { __groupFeedDetail } from '../../redux/modules/groupSlice';
 import nonTokenClient from '../../api/noClient';
 import loggedIn from '../../api/loggedIn';
-import { __mainFeedDetail } from '../../redux/modules/postSlice';
+import {
+  __mainFeedDetail,
+  __mainFeedlist,
+} from '../../redux/modules/postSlice';
+import client from '../../api/client';
 
 interface Props {
   post: {
     created_at: string;
     description: string;
     feed_id: number;
-    like_count: number;
+    likeCount: number;
     location: string;
     mbti: string;
+    nickname: string;
     thumbnail: string;
     updated_at: string;
     user_id: number;
+    isLike: number | string;
+    isPick: number | string;
   };
 }
 
@@ -38,9 +45,12 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
     created_at,
     description,
     feed_id,
-    like_count,
+    likeCount,
+    isLike,
+    isPick,
     location,
     mbti,
+    nickname,
     thumbnail,
     updated_at,
     user_id,
@@ -56,10 +66,13 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
     .replace('.', '월 ')
     .replace('.', '일');
   const [comment, setComment] = useState('');
+  const [toggle, setToggle] = useState(false);
   const accessToken = localStorage.getItem('accessToken');
 
   const thumbnailArray = thumbnail.split(',');
   const imgLink = process.env.REACT_APP_IMG_SERVER;
+
+  const userId = localStorage.getItem('userId');
 
   const postComment = async () => {
     if (comment) {
@@ -78,6 +91,12 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
     }
   };
 
+  const toggleHeart = async () => {
+    const x = await loggedIn.put(`/api/feed/${feed_id}/like`);
+    // console.log(x);
+    dispatch(__mainFeedlist({ userId }));
+  };
+
   const deleteComment = async (commentId: string | number) => {
     await loggedIn.delete(`api/comment/${feed_id}/${commentId}`);
     dispatch(__mainFeedDetail({ feedId: feed_id }));
@@ -87,36 +106,59 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
     setIsOpen(true);
     dispatch(__mainFeedDetail({ feedId: feed_id }));
   };
+
   return (
     <StGroupPost>
-      <div onClick={openModal} className="post-container">
-        <div className="post-header">
-          <div className="post-header-info">
-            <img
-              style={{ width: '40px', height: '40px' }}
-              src={require('../../빡빡이1.png')}
-              alt="group-img"
-            />
-            <h3>유저 아이디: {user_id}</h3>
-            <p>{mbti?.toUpperCase()}</p>
+      <div className="post-container">
+        <div onClick={openModal}>
+          <div className="post-header">
+            <div className="post-header-info">
+              <img
+                style={{ width: '40px', height: '40px' }}
+                src={require('../../빡빡이1.png')}
+                alt="group-img"
+              />
+              <h3>{nickname}</h3>
+              <p>{mbti?.toUpperCase()}</p>
+            </div>
+            <div className="post-header-route">{location}</div>
           </div>
-          <div className="post-header-route">{location}</div>
-        </div>
 
-        <img
-          src={process.env.REACT_APP_IMG_SERVER + thumbnail.split(',')[0]}
-          alt="group-img"
-        />
-        <div className="post-desc">
-          <p>{description}</p>
-          <div className="post-bottom">
-            <p className="post-date">{date}</p>
-            <div className="post-bottom-right">
-              <div className="post-bottom-icon">A</div>
-              <div className="post-bottom-icon">B</div>
-              <div className="post-bottom-icon">C</div>
+          <img
+            src={process.env.REACT_APP_IMG_SERVER + thumbnail.split(',')[0]}
+            alt="group-img"
+          />
+          <div className="post-desc">
+            <p>{description}</p>
+            <div className="post-bottom">
+              <p className="post-date">{date}</p>
             </div>
           </div>
+        </div>
+        <div className="post-bottom-right">
+          <div className="post-bottom-heart">
+            {isLike === '0' ? (
+              <StIcon>
+                <i
+                  className="ri-heart-3-fill"
+                  style={{ color: 'red', fontSize: '25px' }}
+                  onClick={toggleHeart}
+                ></i>
+                <p className="heart-number">{likeCount}</p>
+              </StIcon>
+            ) : (
+              <StIcon>
+                <i
+                  className="ri-heart-3-line"
+                  onClick={toggleHeart}
+                  style={{ color: 'red', fontSize: '25px' }}
+                ></i>
+                <p className="heart-number">{likeCount}</p>
+              </StIcon>
+            )}
+          </div>
+          <div className="post-bottom-icon">B</div>
+          <div className="post-bottom-icon">C</div>
         </div>
       </div>
 
@@ -155,7 +197,31 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
                 <div className="detail-bottom">
                   <p>{date}</p>
                   <div style={{ display: 'flex' }}>
-                    <div className="detail-btn">좋</div>
+                    <div className="post-bottom-heart">
+                      {isLike === '0' ? (
+                        <StIcon>
+                          <i
+                            className="ri-heart-3-fill"
+                            style={{ color: 'red', fontSize: '25px' }}
+                            onClick={toggleHeart}
+                          ></i>
+                          <p className="heart-number heart-position">
+                            {likeCount}
+                          </p>
+                        </StIcon>
+                      ) : (
+                        <StIcon>
+                          <i
+                            className="ri-heart-3-line"
+                            onClick={toggleHeart}
+                            style={{ color: 'red', fontSize: '25px' }}
+                          ></i>
+                          <p className="heart-number heart-position">
+                            {likeCount}
+                          </p>
+                        </StIcon>
+                      )}
+                    </div>
                     <div className="detail-btn">댓</div>
                     <div className="detail-btn">저장</div>
                   </div>
@@ -213,6 +279,24 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
 };
 
 export default MainPostCard;
+
+const StIcon = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  .heart-number {
+    position: absolute;
+    top: -30px;
+    right: 8px;
+    /* font-size: 20px; */
+  }
+
+  .heart-position {
+    top: -10px;
+    right: 9px;
+  }
+`;
 
 const StDetailContainer = styled.div`
   display: flex;
@@ -584,27 +668,39 @@ const StGroupPost = styled.div`
       align-items: center;
     }
 
-    .post-bottom-right {
-      display: flex;
-
-      .post-bottom-icon {
-        width: 30px;
-        height: 30px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: pink;
-
-        /* border-radius: 50%; */
-        margin: 0 5px;
-      }
-    }
     @media screen and (max-width: 900px) {
       margin: 0 auto;
       width: 460px;
     }
     @media screen and (max-width: 500px) {
       width: 90%;
+    }
+  }
+  .post-bottom-right {
+    display: flex;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+
+    .post-bottom-heart {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 5px;
+    }
+
+    .post-bottom-icon {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: pink;
+
+      /* border-radius: 50%; */
+      margin: 0 5px;
     }
   }
   @media screen and (max-width: 900px) {

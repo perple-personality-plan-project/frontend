@@ -22,12 +22,17 @@ const initialState: mainPostState = {
 
 //thunk 함수
 
-export const __mainFeedlist = createAsyncThunk(
+export const __mainFeedlist = createAsyncThunk<
+  [],
+  { userId: number | string | null }
+>(
   'main/feedlist',
 
   async (payload, thunkAPI) => {
     try {
-      const { data } = await nonTokenClient.get(`api/feed`);
+      const { data } = await nonTokenClient.get(
+        `api/feed?userId=${payload.userId}`,
+      );
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
       thunkAPI.rejectWithValue(e);
@@ -35,13 +40,17 @@ export const __mainFeedlist = createAsyncThunk(
   },
 );
 
-export const __mainMbtilist = createAsyncThunk<[], { mbtiCheck: string }>(
+export const __mainMbtilist = createAsyncThunk<
+  [],
+  { mbtiCheck: string; userId: number | string | null }
+>(
   'main/feedlist/mbti',
 
   async (payload, thunkAPI) => {
+    console.log(payload);
     try {
       const { data } = await nonTokenClient.get(
-        `api/feed/search?mbti=${payload.mbtiCheck}`,
+        `api/feed/search?mbti=${payload.mbtiCheck}&userId=${payload.userId}`,
       );
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
