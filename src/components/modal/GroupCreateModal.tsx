@@ -79,11 +79,11 @@ const GroupCreateModal: React.FC<Props> = ({
   };
 
   const addTag = () => {
-    if (tagSet.length < 3) {
+    if (tagSet.length < 5) {
       setTagSet([...tagSet, { id: nanoid(), tag: `#${tag}` }]);
       setTag('');
     } else {
-      alert('최대 3개까지만 등록 가능 합니다.');
+      alert('최대 5개까지만 등록 가능 합니다.');
       setTag('');
     }
   };
@@ -126,17 +126,11 @@ const GroupCreateModal: React.FC<Props> = ({
   };
 
   const sendData = () => {
-    if (tagSet.length < 1) {
-      alert('태그를 1-3개까지 추가해주세요!');
-    } else if (groupInfos.group_name === '') {
+    if (groupInfos.group_name === '') {
       alert('그룹명을 작성해주세요!');
     } else if (groupInfos.description === '') {
       alert('그룹 소개를 작성해주세요!');
-    } else if (
-      tagSet.length > 0 &&
-      groupInfos.group_name &&
-      groupInfos.description
-    ) {
+    } else if (groupInfos.group_name && groupInfos.description) {
       // console.log(thumbnail);
       postDataToServer();
       setIsOpen(false);
@@ -154,12 +148,22 @@ const GroupCreateModal: React.FC<Props> = ({
   return (
     <div>
       {accessToken !== null ? (
-        <StModalIcon onClick={() => setIsOpen(true)}>+</StModalIcon>
+        <StModalIcon onClick={() => setIsOpen(true)}>
+          <i
+            className="ri-add-circle-fill"
+            style={{ fontSize: '69px', color: '#644eee' }}
+          ></i>
+        </StModalIcon>
       ) : null}
 
       <GroupModalTemplate closeModal={closeModal} open={isOpen}>
         <StGroupContainer>
-          <StCloseIcon onClick={closeModal}>X</StCloseIcon>
+          <StCloseIcon onClick={closeModal}>
+            <i
+              style={{ color: '#5B5B5B', fontSize: '20px' }}
+              className="ri-close-line"
+            ></i>
+          </StCloseIcon>
           <h1>그룹 생성하기</h1>
           <StGroup>
             <StGroupImg>
@@ -424,12 +428,13 @@ const StGroupTextArea = styled.div`
 
 const StGroupBtn = styled.div`
   width: 100%;
-  background-color: #636363;
-  border-radius: 20px;
+  background-color: #5f4cd2;
+  border-radius: 10px;
   color: white;
   font-size: 13px;
   padding: 10px 5px;
   margin-top: 10px;
+  /* height: 20px; */
   text-align: center;
   cursor: pointer;
 `;
@@ -443,27 +448,17 @@ const StCloseIcon = styled.button`
   position: absolute;
   border-radius: 50%;
   border: 0;
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
+  font-weight: bold;
 
-  top: -25px;
-  right: -25px;
+  top: -30px;
+  right: -30px;
 
   cursor: pointer;
 `;
 
 const StModalIcon = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  font-size: 30px;
-
-  width: 60px;
-  height: 60px;
-  background-color: #644eee;
-  color: white;
-
   position: fixed;
   bottom: 50px;
   right: 50px;
