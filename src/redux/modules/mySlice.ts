@@ -1,8 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import nonTokenClient from '../../api/noClient';
 import loggedIn from '../../api/loggedIn';
-import { type } from 'os';
 
 type profileState = {
   profileInfo: [];
@@ -10,6 +8,9 @@ type profileState = {
   myGroupList: [];
   myFeed: [];
   myPick: [];
+  toGoList: [];
+  myData: {};
+  modalOpen: boolean;
   isLoading: boolean;
   error: string | unknown;
 };
@@ -20,6 +21,9 @@ const initialState: profileState = {
   myGroupList: [],
   myFeed: [],
   myPick: [],
+  toGoList: [],
+  myData: {},
+  modalOpen: false,
   isLoading: false,
   error: null,
 };
@@ -58,6 +62,7 @@ export const __getMyProfile = createAsyncThunk(
     }
   },
 );
+
 export const __getPicked = createAsyncThunk(
   'getPicked',
   async (payload, thunkAPI) => {
@@ -81,11 +86,37 @@ export const __updateProfile = createAsyncThunk<patchProfile, {}>(
     }
   },
 );
+
 export const __FeedPost = createAsyncThunk<FeedPost, {}>(
   'FeedPost',
   async (payload, thunkAPI) => {
     try {
       const { data } = await loggedIn.post(`api/feed`, payload);
+      return thunkAPI.fulfillWithValue(data.data);
+    } catch (e) {
+      thunkAPI.rejectWithValue(e);
+    }
+  },
+);
+export const __profilePic = createAsyncThunk<FeedPost, {}>(
+  'profilePic',
+  async (payload, thunkAPI) => {
+    try {
+      const { data } = await loggedIn.post(`api/user/update-profile`, payload);
+      return thunkAPI.fulfillWithValue(data.data);
+    } catch (e) {
+      thunkAPI.rejectWithValue(e);
+    }
+  },
+);
+export const __backgroundpic = createAsyncThunk<FeedPost, {}>(
+  'backgroundpic',
+  async (payload, thunkAPI) => {
+    try {
+      const { data } = await loggedIn.post(
+        `api/user/update-background`,
+        payload,
+      );
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
       thunkAPI.rejectWithValue(e);
@@ -110,6 +141,38 @@ export const __myFeed = createAsyncThunk(
     try {
       const { data } = await loggedIn.get(`api/user/my-feed`);
       return thunkAPI.fulfillWithValue(data.data);
+    } catch (e) {
+      thunkAPI.rejectWithValue(e);
+    }
+  },
+);
+
+export const __Togo = createAsyncThunk(
+  'letsGo',
+  async (payload: any, thunkAPI) => {
+    try {
+      return thunkAPI.fulfillWithValue(payload);
+    } catch (e) {
+      thunkAPI.rejectWithValue(e);
+    }
+  },
+);
+
+export const __modalOpen = createAsyncThunk(
+  'modalOpen',
+  async (payload: any, thunkAPI) => {
+    try {
+      return thunkAPI.fulfillWithValue(payload);
+    } catch (e) {
+      thunkAPI.rejectWithValue(e);
+    }
+  },
+);
+export const __modalData = createAsyncThunk(
+  'modalData',
+  async (payload: any, thunkAPI) => {
+    try {
+      return thunkAPI.fulfillWithValue(payload);
     } catch (e) {
       thunkAPI.rejectWithValue(e);
     }
@@ -174,6 +237,36 @@ export const mySlice = createSlice({
       state.myPick = action.payload;
     });
     builder.addCase(__getPicked.rejected, (state, action) => {
+      state.isLoading = false;
+    });
+    builder.addCase(__Togo.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(__Togo.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.toGoList = action.payload;
+    });
+    builder.addCase(__Togo.rejected, (state, action) => {
+      state.isLoading = false;
+    });
+    builder.addCase(__modalOpen.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(__modalOpen.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.modalOpen = action.payload;
+    });
+    builder.addCase(__modalOpen.rejected, (state, action) => {
+      state.isLoading = false;
+    });
+    builder.addCase(__modalData.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(__modalData.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.myData = action.payload;
+    });
+    builder.addCase(__modalData.rejected, (state, action) => {
       state.isLoading = false;
     });
   },

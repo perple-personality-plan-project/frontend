@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useNavigate } from 'react-router';
@@ -16,11 +16,14 @@ import {
   __getMap,
   __updateProfile,
   __getPicked,
+  __profilePic,
+  __backgroundpic,
+  __modalData,
 } from '../redux/modules/mySlice';
-import { async } from 'q';
-import FeedModal from '../components/modal/FeedModal';
-import { awaitExpression, isTSEnumMember } from '@babel/types';
+import FeedModal from '../components/modal/MyFeedCreateModal';
+import { __Togo } from '../redux/modules/mySlice';
 import FeedDetailModal from '../components/modal/FeedDetailModal';
+import { __modalOpen } from '../redux/modules/mySlice';
 
 interface IAppState {
   show: boolean;
@@ -54,10 +57,6 @@ function MyPage() {
   const mapList = useAppSelector((store: any) => store.mypage.maplist);
   const myPick = useAppSelector((store: any) => store.mypage.myPick);
 
-  console.log(myGroupList);
-
-  //json parser function for myfeed using for loop
-
   useEffect(() => {
     fetchData();
   }, []);
@@ -76,19 +75,20 @@ function MyPage() {
     for (let i = 0; i < mapList.length; i++) {
       mapJson.push(JSON.parse(mapList[i].place_group));
     }
-    console.log(mapJson);
     return mapJson;
   };
 
   //dispatch __updateProfile
-  const updateProfile = async () => {
+  const updateProfile = async (e: any) => {
+    e.preventDefault();
+
     const patchProfile = {
       nickname: nickName,
       mbti: MBTI,
     };
     await dispatch(__updateProfile(patchProfile));
     await dispatch(__getMyProfile());
-    setProfileEdit(!profileEdit);
+    setProfileEdit(false);
   };
 
   const navigate = useNavigate();
@@ -118,8 +118,10 @@ function MyPage() {
     setDibs(false);
     setMyGroup(true);
   };
-  const profileEditShow = () => {
-    setProfileEdit(!profileEdit);
+  const profileEditShow = (e: any) => {
+    e.preventDefault();
+
+    setProfileEdit(true);
   };
   const fetchMoreData = () => {
     setTimeout(() => {
@@ -128,32 +130,123 @@ function MyPage() {
   };
   var element = document.getElementsByClassName('infinite-scroll-component ');
 
+  //dispatch __letsGo
+  const letsGo = async (letsgo: any) => {
+    await dispatch(__Togo(letsgo));
+    await navigate('/togolist');
+  };
+
+  const onChangeBanner = async (e: any) => {
+    const formData = new FormData();
+    await formData.append('profile', e.target.files[0]);
+
+    await dispatch(__backgroundpic(formData));
+    await dispatch(__getMyProfile());
+  };
+
+  const onChangeProfile = async (e: any) => {
+    const formData = new FormData();
+    await formData.append('profile', e.target.files[0]);
+
+    await dispatch(__profilePic(formData));
+    await dispatch(__getMyProfile());
+  };
+
+  const modalOpen = async (e: any) => {
+    await dispatch(__modalOpen(true));
+    await dispatch(__modalData(e));
+  };
+
   return (
     <Container>
       <NaviBar></NaviBar>
-      <Banner src="https://cdn-pro-web-40-6.cdn-nhncommerce.com/appacompany_godomall_com/data/main/mboxbanner_03.jpg"></Banner>
+      <Banner>
+        <label htmlFor="banner">
+          {profileInfo?.map((item: any) => {
+            return (
+              <div>
+                <img
+                  src={
+                    profileInfo[0].background_img === null
+                      ? require('../defaultbanner.jpg')
+                      : process.env.REACT_APP_IMG_SERVER +
+                        profileInfo[0].background_img
+                  }
+                />
+              </div>
+            );
+          })}
+        </label>
+        <input
+          type="file"
+          id="banner"
+          accept="image/jpg, image/png, image/jpeg"
+          onChange={e => onChangeBanner(e)}
+        />
+      </Banner>
       <Profile>
         {profileInfo?.map((item: any) => {
           return (
             <div>
               <Mbti show={profileEdit}>{item.mbti}</Mbti>
-              <MbtiInput
-                onChange={e => onChangeMBTI(e.target.value)}
-                show={profileEdit}
-              />
-              <Image src="https://blog.kakaocdn.net/dn/bw32S0/btqz1LaRxRm/xUvL2Kd0ygXyAY1T254un0/img.png"></Image>
-              <Retest onClick={() => navigate(`/mbti`)}>다시 검사하기▷</Retest>
-              <Name show={profileEdit}>{item.nickname}</Name>
-              <NameInput
-                onChange={e => onChangeNickName(e.target.value)}
-                show={profileEdit}
-              />
-              <Edit show={profileEdit} onClick={profileEditShow}>
-                내프로필 편집하기
-              </Edit>
-              <Editsend show={profileEdit} onClick={updateProfile}>
-                편집하기
-              </Editsend>
+              <form onSubmit={updateProfile}>
+                <MbtiInput
+                  onChange={e => onChangeMBTI(e.target.value)}
+                  show={profileEdit}
+                  required
+                  pattern="^(intj|infj|infj|intj|istp|isfp|infp|intp|estp|esfp|enfp|entp|estj|esfj|enfj|entj)$"
+                  onInvalid={e =>
+                    (e.target as HTMLInputElement).setCustomValidity(
+                      'MBTI를 올바르게 입력해 주세요',
+                    )
+                  }
+                  onInput={e =>
+                    (e.target as HTMLInputElement).setCustomValidity('')
+                  }
+                />
+                <Image>
+                  <label htmlFor="profile">
+                    <div>
+                      <img
+                        src={
+                          item.profile_img === null
+                            ? require('../defaultprofile.png')
+                            : process.env.REACT_APP_IMG_SERVER +
+                              item.profile_img
+                        }
+                      />
+                    </div>
+                  </label>
+                  <input
+                    type="file"
+                    id="profile"
+                    accept="image/jpg, image/png, image/jpeg"
+                    onChange={e => onChangeProfile(e)}
+                  />
+                </Image>
+                <Retest onClick={() => navigate(`/mbti`)}>
+                  다시 검사하기▷
+                </Retest>
+                <Name show={profileEdit}>{item.nickname}</Name>
+                <NameInput
+                  onChange={e => onChangeNickName(e.target.value)}
+                  show={profileEdit}
+                  required
+                  pattern="^[가-힣]{2,8}$"
+                  onInvalid={e =>
+                    (e.target as HTMLInputElement).setCustomValidity(
+                      '2글자 이상 8글자 이하 한국어만 가능',
+                    )
+                  }
+                  onInput={e =>
+                    (e.target as HTMLInputElement).setCustomValidity('')
+                  }
+                />
+                <Edit show={profileEdit} onClick={profileEditShow}>
+                  내프로필 편집하기
+                </Edit>
+                <Editsend show={profileEdit}>편집하기</Editsend>
+              </form>
               <Box>
                 <ProfileBox>
                   <FeedNum>{item.feeds_cnt}</FeedNum>
@@ -178,64 +271,103 @@ function MyPage() {
       </Profile>
       <FeedContainer>
         <BtnComp>
-          <MyFeedBtn onClick={feedShow}>마이피드</MyFeedBtn>
-          <MyFeedBtn onClick={togoShow}>to-go list</MyFeedBtn>
-          <MyFeedBtn onClick={dibsShow}>찜</MyFeedBtn>
-          <MyFeedBtn onClick={myGroupShow}>그룹</MyFeedBtn>
+          <MyFeedBtn show={myFeed} onClick={feedShow}>
+            마이피드
+          </MyFeedBtn>
+          <MyFeedBtn show={toGoList} onClick={togoShow}>
+            to-go list
+          </MyFeedBtn>
+          <MyFeedBtn show={dibs} onClick={dibsShow}>
+            찜
+          </MyFeedBtn>
+          <MyFeedBtn show={myGroup} onClick={myGroupShow}>
+            그룹
+          </MyFeedBtn>
         </BtnComp>
         <FeedBox>
           <MyFeed show={myFeed}>
-            {myfeed?.map((item: any) => {
+            {myfeed?.map((item: any, index: number) => {
               return (
-                <Feed>
+                <Feed key={index}>
                   <PostImage
-                    src={process.env.REACT_APP_IMG_SERVER + item.thumbnail}
+                    src={
+                      process.env.REACT_APP_IMG_SERVER +
+                      item.thumbnail.split(',')[0]
+                    }
+                    onClick={() => {
+                      modalOpen(item);
+                    }}
                   />
-                  <TopGradation></TopGradation>
-                  <Address>전주🏃</Address>
-                  <FeedDetailModal />
+                  <Address>{item.mbti}🏃</Address>
+                  <FeedDetailModal post={item}></FeedDetailModal>
                 </Feed>
               );
             })}
           </MyFeed>
           <ToGoList show={toGoList}>
-            {mapList.map((item: any) => {
+            {mapList.map((item: any, index: number) => {
               return (
-                <ToGoFeed onClick={() => navigate(`/togolist`)}>
-                  <ToGoAddress>{item.place_group_name}</ToGoAddress>
-                  <Icon
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="50"
-                    height="50"
-                    fill="currentColor"
-                    className="bi bi-geo-alt-fill"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                  </Icon>
-                  <PlaceNum>{JSON.parse(item.place_group).length}</PlaceNum>
+                <ToGoFeed
+                  key={index}
+                  onClick={() => letsGo(JSON.parse(item.place_group))}
+                >
+                  <ToGoAddress>
+                    <div>{item.place_group_name}</div>
+                    <Icon
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="35"
+                      height="35"
+                      color="#644EEE"
+                      fill="currentColor"
+                      className="bi bi-geo-alt-fill"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                    </Icon>
+                    <PlaceNum>{JSON.parse(item.place_group).length}</PlaceNum>
+                  </ToGoAddress>
+                  <TogoIcons>
+                    <TogoShow>
+                      {JSON.parse(item.place_group).map((item: any) => {
+                        return (
+                          <TogoContainer>
+                            <SideIcon
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="25"
+                              height="25"
+                              color="#644EEE"
+                              fill="currentColor"
+                              className="bi bi-geo-alt-fill"
+                              viewBox="0 0 16 16"
+                            >
+                              <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                            </SideIcon>
+                            <TogoText>{item.place_name}</TogoText>
+                          </TogoContainer>
+                        );
+                      })}
+                    </TogoShow>
+                  </TogoIcons>
                 </ToGoFeed>
               );
             })}
           </ToGoList>
           <DibsList show={dibs}>
-            {myPick?.map((item: any) => {
+            {myPick?.map((item: any, index: number) => {
               return (
-                <Feed>
-                  <PostImage src={require('../전주맛집.jpg')} />
-                  <TopGradation></TopGradation>
-                  <Address>대구</Address>
-                  <Icon
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="50"
-                    height="50"
-                    fill="currentColor"
-                    className="bi bi-geo-alt-fill"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                  </Icon>
-                  <PlaceNum>5</PlaceNum>
+                <Feed key={index}>
+                  <PostImage
+                    src={
+                      process.env.REACT_APP_IMG_SERVER +
+                      item.thumbnail.split(',')[0]
+                    }
+                    onClick={() => {
+                      modalOpen(item);
+                    }}
+                  />
+                  {/* <TopGradation></TopGradation> */}
+                  <Address>{item.mbti}🏃</Address>
+                  <FeedDetailModal post={item}></FeedDetailModal>
                 </Feed>
               );
             })}
@@ -243,11 +375,14 @@ function MyPage() {
           <MyGroupList show={myGroup}>
             {myGroupList?.map((item: any, index: any) => {
               return (
-                <GroupFeed onClick={() => navigate(`/${index + 1}`)}>
+                <GroupFeed
+                  key={index}
+                  onClick={() => navigate(`/${item.group_id}`)}
+                >
                   <GroupProfile
                     src={process.env.REACT_APP_IMG_SERVER + item.thumbnail}
                     alt="group-img"
-                  />{' '}
+                  />
                   <Title>{item.group_name}</Title>
                   <Description>{item.description}</Description>
                 </GroupFeed>
@@ -266,11 +401,32 @@ const Container = styled.div`
   width: 100%;
   position: relative;
 `;
-const Banner = styled.img`
+const Banner = styled.div`
   width: 100%;
   height: 30vh;
   background-color: #f3f3f3;
   position: absolute;
+  img {
+    //background image
+    width: 100%;
+    height: 290px;
+    object-fit: cover;
+  }
+  label {
+    font-size: inherit;
+    line-height: normal;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+  input[type='file'] {
+    position: absolute;
+    width: 0;
+    height: 0;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
 `;
 const Profile = styled.div`
   width: 450px;
@@ -293,7 +449,7 @@ const Profile = styled.div`
   }
 `;
 
-const Image = styled.img`
+const Image = styled.div`
   width: 130px;
   height: 130px;
   background-color: #f3f3f3;
@@ -302,22 +458,47 @@ const Image = styled.img`
   border: solid #e6e6e6 1px;
   border-radius: 50%;
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    z-index: 100;
+    object-fit: cover;
+  }
+  label {
+    font-size: inherit;
+    line-height: normal;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+  input[type='file'] {
+    position: absolute;
+    width: 0;
+    height: 0;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+    z-index: 100;
+  }
   @media (max-width: 412px) {
     margin-left: 34%;
   }
 `;
 const Retest = styled.a`
   text-decoration: underline;
+  margin-left: 300px;
 `;
 
 const Mbti = styled.div<IAppState>`
   position: absolute;
   text-align: center;
   margin-left: 184px;
-  margin-top: 140px;
+  margin-top: 110px;
   font-size: 20px;
   width: 80px;
-  height: 25px;
+  height: 30px;
   background-color: #f3f3f3;
   border: solid #e6e6e6 1px;
   border-radius: 15px;
@@ -332,7 +513,7 @@ const MbtiInput = styled.input<IAppState>`
   position: absolute;
   text-align: center;
   margin-left: 184px;
-  margin-top: 140px;
+  margin-top: 110px;
   font-size: 20px;
   width: 80px;
   height: 25px;
@@ -402,6 +583,7 @@ const ProfileBox = styled.div`
   margin-top: 25px;
   width: 80px;
   height: 80px;
+
   @media (max-width: 412px) {
     width: 60px;
     height: 100px;
@@ -445,7 +627,6 @@ const BtnComp = styled.div`
   margin-left: 550px;
   width: 60%;
   min-width: 440px;
-  height: 30px;
   @media (max-width: 1120px) {
     margin-top: 550px;
     margin-left: 40px;
@@ -456,7 +637,7 @@ const BtnComp = styled.div`
     min-width: 380px;
   }
 `;
-const MyFeedBtn = styled.button`
+const MyFeedBtn = styled.button<IAppState>`
   //css center of page
   display: inline-block;
   margin-top: 10px;
@@ -464,11 +645,12 @@ const MyFeedBtn = styled.button`
   width: 150px;
   height: 40px;
   background-color: #ffffff;
-  border: solid #d9d9d9 2px;
+  border: ${props => (props.show ? 'solid #644eee 2px' : 'solid #DEDEDE 2px')};
   border-radius: 15px;
   font-size: 15px;
+  z-index: 200;
   &:hover {
-    background-color: #e6e6e6;
+    border: solid #644eee 2px;
   }
   @media (max-width: 1120px) {
     width: 100px;
@@ -509,10 +691,10 @@ const Address = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 20px;
-  margin-left: 340px;
-  font-size: 20px;
-  width: 150px;
-  height: 40px;
+  margin-left: 220px;
+  font-size: 15px;
+  width: 100px;
+  height: 30px;
   background-color: #d9d9d9;
   border: solid #d9d9d9 2px;
   border-radius: 15px;
@@ -528,16 +710,13 @@ const Address = styled.div`
 `;
 const ToGoAddress = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
   margin-top: 20px;
-  margin-left: 140px;
-  font-size: 20px;
+  margin-left: 20px;
+  font-size: 25px;
+  font-weight: bold;
   width: 350px;
   height: 40px;
-  background-color: #d9d9d9;
-  border: solid #d9d9d9 2px;
-  border-radius: 15px;
   position: absolute;
 
   z-index: 1;
@@ -548,6 +727,15 @@ const ToGoAddress = styled.div`
     height: 30px;
   }
 `;
+const TogoIcons = styled.div`
+  border-top: solid #d9d9d9 2px;
+  height: 200px;
+  width: 90%;
+  margin-top: 80px;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
 const TopGradation = styled.div`
   display: inline-block;
   margin-top: 0px;
@@ -560,15 +748,29 @@ const TopGradation = styled.div`
   z-index: 1;
 `;
 const Icon = styled.svg`
-  margin-top: 10px;
-  margin-left: 10px;
+  margin-left: 400px;
   position: absolute;
   z-index: 2;
 `;
+const TogoShow = styled.div`
+  z-index: 100;
+`;
+const TogoContainer = styled.div``;
+
+const SideIcon = styled.svg`
+  margin-top: 12px;
+`;
+
+const TogoText = styled.div`
+  display: inline-block;
+  position: absolute;
+  margin-top: 14px;
+  margin-left: 10px;
+`;
+
 const PlaceNum = styled.div`
   display: inline-block;
-  margin-top: 10px;
-  margin-left: 60px;
+  margin-left: 440px;
   font-size: 40px;
   font-weight: bold;
   position: absolute;
@@ -579,14 +781,17 @@ const Feed = styled.div`
   display: inline-block;
   margin-top: 20px;
   margin-left: 20px;
-  width: 40%;
-  min-width: 500px;
+  width: 35%;
+  min-width: 350px;
   height: 40%;
-  min-height: 500px;
+  min-height: 350px;
   background-color: #f3f3f3;
   border: solid #e6e6e6 1px;
   border-radius: 15px;
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
+  @media (max-width: 1120px) {
+    margin-left: 90px;
+  }
   @media (max-width: 412px) {
     min-width: 350px;
     height: 20%;
@@ -602,13 +807,9 @@ const ToGoFeed = styled.div`
   margin-left: 20px;
   width: 40%;
   min-width: 500px;
-  height: 100px;
-  background-color: #f3f3f3;
-  border: solid #e6e6e6 1px;
+  height: 300px;
+  border: solid #d9d9d9 1px;
   border-radius: 15px;
-  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
-  //column append
-
   @media (max-width: 412px) {
     min-width: 350px;
     height: 20%;
@@ -641,8 +842,8 @@ const PostImage = styled.img`
   position: absolute;
   z-index: 1;
   display: inline-block;
-  width: 520px;
-  height: 500px;
+  width: 350px;
+  height: 350px;
   background-color: #f3f3f3;
   border: solid #e6e6e6 1px;
   border-radius: 15px;
