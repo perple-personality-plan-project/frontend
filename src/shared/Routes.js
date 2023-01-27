@@ -99,7 +99,7 @@ const Router = () => {
             path="/mbti"
             element={
               <div style={{ maxWidth: '1440px', margin: 'auto' }}>
-                <NaviBar />
+                <Navbar />
                 <MbtiCheckPage />
               </div>
             }
@@ -107,7 +107,8 @@ const Router = () => {
           <Route
             path="/mbtiquestion"
             element={
-              <div>
+              <div style={{ maxWidth: '1440px', margin: 'auto' }}>
+                <Navbar />
                 <MbtiQuestionsPage />
               </div>
             }
