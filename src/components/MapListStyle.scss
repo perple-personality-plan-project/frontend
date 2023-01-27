@@ -7,6 +7,35 @@
   padding: 40px;
   overflow: overlay;
   z-index: 1;
+  @media screen and (max-width: 1120px) {
+    position: absolute;
+    top: 500px;
+    right: 250px;
+    bottom: 50px;
+    width: 400px;
+    padding: 40px;
+    overflow: overlay;
+  }
+  @media screen and (max-width: 700px) {
+    position: absolute;
+    top: 500px;
+    right: 150px;
+    left: 50px;
+    bottom: 50px;
+    width: 400px;
+    padding: 40px;
+    overflow: overlay;
+  }
+  @media screen and (max-width: 412px) {
+    position: absolute;
+    top: 500px;
+    right: 0px;
+    left: -25px;
+    bottom: 50px;
+    width: 340px;
+    padding: 40px;
+    overflow: overlay;
+  }
 
   &::-webkit-scrollbar {
     display: none;

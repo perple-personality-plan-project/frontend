@@ -112,7 +112,15 @@ const MapList = ({ places, pagination }: MapListProps) => {
                     );
                   }}
                 >
-                  장바구니
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    height="24"
+                  >
+                    <path fill="none" d="M0 0h24v24H0z" />
+                    <path d="M12 2a6 6 0 0 1 6 6v1h4v2h-1.167l-.757 9.083a1 1 0 0 1-.996.917H4.92a1 1 0 0 1-.996-.917L3.166 11H2V9h4V8a6 6 0 0 1 6-6zm6.826 9H5.173l.667 8h12.319l.667-8zM13 13v4h-2v-4h2zm-4 0v4H7v-4h2zm8 0v4h-2v-4h2zm-5-9a4 4 0 0 0-3.995 3.8L8 8v1h8V8a4 4 0 0 0-3.8-3.995L12 4z" />
+                  </svg>
                 </Cartbtn>
               </div>
             </div>
@@ -135,22 +143,29 @@ const MapList = ({ places, pagination }: MapListProps) => {
     </div>
   );
 };
+
 const Cartbtn = styled.button`
   // small button style top right inside of the box
   position: absolute;
   width: 70px;
   height: 30px;
   margin-left: 230px;
-  background-color: #f5f5f5;
-  border: 1px solid #e5e5e5;
+  background-color: transparent;
+  border: transparent;
   border-radius: 5px;
   font-size: 12px;
   font-weight: 700;
   color: #333;
   cursor: pointer;
+  @media screen and (max-width: 412px) {
+    margin-left: 170px;
+  }
 `;
 const Detail = styled.a`
   margin-left: 230px;
+  @media screen and (max-width: 412px) {
+    margin-left: 180px;
+  }
 `;
 
 export default MapList;
