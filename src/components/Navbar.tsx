@@ -34,7 +34,7 @@ const Navbar = () => {
     if (window.confirm('로그아웃 하시겠습니까?')) {
       await client.post('api/user/logout');
       localStorage.clear();
-      navigate('/community');
+      navigate('/');
     }
   };
 
@@ -42,15 +42,15 @@ const Navbar = () => {
     <StNavContainer>
       <nav className="nav">
         <SidebarCompelete />
-        <Link to="/community" className="site-title">
+        <Link to="/" className="site-title">
           <p>Platter</p>
         </Link>
         <div className="link-container">
           <ul className="link-delete">
-            <CustomLink to="/community">커뮤니티</CustomLink>
+            <CustomLink to="/">커뮤니티</CustomLink>
             <CustomLink to="/map">맵</CustomLink>
             <CustomLink to="/group">그룹</CustomLink>
-            <CustomLink to="/mypage">마이페이지</CustomLink>
+            {token ? <CustomLink to="/mypage">마이페이지</CustomLink> : null}
           </ul>
           <ul>
             {token ? (
