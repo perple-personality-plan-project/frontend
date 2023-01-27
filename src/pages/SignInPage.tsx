@@ -42,7 +42,8 @@ const SignInPage = () => {
   const kakaoLogin = async () => {
     const Redirect_URI = process.env.REACT_APP_KAKAO_REDIRECT_URI;
     const Client_id = process.env.REACT_APP_KAKAO_CLIENT_ID;
-    window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${Client_id}&redirect_uri=${Redirect_URI}`;
+    console.log(Redirect_URI,Client_id)
+    // window.location.href = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${Client_id}&redirect_uri=${Redirect_URI}`;
   };
 
   return (
