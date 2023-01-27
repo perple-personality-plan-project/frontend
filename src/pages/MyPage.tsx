@@ -8,7 +8,6 @@ import {
   useAppSelector,
 } from '../components/hooks/typescripthook/hooks';
 
-import NaviBar from '../components/Header';
 import {
   __getMyProfile,
   __myFeed,
@@ -24,7 +23,7 @@ import FeedModal from '../components/modal/MyFeedCreateModal';
 import { __Togo } from '../redux/modules/mySlice';
 import FeedDetailModal from '../components/modal/FeedDetailModal';
 import { __modalOpen } from '../redux/modules/mySlice';
-
+import Navbar from '../components/Navbar';
 interface IAppState {
   show: boolean;
 }
@@ -156,246 +155,317 @@ function MyPage() {
     await dispatch(__modalOpen(true));
     await dispatch(__modalData(e));
   };
+  const token = localStorage.getItem('accessToken');
 
-  return (
-    <Container>
-      <NaviBar></NaviBar>
-      <Banner>
-        <label htmlFor="banner">
+  if (token === null) {
+    return (
+      <Container>
+        <Navbar />
+        <Banner>
+          <label htmlFor="banner">
+            {profileInfo?.map((item: any) => {
+              return (
+                <div>
+                  <img
+                    src={
+                      profileInfo[0].background_img === null
+                        ? require('../defaultbanner.jpg')
+                        : process.env.REACT_APP_IMG_SERVER +
+                          profileInfo[0].background_img
+                    }
+                  />
+                </div>
+              );
+            })}
+          </label>
+          <input
+            type="file"
+            id="banner"
+            accept="image/jpg, image/png, image/jpeg"
+            onChange={e => onChangeBanner(e)}
+          />
+        </Banner>
+        <Profile>
+          <LoginRequire onClick={() => navigate(`/signin`)}>
+            로그인이 필요합니다
+          </LoginRequire>
+        </Profile>
+        <FeedContainer>
+          <BtnComp>
+            <MyFeedBtn show={myFeed} onClick={feedShow}>
+              마이피드
+            </MyFeedBtn>
+            <MyFeedBtn show={toGoList} onClick={togoShow}>
+              to-go list
+            </MyFeedBtn>
+            <MyFeedBtn show={dibs} onClick={dibsShow}>
+              찜
+            </MyFeedBtn>
+            <MyFeedBtn show={myGroup} onClick={myGroupShow}>
+              그룹
+            </MyFeedBtn>
+          </BtnComp>
+          <FeedBox></FeedBox>
+          <FeedModal />
+        </FeedContainer>
+      </Container>
+    );
+  } else {
+    return (
+      <Container>
+        <Navbar />
+        <Banner>
+          <label htmlFor="banner">
+            {profileInfo?.map((item: any) => {
+              return (
+                <div>
+                  <img
+                    src={
+                      profileInfo[0].background_img === null
+                        ? require('../defaultbanner.jpg')
+                        : process.env.REACT_APP_IMG_SERVER +
+                          profileInfo[0].background_img
+                    }
+                  />
+                </div>
+              );
+            })}
+          </label>
+          <input
+            type="file"
+            id="banner"
+            accept="image/jpg, image/png, image/jpeg"
+            onChange={e => onChangeBanner(e)}
+          />
+        </Banner>
+        <Profile>
           {profileInfo?.map((item: any) => {
             return (
               <div>
-                <img
-                  src={
-                    profileInfo[0].background_img === null
-                      ? require('../defaultbanner.jpg')
-                      : process.env.REACT_APP_IMG_SERVER +
-                        profileInfo[0].background_img
-                  }
-                />
+                <Mbti show={profileEdit}>{item.mbti}</Mbti>
+                <form onSubmit={updateProfile}>
+                  <MbtiInput
+                    onChange={e => onChangeMBTI(e.target.value)}
+                    show={profileEdit}
+                    required
+                    pattern="^(intj|infj|infj|intj|istp|isfp|infp|intp|estp|esfp|enfp|entp|estj|esfj|enfj|entj)$"
+                    onInvalid={e =>
+                      (e.target as HTMLInputElement).setCustomValidity(
+                        'MBTI를 올바르게 입력해 주세요',
+                      )
+                    }
+                    onInput={e =>
+                      (e.target as HTMLInputElement).setCustomValidity('')
+                    }
+                  />
+                  <Image>
+                    <label htmlFor="profile">
+                      <div>
+                        <img
+                          src={
+                            item.profile_img === null
+                              ? require('../defaultprofile.png')
+                              : process.env.REACT_APP_IMG_SERVER +
+                                item.profile_img
+                          }
+                        />
+                      </div>
+                    </label>
+                    <input
+                      type="file"
+                      id="profile"
+                      accept="image/jpg, image/png, image/jpeg"
+                      onChange={e => onChangeProfile(e)}
+                    />
+                  </Image>
+                  <Retest onClick={() => navigate(`/mbti`)}>
+                    다시 검사하기▷
+                  </Retest>
+                  <Name show={profileEdit}>{item.nickname}</Name>
+                  <NameInput
+                    onChange={e => onChangeNickName(e.target.value)}
+                    show={profileEdit}
+                    required
+                    pattern="^[가-힣]{2,8}$"
+                    onInvalid={e =>
+                      (e.target as HTMLInputElement).setCustomValidity(
+                        '2글자 이상 8글자 이하 한국어만 가능',
+                      )
+                    }
+                    onInput={e =>
+                      (e.target as HTMLInputElement).setCustomValidity('')
+                    }
+                  />
+                  <Edit show={profileEdit} onClick={profileEditShow}>
+                    내프로필 편집하기
+                  </Edit>
+                  <Editsend show={profileEdit}>편집하기</Editsend>
+                </form>
+                <Box>
+                  <ProfileBox>
+                    <FeedNum>{item.feeds_cnt}</FeedNum>
+                    <FeedType>피드</FeedType>
+                  </ProfileBox>
+                  <ProfileBox>
+                    <FeedNum>{item.routes_cnt}</FeedNum>
+                    <FeedType>To-go</FeedType>
+                  </ProfileBox>
+                  <ProfileBox>
+                    <FeedNum>{item.picks_cnt}</FeedNum>
+                    <FeedType>찜</FeedType>
+                  </ProfileBox>
+                  <ProfileBox>
+                    <FeedNum>{item.groups_cnt}</FeedNum>
+                    <FeedType>그룹</FeedType>
+                  </ProfileBox>
+                </Box>
               </div>
             );
           })}
-        </label>
-        <input
-          type="file"
-          id="banner"
-          accept="image/jpg, image/png, image/jpeg"
-          onChange={e => onChangeBanner(e)}
-        />
-      </Banner>
-      <Profile>
-        {profileInfo?.map((item: any) => {
-          return (
-            <div>
-              <Mbti show={profileEdit}>{item.mbti}</Mbti>
-              <form onSubmit={updateProfile}>
-                <MbtiInput
-                  onChange={e => onChangeMBTI(e.target.value)}
-                  show={profileEdit}
-                  required
-                  pattern="^(intj|infj|infj|intj|istp|isfp|infp|intp|estp|esfp|enfp|entp|estj|esfj|enfj|entj)$"
-                  onInvalid={e =>
-                    (e.target as HTMLInputElement).setCustomValidity(
-                      'MBTI를 올바르게 입력해 주세요',
-                    )
-                  }
-                  onInput={e =>
-                    (e.target as HTMLInputElement).setCustomValidity('')
-                  }
-                />
-                <Image>
-                  <label htmlFor="profile">
-                    <div>
-                      <img
-                        src={
-                          item.profile_img === null
-                            ? require('../defaultprofile.png')
-                            : process.env.REACT_APP_IMG_SERVER +
-                              item.profile_img
-                        }
-                      />
-                    </div>
-                  </label>
-                  <input
-                    type="file"
-                    id="profile"
-                    accept="image/jpg, image/png, image/jpeg"
-                    onChange={e => onChangeProfile(e)}
-                  />
-                </Image>
-                <Retest onClick={() => navigate(`/mbti`)}>
-                  다시 검사하기▷
-                </Retest>
-                <Name show={profileEdit}>{item.nickname}</Name>
-                <NameInput
-                  onChange={e => onChangeNickName(e.target.value)}
-                  show={profileEdit}
-                  required
-                  pattern="^[가-힣]{2,8}$"
-                  onInvalid={e =>
-                    (e.target as HTMLInputElement).setCustomValidity(
-                      '2글자 이상 8글자 이하 한국어만 가능',
-                    )
-                  }
-                  onInput={e =>
-                    (e.target as HTMLInputElement).setCustomValidity('')
-                  }
-                />
-                <Edit show={profileEdit} onClick={profileEditShow}>
-                  내프로필 편집하기
-                </Edit>
-                <Editsend show={profileEdit}>편집하기</Editsend>
-              </form>
-              <Box>
-                <ProfileBox>
-                  <FeedNum>{item.feeds_cnt}</FeedNum>
-                  <FeedType>피드</FeedType>
-                </ProfileBox>
-                <ProfileBox>
-                  <FeedNum>{item.routes_cnt}</FeedNum>
-                  <FeedType>To-go</FeedType>
-                </ProfileBox>
-                <ProfileBox>
-                  <FeedNum>{item.picks_cnt}</FeedNum>
-                  <FeedType>찜</FeedType>
-                </ProfileBox>
-                <ProfileBox>
-                  <FeedNum>{item.groups_cnt}</FeedNum>
-                  <FeedType>그룹</FeedType>
-                </ProfileBox>
-              </Box>
-            </div>
-          );
-        })}
-      </Profile>
-      <FeedContainer>
-        <BtnComp>
-          <MyFeedBtn show={myFeed} onClick={feedShow}>
-            마이피드
-          </MyFeedBtn>
-          <MyFeedBtn show={toGoList} onClick={togoShow}>
-            to-go list
-          </MyFeedBtn>
-          <MyFeedBtn show={dibs} onClick={dibsShow}>
-            찜
-          </MyFeedBtn>
-          <MyFeedBtn show={myGroup} onClick={myGroupShow}>
-            그룹
-          </MyFeedBtn>
-        </BtnComp>
-        <FeedBox>
-          <MyFeed show={myFeed}>
-            {myfeed?.map((item: any, index: number) => {
-              return (
-                <Feed key={index}>
-                  <PostImage
-                    src={
-                      process.env.REACT_APP_IMG_SERVER +
-                      item.thumbnail.split(',')[0]
-                    }
-                    onClick={() => {
-                      modalOpen(item);
-                    }}
-                  />
-                  <Address>{item.mbti}🏃</Address>
-                  <FeedDetailModal post={item}></FeedDetailModal>
-                </Feed>
-              );
-            })}
-          </MyFeed>
-          <ToGoList show={toGoList}>
-            {mapList.map((item: any, index: number) => {
-              return (
-                <ToGoFeed
-                  key={index}
-                  onClick={() => letsGo(JSON.parse(item.place_group))}
-                >
-                  <ToGoAddress>
-                    <div>{item.place_group_name}</div>
-                    <Icon
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="35"
-                      height="35"
-                      color="#644EEE"
-                      fill="currentColor"
-                      className="bi bi-geo-alt-fill"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                    </Icon>
-                    <PlaceNum>{JSON.parse(item.place_group).length}</PlaceNum>
-                  </ToGoAddress>
-                  <TogoIcons>
-                    <TogoShow>
-                      {JSON.parse(item.place_group).map((item: any) => {
-                        return (
-                          <TogoContainer>
-                            <SideIcon
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="25"
-                              height="25"
-                              color="#644EEE"
-                              fill="currentColor"
-                              className="bi bi-geo-alt-fill"
-                              viewBox="0 0 16 16"
-                            >
-                              <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                            </SideIcon>
-                            <TogoText>{item.place_name}</TogoText>
-                          </TogoContainer>
-                        );
-                      })}
-                    </TogoShow>
-                  </TogoIcons>
-                </ToGoFeed>
-              );
-            })}
-          </ToGoList>
-          <DibsList show={dibs}>
-            {myPick?.map((item: any, index: number) => {
-              return (
-                <Feed key={index}>
-                  <PostImage
-                    src={
-                      process.env.REACT_APP_IMG_SERVER +
-                      item.thumbnail.split(',')[0]
-                    }
-                    onClick={() => {
-                      modalOpen(item);
-                    }}
-                  />
-                  {/* <TopGradation></TopGradation> */}
-                  <Address>{item.mbti}🏃</Address>
-                  <FeedDetailModal post={item}></FeedDetailModal>
-                </Feed>
-              );
-            })}
-          </DibsList>
-          <MyGroupList show={myGroup}>
-            {myGroupList?.map((item: any, index: any) => {
-              return (
-                <GroupFeed
-                  key={index}
-                  onClick={() => navigate(`/${item.group_id}`)}
-                >
-                  <GroupProfile
-                    src={process.env.REACT_APP_IMG_SERVER + item.thumbnail}
-                    alt="group-img"
-                  />
-                  <Title>{item.group_name}</Title>
-                  <Description>{item.description}</Description>
-                </GroupFeed>
-              );
-            })}
-          </MyGroupList>
-        </FeedBox>
-        <FeedModal />
-      </FeedContainer>
-    </Container>
-  );
+        </Profile>
+        <FeedContainer>
+          <BtnComp>
+            <MyFeedBtn show={myFeed} onClick={feedShow}>
+              마이피드
+            </MyFeedBtn>
+            <MyFeedBtn show={toGoList} onClick={togoShow}>
+              to-go list
+            </MyFeedBtn>
+            <MyFeedBtn show={dibs} onClick={dibsShow}>
+              찜
+            </MyFeedBtn>
+            <MyFeedBtn show={myGroup} onClick={myGroupShow}>
+              그룹
+            </MyFeedBtn>
+          </BtnComp>
+          <FeedBox>
+            <MyFeed show={myFeed}>
+              {myfeed?.map((item: any, index: number) => {
+                return (
+                  <Feed key={index}>
+                    <PostImage
+                      src={
+                        process.env.REACT_APP_IMG_SERVER +
+                        item.thumbnail.split(',')[0]
+                      }
+                      onClick={() => {
+                        modalOpen(item);
+                      }}
+                    />
+                    <Address>{item.mbti}🏃</Address>
+                    <FeedDetailModal post={item}></FeedDetailModal>
+                  </Feed>
+                );
+              })}
+            </MyFeed>
+            <ToGoList show={toGoList}>
+              {mapList.map((item: any, index: number) => {
+                return (
+                  <ToGoFeed
+                    key={index}
+                    onClick={() => letsGo(JSON.parse(item.place_group))}
+                  >
+                    <ToGoAddress>
+                      <div>{item.place_group_name}</div>
+                      <Icon
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="35"
+                        height="35"
+                        color="#644EEE"
+                        fill="currentColor"
+                        className="bi bi-geo-alt-fill"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                      </Icon>
+                      <PlaceNum>{JSON.parse(item.place_group).length}</PlaceNum>
+                    </ToGoAddress>
+                    <TogoIcons>
+                      <TogoShow>
+                        {JSON.parse(item.place_group).map((item: any) => {
+                          return (
+                            <TogoContainer>
+                              <SideIcon
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="25"
+                                height="25"
+                                color="#644EEE"
+                                fill="currentColor"
+                                className="bi bi-geo-alt-fill"
+                                viewBox="0 0 16 16"
+                              >
+                                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                              </SideIcon>
+                              <TogoText>{item.place_name}</TogoText>
+                            </TogoContainer>
+                          );
+                        })}
+                      </TogoShow>
+                    </TogoIcons>
+                  </ToGoFeed>
+                );
+              })}
+            </ToGoList>
+            <DibsList show={dibs}>
+              {myPick?.map((item: any, index: number) => {
+                return (
+                  <Feed key={index}>
+                    <PostImage
+                      src={
+                        process.env.REACT_APP_IMG_SERVER +
+                        item.thumbnail.split(',')[0]
+                      }
+                      onClick={() => {
+                        modalOpen(item);
+                      }}
+                    />
+                    {/* <TopGradation></TopGradation> */}
+                    <Address>{item.mbti}🏃</Address>
+                    <FeedDetailModal post={item}></FeedDetailModal>
+                  </Feed>
+                );
+              })}
+            </DibsList>
+            <MyGroupList show={myGroup}>
+              {myGroupList?.map((item: any, index: any) => {
+                return (
+                  <GroupFeed
+                    key={index}
+                    onClick={() => navigate(`/${item.group_id}`)}
+                  >
+                    <GroupProfile
+                      src={process.env.REACT_APP_IMG_SERVER + item.thumbnail}
+                      alt="group-img"
+                    />
+                    <Title>{item.group_name}</Title>
+                    <Description>{item.description}</Description>
+                  </GroupFeed>
+                );
+              })}
+            </MyGroupList>
+          </FeedBox>
+          <FeedModal />
+        </FeedContainer>
+      </Container>
+    );
+  }
 }
-
+const LoginRequire = styled.button`
+  //로그인 필요
+  width: 100%;
+  height: 200px;
+  margin-top: 30%;
+  background-color: #f3f3f3;
+  border: none;
+  font-size: 40px;
+  font-weight: 600;
+  color: #644eee;
+  cursor: pointer;
+  //css middle of the page
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const Container = styled.div`
   //css cover whole page
   width: 100%;
