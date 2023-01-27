@@ -27,6 +27,25 @@ const SignUpPage = () => {
   const [Mbti, setMbti] = useState('');
   const [mbtiMessage, setMbtiMessage] = useState('');
 
+  const mbtiList = [
+    'ENFJ',
+    'ENTJ',
+    'ENFP',
+    'ENTJ',
+    'ESFP',
+    'ESFJ',
+    'ESTP',
+    'ESTJ',
+    'INFP',
+    'INFJ',
+    'INTP',
+    'ISTP',
+    'ISFP',
+    'ISFJ',
+    'ISTJ',
+    'INTJ',
+  ];
+
   const onLoginIdHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginId(e.currentTarget.value);
     const RegExpId = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,10}$/;
@@ -51,7 +70,8 @@ const SignUpPage = () => {
 
   const onPasswordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.currentTarget.value);
-    const RegExpPw = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%]{4,10}$/;
+    const RegExpPw =
+      /(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%])[0-9a-zA-Z!@#$%]{4,10}$/;
     if (!RegExpPw.test(e.target.value)) {
       setPwMessage(
         '비밀번호는 영문자 + 숫자 + 특수문자(!,@,#,$,%)를 포함해주세요!',
@@ -73,24 +93,6 @@ const SignUpPage = () => {
 
   const onMbtiHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMbti(e.currentTarget.value);
-    const mbtiList = [
-      'ENFJ',
-      'ENTJ',
-      'ENFP',
-      'ENTJ',
-      'ESFP',
-      'ESFJ',
-      'ESTP',
-      'ESTJ',
-      'INFP',
-      'INFJ',
-      'INTP',
-      'ISTP',
-      'ISFP',
-      'ISFJ',
-      'ISTJ',
-      'INTJ',
-    ];
 
     if (!mbtiList.includes(e.target.value.toUpperCase())) {
       setMbtiMessage('mbti 제대로 입력해쥬세용');
@@ -106,30 +108,42 @@ const SignUpPage = () => {
       alert('회원 가입 성공!');
       navigate('/signin');
     } catch (error: any) {
-      console.log(error);
-      if (error.response.status === 409) {
-        alert('중복되는 아이디 또는 닉네임이 존재합니다');
-      } else if (error.response.status === 400) {
-        alert('닉네임은 한글 + 영어 4-8자를 포함해주세요!!');
-      }
+      // if (error.response.status === 400) {
+      //   console.log(error);
+      //   return alert(error.response.data.message);
+      // }
     }
   };
 
   const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (Password !== ConfirmPassword) {
-      alert('비밀번호와 비밀번호 확인이 같지 않습니다.');
-    }
 
-    let body = {
-      login_id: LoginId,
-      nickname: NickName,
-      password: Password,
-      confirm_password: ConfirmPassword,
-      mbti: Mbti.toUpperCase(),
-      provider: 'local',
-    };
-    signUp(body);
+    const RegExpId = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,10}$/;
+    const RegExpNick = /^[가-힣a-zA-Z]{4,8}$/;
+    const RegExpPw =
+      /(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%])[0-9a-zA-Z!@#$%]{4,10}$/;
+
+    if (!RegExpId.test(LoginId)) {
+      alert('아이디는 영문자 + 숫자를 포함하여 5-10자를 포함해주세요!');
+    } else if (!RegExpNick.test(NickName)) {
+      alert('닉네임은 한글 + 영어 4-8자를 포함해주세요!');
+    } else if (!RegExpPw.test(Password)) {
+      alert('비밀번호는 영문자 + 숫자 + 특수문자(!,@,#,$,%)를 포함해주세요!');
+    } else if (Password !== ConfirmPassword) {
+      alert('비밀번호와 비밀번호 확인이 같지 않습니다.');
+    } else if (mbtiList.includes(Mbti.toUpperCase())) {
+      let body = {
+        login_id: LoginId,
+        nickname: NickName,
+        password: Password,
+        confirm_password: ConfirmPassword,
+        mbti: Mbti.toUpperCase(),
+        provider: 'local',
+      };
+      signUp(body);
+    } else {
+      alert('MBTI를 제대로 입력해주세요!');
+    }
   };
 
   return (
@@ -211,7 +225,8 @@ const SignUpPage = () => {
             {Mbti ? <p className="validation-text">{mbtiMessage}</p> : null}
           </div>
           <StButton
-            onClick={() => window.open('http://localhost:3000/mbti', '_blank')}
+            type="button"
+            onClick={() => window.open('https://16platter.site/mbti', '_blank')}
           >
             <div>검사하러가기✔</div>
           </StButton>
