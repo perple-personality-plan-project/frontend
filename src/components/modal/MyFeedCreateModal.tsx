@@ -97,7 +97,6 @@ const FeedModal: React.FC = () => {
       <StModalIcon onClick={() => setIsOpen(true)}>
         <p>+</p>
       </StModalIcon>
-
       <GroupModalTemplate closeModal={closeModal} open={isOpen}>
         <StGroupContainer>
           <StCloseIcon onClick={closeModal}>X</StCloseIcon>

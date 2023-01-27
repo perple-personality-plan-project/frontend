@@ -97,7 +97,11 @@ const MapPage = () => {
   const useselector = useAppSelector(state => state.map.MapPost);
   const dispatch = useAppDispatch();
 
-  const maplist = useselector.filter((item: any, index: number) => index !== 0);
+  const maplist = useselector.filter(
+    (item: any, index: number) => index !== 0 && item.address_name.length !== 0,
+  );
+
+  console.log(useselector);
 
   const [checkedInputs, setCheckedInputs] = useState<any>([]);
 
@@ -333,12 +337,12 @@ const MapPage = () => {
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          width="32"
-          height="32"
+          width="24"
+          height="24"
         >
           <path fill="none" d="M0 0h24v24H0z" />
           <path
-            d="M4 15V8.5a4.5 4.5 0 0 1 9 0v7a2.5 2.5 0 1 0 5 0V8.83a3.001 3.001 0 1 1 2 0v6.67a4.5 4.5 0 1 1-9 0v-7a2.5 2.5 0 0 0-5 0V15h3l-4 5-4-5h3zm15-8a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"
+            d="M12 2a6 6 0 0 1 6 6v1h4v2h-1.167l-.757 9.083a1 1 0 0 1-.996.917H4.92a1 1 0 0 1-.996-.917L3.166 11H2V9h4V8a6 6 0 0 1 6-6zm6.826 9H5.173l.667 8h12.319l.667-8zM13 13v4h-2v-4h2zm-4 0v4H7v-4h2zm8 0v4h-2v-4h2zm-5-9a4 4 0 0 0-3.995 3.8L8 8v1h8V8a4 4 0 0 0-3.8-3.995L12 4z"
             fill="rgba(255,255,255,1)"
           />
         </svg>
@@ -395,7 +399,6 @@ const MapPage = () => {
                   </CheckBoxForm>
                 );
               })}
-
               <RootName
                 placeholder="이름을 입력해 주세요"
                 onChange={e => onChangeRootTitle(e.target.value)}
@@ -415,7 +418,7 @@ const MapPage = () => {
         style={{
           position: 'absolute',
           left: 0,
-          top: 0,
+          top: -0,
           width: '100%',
           height: '90%',
           marginTop: '70px',
@@ -431,20 +434,22 @@ const MapPage = () => {
 const Cart = styled.div`
   //position right
   position: absolute;
-  top: 4%;
-  right: 100px;
+  top: 5%;
+  right: 120px;
   transform: translate(0, -50%);
   font-weight: bold;
   cursor: pointer;
   z-index: 100;
+  @media screen {
+  }
 `;
 
 const Modal = styled.div<any>`
   position: absolute;
-  top: 70px;
+  top: 90px;
   right: 0;
   width: 500px;
-  height: 92vh;
+  height: 91vh;
   background-color: white;
   z-index: 100;
   display: ${props => (props.show ? 'none' : '')};

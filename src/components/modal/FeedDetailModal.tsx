@@ -16,6 +16,7 @@ import { __groupFeedDetail } from '../../redux/modules/groupSlice';
 import loggedIn from '../../api/loggedIn';
 import { __mainFeedDetail } from '../../redux/modules/postSlice';
 import { __modalOpen } from '../../redux/modules/mySlice';
+import { __RootMaker } from '../../redux/modules/mapSlice';
 
 interface Props {
   post: {
@@ -33,6 +34,10 @@ interface Props {
 interface IAppState {
   show: boolean;
 }
+type RootType = {
+  place_group: [];
+  place_group_name: string;
+};
 
 const FeedDetailModal: React.FC<Props> = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -84,8 +89,12 @@ const FeedDetailModal: React.FC<Props> = () => {
   };
 
   const modalOpen = useAppSelector((store: any) => store.mypage.modalOpen);
-  let modalParse;
-  let placeName;
+
+  let modalParse: { place_group: string; place_group_name: string } = {
+    place_group: '',
+    place_group_name: '',
+  };
+  let placeName: [] = [];
 
   if (mainFeedDetail.location === undefined) {
     console.log('undefined');
@@ -93,6 +102,17 @@ const FeedDetailModal: React.FC<Props> = () => {
     modalParse = JSON.parse(mainFeedDetail.location);
     placeName = JSON.parse(modalParse.place_group);
   }
+  console.log(placeName);
+
+  const saveRoute = () => {
+    const saveData = {
+      place_group: modalParse.place_group,
+      place_group_name: modalParse.place_group_name,
+    };
+
+    dispatch(__RootMaker(saveData));
+    alert('저장성공');
+  };
 
   return (
     <MyFeedDetailModal
@@ -155,7 +175,7 @@ const FeedDetailModal: React.FC<Props> = () => {
                 <div style={{ display: 'flex' }}>
                   <div className="detail-btn">좋</div>
                   <div className="detail-btn">댓</div>
-                  <div className="detail-btn">
+                  <div onClick={saveRoute} className="detail-btn">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -364,6 +384,7 @@ const StDetailDesc = styled.div`
         background-color: #d9d9d9;
         color: black;
         margin-left: 10px;
+        cursor: pointer;
       }
     }
   }

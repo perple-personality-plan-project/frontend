@@ -30,7 +30,9 @@ const MapList = ({ places, pagination }: MapListProps) => {
     [],
   );
   useEffect(() => {
-    dispatch(__MoveCart(Cart));
+    if (place !== '') {
+      dispatch(__MoveCart(Cart));
+    }
   }, [place]);
 
   const Cart = {
