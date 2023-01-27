@@ -46,6 +46,7 @@ function MyPage() {
   const onChangeMBTI = (e: any) => {
     setMBTI(e);
   };
+
   const onChangeNickName = (e: any) => {
     setnickName(e);
   };

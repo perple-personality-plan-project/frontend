@@ -80,6 +80,10 @@ type RootType = {
   place_group_name: string;
 };
 
+interface IAppState {
+  show: boolean;
+}
+
 const MapPage = () => {
   const navigate = useNavigate();
   //- Ref Hook 참고 https://ko.reactjs.org/docs/hooks-reference.html#useref
@@ -97,9 +101,7 @@ const MapPage = () => {
   const useselector = useAppSelector(state => state.map.MapPost);
   const dispatch = useAppDispatch();
 
-  const maplist = useselector.filter(
-    (item: any, index: number) => index !== 0 && item.address_name.length !== 0,
-  );
+  const maplist = useselector;
 
   console.log(useselector);
 
@@ -142,10 +144,16 @@ const MapPage = () => {
       setCheckedInputs(checkedInputs.filter((el: any) => el !== id));
     }
   };
-
+  const [checked, setChecked] = useState(false);
   function togglechange() {
     setCheckedInputs([...checkedInputs, 0, 1, 2, 3, 4]);
+    setChecked(!checked);
   }
+  function toggleUncheck() {
+    setCheckedInputs([]);
+    setChecked(!checked);
+  }
+
   const [Modals, setModals] = useState(true);
 
   const ModalShow = () => {
@@ -348,9 +356,14 @@ const MapPage = () => {
         </svg>
       </Cart>
       <Modal show={Modals}>
-        <SelectAll onClick={togglechange}>
-          <input type="checkbox"></input>전체 선택
+        <SelectAll show={checked}>
+          <input onClick={togglechange} type="checkbox" checked={false}></input>
+          전체 선택
         </SelectAll>
+        <UnselectAll show={checked}>
+          <input onClick={toggleUncheck} type="checkbox" checked></input>전체
+          해제
+        </UnselectAll>
         <BoxContainer>
           <Box>
             <form onSubmit={dispatchRoot}>
@@ -440,8 +453,6 @@ const Cart = styled.div`
   font-weight: bold;
   cursor: pointer;
   z-index: 100;
-  @media screen {
-  }
 `;
 
 const Modal = styled.div<any>`
@@ -453,32 +464,53 @@ const Modal = styled.div<any>`
   background-color: white;
   z-index: 100;
   display: ${props => (props.show ? 'none' : '')};
+  @media (max-width: 412px) {
+    width: 412px;
+  }
 `;
 
-const SelectAll = styled.div`
+const SelectAll = styled.div<IAppState>`
   //position top left
   position: absolute;
   top: 30px;
   left: 50px;
   font-weight: bold;
+  display: ${props => (props.show ? 'none' : '')};
 `;
-const CartIcon = styled.button`
-  //position top right
+
+const UnselectAll = styled.div<IAppState>`
   position: absolute;
   top: 30px;
-  right: 100px;
-  cursor: pointer;
+  left: 50px;
+  font-weight: bold;
+  display: ${props => (props.show ? '' : 'none')};
+  &:checked {
+    background-color: #644eee;
+    //css checked content
+    &:after {
+      content: '✔';
+      display: block;
+      width: 10px;
+      height: 10px;
+      border-radius: 5px;
+      margin: auto;
+      color: white;
+    }
+  }
 `;
+
 const BoxContainer = styled.div`
-  //box with border
   position: absolute;
   top: 70px;
   left: 50%;
   transform: translate(-50%, 0);
   width: 450px;
   height: 750px;
+  @media (max-width: 412px) {
+    left: 51.5%;
+  }
 `;
-//Box stye
+
 const Box = styled.div`
   height: 500px;
   align-items: center;
