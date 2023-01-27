@@ -10,11 +10,10 @@ const KakaoRedirect = () => {
     const { data } = await nonTokenClient.get(
       `/api/user/auth/kakao?code=${kakaoCode}`,
     );
-    console.log(data);
     localStorage.setItem('accessToken', data.data.accessToken);
     localStorage.setItem('refreshToken', data.data.refreshToken);
     localStorage.setItem('userId', data.data.user_id);
-    navigate('/community');
+    navigate('/');
   };
 
   useEffect(() => {
