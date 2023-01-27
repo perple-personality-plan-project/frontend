@@ -15,22 +15,27 @@ const SignInPage = () => {
     setPassword(e.currentTarget.value);
   };
 
-  const login = async () => {
-    try {
-      const { data } = await nonTokenClient.post('api/user/login', {
-        login_id: LoginId,
-        password: Password,
-      });
+  const login = async (e: any) => {
+    e.preventDefault();
+    if (LoginId === '' || Password === '') {
+      alert('아이디와 비밀번호를 입력해주세요!');
+    } else {
+      try {
+        const { data } = await nonTokenClient.post('api/user/login', {
+          login_id: LoginId,
+          password: Password,
+        });
 
-      localStorage.setItem('accessToken', data.data.accessToken);
-      localStorage.setItem('refreshToken', data.data.refreshToken);
-      localStorage.setItem('mbti', data.data.mbti);
-      localStorage.setItem('userId', data.data.user_id);
+        localStorage.setItem('accessToken', data.data.accessToken);
+        localStorage.setItem('refreshToken', data.data.refreshToken);
+        localStorage.setItem('mbti', data.data.mbti);
+        localStorage.setItem('userId', data.data.user_id);
 
-      alert('로그인 성공');
-      navigate('/community');
-    } catch (error: any) {
-      alert(error.response.data.message);
+        alert('로그인 성공');
+        navigate('/community');
+      } catch (error: any) {
+        alert(error.response.data.message);
+      }
     }
   };
 
@@ -46,7 +51,7 @@ const SignInPage = () => {
         <span>Platter</span>
         <div className="title">서비스 이용을 위한 로그인을 해주세요!</div>
       </Title>
-      <FormWrap>
+      <FormWrap onSubmit={e => login(e)}>
         <Input
           width="366px"
           height="20px"
@@ -65,7 +70,7 @@ const SignInPage = () => {
         />
         <ButtonWrap>
           <div className="gathered">
-            <ButtonLogin className="login" type="button" onClick={login}>
+            <ButtonLogin className="login" onClick={login}>
               로그인
             </ButtonLogin>
             <ButtonSignUp
@@ -77,6 +82,7 @@ const SignInPage = () => {
             </ButtonSignUp>
           </div>
           <ButtonKakao
+            type="button"
             onClick={kakaoLogin}
             style={{ height: '40px', marginTop: '15%' }}
           >

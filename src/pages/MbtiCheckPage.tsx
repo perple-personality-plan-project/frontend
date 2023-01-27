@@ -33,11 +33,10 @@ const MbtiCheckPage = () => {
             </div>
           </div>
         </StGroupPosts>
-        <ButtonWrap>
-          <Button style={{ width: '398px', height: '40px', marginTop: '7%' }}>
-            검사하러 갈래요!
-          </Button>
-        </ButtonWrap>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <StSelect>한 개의 검사를 클릭해주세요!</StSelect>
+          {/* <Button>검사하러 갈래요!</Button> */}
+        </div>
       </FormWrap>
     </Wrap>
   );
@@ -45,22 +44,24 @@ const MbtiCheckPage = () => {
 export default MbtiCheckPage;
 
 const Wrap = styled.div`
+  * {
+    box-sizing: border-box;
+  }
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 10%;
+  /* margin-top: 10%; */
 `;
 
 const Title = styled.span`
-  font-size: 40px;
-  font-weight: 600;
+  font-size: 30px;
+  /* font-weight: 600; */
 
   .title {
-    font-size: 20px;
     font-weight: 100;
-    margin-top: 10%;
-    color: #555454;
+    margin-top: 75px;
+    color: #5b5b5b;
   }
 `;
 
@@ -68,7 +69,7 @@ const FormWrap = styled.form`
   width: fit-content;
   height: fit-content;
   border-radius: 18px;
-  margin: 3%;
+  margin-top: 75px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -92,26 +93,46 @@ const ButtonWrap = styled.div`
 `;
 
 const Button = styled.button`
+  font-family: 'Nanum_L';
+  margin-top: 149px;
+  width: 555.55px;
+  height: 56px;
+  background-color: #644eee;
+  border-radius: 40px;
+  border: 0;
+  font-size: 20.31px;
+  color: white;
+
   cursor: pointer;
-  background-color: #bcbaba;
-  border-radius: 50px;
-  border: none;
-  :hover {
-    opacity: 0.75;
+`;
+
+const StSelect = styled.p`
+  text-align: center;
+  margin-top: 149px;
+  font-size: 20.31px;
+  color: #5b5b5b;
+
+  @media screen and (max-width: 800px) {
+    margin: 60px 0 40px;
   }
 `;
 
 const StGroupPosts = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  /* flex-wrap: wrap; */
+  gap: 43px;
+
+  @media screen and (max-width: 800px) {
+    flex-direction: column;
+  }
 
   .post-container {
     position: relative;
-    width: 330px;
+    width: 376px;
+    height: 417px;
 
     background-color: white;
-    border: 5px solid #d9d9d9;
+    box-shadow: 0 0 15px 4px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     overflow: hidden;
 
