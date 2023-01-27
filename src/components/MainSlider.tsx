@@ -27,7 +27,7 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
     'ENFJ',
     'ENFP',
   ];
-  const mbti = localStorage.getItem('mbti');
+  const mbti = sessionStorage.getItem('mbti');
   let mbtiIdx: number;
   if (mbti) {
     mbtiIdx = mbtiCategory.indexOf(mbti);

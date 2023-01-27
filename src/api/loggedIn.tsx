@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router';
 const loggedIn = axios.create({ baseURL: process.env.REACT_APP_API });
 
 loggedIn.interceptors.request.use(function (config: any) {
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem('accessToken');
   config.headers['authorization'] = accessToken;
 
   return config;
@@ -27,15 +27,15 @@ loggedIn.interceptors.response.use(
 
         if (data) {
           const { accessToken } = data.data;
-          localStorage.removeItem('accessToken');
-          localStorage.setItem('accessToken', accessToken);
+          sessionStorage.removeItem('accessToken');
+          sessionStorage.setItem('accessToken', accessToken);
           originalRequest.headers['accessToken'] = accessToken;
           //       originalRequest.headers['refreshToken'] = refreshToken;
           return await loggedIn.request(originalRequest);
         }
       } catch (error) {
         console.log(error);
-        localStorage.clear();
+        sessionStorage.clear();
         alert('로그인이 필요한 서비스입니다!');
         window.location.href = '/signin';
       }

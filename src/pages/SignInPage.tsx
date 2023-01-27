@@ -26,10 +26,10 @@ const SignInPage = () => {
           password: Password,
         });
 
-        localStorage.setItem('accessToken', data.data.accessToken);
-        localStorage.setItem('refreshToken', data.data.refreshToken);
-        localStorage.setItem('mbti', data.data.mbti);
-        localStorage.setItem('userId', data.data.user_id);
+        sessionStorage.setItem('accessToken', data.data.accessToken);
+        sessionStorage.setItem('refreshToken', data.data.refreshToken);
+        sessionStorage.setItem('mbti', data.data.mbti);
+        sessionStorage.setItem('userId', data.data.user_id);
 
         alert('로그인 성공');
         navigate('/');

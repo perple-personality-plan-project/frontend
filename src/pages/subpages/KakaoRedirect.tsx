@@ -10,9 +10,9 @@ const KakaoRedirect = () => {
     const { data } = await nonTokenClient.get(
       `/api/user/auth/kakao?code=${kakaoCode}`,
     );
-    localStorage.setItem('accessToken', data.data.accessToken);
-    localStorage.setItem('refreshToken', data.data.refreshToken);
-    localStorage.setItem('userId', data.data.user_id);
+    sessionStorage.setItem('accessToken', data.data.accessToken);
+    sessionStorage.setItem('refreshToken', data.data.refreshToken);
+    sessionStorage.setItem('userId', data.data.user_id);
     navigate('/');
   };
 

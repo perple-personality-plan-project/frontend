@@ -13,7 +13,7 @@ interface linkProps {
 }
 
 const Navbar = () => {
-  const token = localStorage.getItem('accessToken');
+  const token = sessionStorage.getItem('accessToken');
   const navigate = useNavigate();
 
   const CustomLink: React.FC<linkProps> = ({ to, children, ...props }) => {
@@ -33,7 +33,7 @@ const Navbar = () => {
   const logout = async () => {
     if (window.confirm('로그아웃 하시겠습니까?')) {
       await client.post('api/user/logout');
-      localStorage.clear();
+      sessionStorage.clear();
       navigate('/');
     }
   };

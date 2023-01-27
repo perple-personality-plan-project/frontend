@@ -156,7 +156,7 @@ function MyPage() {
     await dispatch(__modalOpen(true));
     await dispatch(__modalData(e));
   };
-  const token = localStorage.getItem('accessToken');
+  const token = sessionStorage.getItem('accessToken');
 
   if (token === null) {
     return (

@@ -67,12 +67,12 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
     .replace('.', '일');
   const [comment, setComment] = useState('');
   const [toggle, setToggle] = useState(false);
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem('accessToken');
 
   const thumbnailArray = thumbnail.split(',');
   const imgLink = process.env.REACT_APP_IMG_SERVER;
 
-  const userId = localStorage.getItem('userId');
+  const userId = sessionStorage.getItem('userId');
 
   const postComment = async () => {
     if (comment) {
