@@ -32,7 +32,7 @@ const SignInPage = () => {
         localStorage.setItem('userId', data.data.user_id);
 
         alert('로그인 성공');
-        navigate('/community');
+        navigate('/');
       } catch (error: any) {
         alert(error.response.data.message);
       }
@@ -181,7 +181,7 @@ const ButtonLogin = styled.button`
   border-radius: 50px;
   border: none;
 
-  background-color: #c4c9f6;
+  background-color: #644eee;
   color: white;
 
   &:hover {
@@ -200,6 +200,10 @@ const ButtonSignUp = styled.button`
 
   background-color: #644eee;
   color: white;
+
+  &:hover {
+    background-color: #644eee;
+  }
 `;
 
 const ButtonKakao = styled.button`
