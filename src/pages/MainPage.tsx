@@ -8,6 +8,8 @@ import {
   useAppSelector,
 } from '../components/hooks/typescripthook/hooks';
 import { __mainFeedlist, __mainMbtilist } from '../redux/modules/postSlice';
+import { tSImportEqualsDeclaration } from '@babel/types';
+import { useNavigate } from 'react-router';
 
 export interface mainPostPreset {
   feed_id: number;
@@ -22,6 +24,7 @@ export interface mainPostPreset {
 const MainPage = () => {
   const paramId = useParams();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const mbti = sessionStorage.getItem('mbti');
   const [mbtiCheck, setMbtiCheck] = useState(mbti || '사람들');
@@ -35,6 +38,7 @@ const MainPage = () => {
     sessionStorage.setItem('userId', '0');
   }
 
+  console.log(mainFeedList);
   useEffect(() => {
     if (mbtiCheck === 'All' || mbtiCheck === '사람들') {
       dispatch(__mainFeedlist({ userId }));
@@ -66,17 +70,21 @@ const MainPage = () => {
             <div style={{ fontSize: '15px', padding: '20px 0 0 20px' }}>
               MBTI 검사하고 나에게 맞는 HOT PLACE 찾자!
             </div> */}
-            {/* <div
+            <button
+              className="mbti-button"
               style={{
-                width: '110px',
-                height: '50px',
-                border: '2px soild white',
-                fontSize: '15px',
-                padding: '8% 0 0 70%',
+                border: '1px solid white',
+                borderRadius: '20px',
+                padding: '10px',
+                marginTop: '20px',
+                marginLeft: '53%',
               }}
+              onClick={() =>
+                window.open('http://localhost:3000/mbti', '_blank')
+              }
             >
-              v MBTI 검사하기
-            </div> */}
+              ✔ MBTI 검사하기
+            </button>
           </StHeader>
 
           <MainSlider setMbtiCheck={setMbtiCheck} />
@@ -106,12 +114,13 @@ const StMbti = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 250px;
-  height: 90px;
+  width: 190px;
+  height: 70px;
   color: #644eee;
   border-radius: 50px;
   background-color: white;
   font-weight: 500;
+  margin-left: 20px;
 
   /* @media screen and (max-width: 800px) {
     justify-content: center;
@@ -128,9 +137,20 @@ const StMbti = styled.div`
 
 const StHeader = styled.div`
   box-sizing: border-box;
-  padding-left: 120px;
+  padding-left: 150px;
   width: 100%;
   min-width: 400px;
+
+  .mbti-button {
+    display: flex;
+    align-items: center;
+    max-width: 160px;
+    height: 10%;
+    color: white;
+    font-size: 13px;
+    border: '1px solid white';
+    background-color: #644eee;
+  }
 
   @media screen and (max-width: 1024px) {
     font-size: 25px;
@@ -154,7 +174,7 @@ const StTagHeader = styled.div`
 const StTagText = styled.div`
   color: white;
 
-  margin: 20px 0 0 20%;
+  margin: 20px 0 0 33%;
 
   @media screen and (max-width: 1024px) {
     margin: 10px 0 0 0;
@@ -174,8 +194,8 @@ const Backgr = styled.div`
   align-items: center;
   position: relative;
   width: 100%;
-  height: 370px;
-  font-size: 50px;
+  height: 380px;
+  font-size: 40px;
   justify-content: center;
   left: 0;
   right: 0;

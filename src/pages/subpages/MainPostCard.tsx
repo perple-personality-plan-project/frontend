@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -20,6 +20,7 @@ import {
   __mainFeedlist,
 } from '../../redux/modules/postSlice';
 import client from '../../api/client';
+import { __RootMaker } from '../../redux/modules/mapSlice';
 
 interface Props {
   post: {
@@ -36,6 +37,9 @@ interface Props {
     isLike: number | string;
     isPick: number | string;
   };
+}
+interface IAppState {
+  show: boolean;
 }
 
 const MainPostCard: React.FC<Props> = ({ post }) => {
@@ -55,8 +59,13 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
     updated_at,
     user_id,
   } = post;
-
+  const groupName = JSON.parse(location);
+  console.log(groupName);
+  // console.log(post);
   const { mainFeedDetail }: any = useAppSelector(store => store.post);
+
+  // const { mainFeedlike }: any = useAppSelector(store => store.post);
+
   const date = created_at
     .replace('T', '. ')
     .split(' ')[0]
@@ -67,8 +76,9 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
     .replace('.', '일');
   const [comment, setComment] = useState('');
   const [toggle, setToggle] = useState(false);
-  const accessToken = sessionStorage.getItem('accessToken');
-
+  const [pintoggle, setPinToggle] = useState(false);
+  const accessToken = localStorage.getItem('accessToken');
+  const [routeOpen, setRouteOpen] = useState(false);
   const thumbnailArray = thumbnail.split(',');
   const imgLink = process.env.REACT_APP_IMG_SERVER;
 
@@ -102,9 +112,53 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
     dispatch(__mainFeedDetail({ feedId: feed_id }));
   };
 
+  // const feedLike = async () => {
+  //   await loggedIn.put(`api/feed/${feed_id}/like`);
+  //   dispatch(__mainFeedDetail({ feedId: feed_id }));
+  //
+  // };
+
+  const pick = async () => {
+    await loggedIn
+      .put(`api/feed/${mainFeedDetail.feed_id}/pick`)
+      .then(response => {
+        if (response.data.data.message === '찜하기가 취소되었습니다.') {
+          alert('찜 취소');
+        } else {
+          alert('찜!');
+        }
+      });
+  };
+  const openRoutine = () => {
+    setRouteOpen(!routeOpen);
+  };
+
   const openModal = () => {
     setIsOpen(true);
     dispatch(__mainFeedDetail({ feedId: feed_id }));
+  };
+
+  let modalParse: { place_group: string; place_group_name: string } = {
+    place_group: '',
+    place_group_name: '',
+  };
+  let placeName: [] = [];
+
+  if (mainFeedDetail.location === undefined) {
+    console.log('undefined');
+  } else {
+    modalParse = JSON.parse(mainFeedDetail.location);
+    placeName = JSON.parse(modalParse.place_group);
+  }
+  console.log(modalParse);
+
+  const saveRoute = () => {
+    const saveData = {
+      place_group: modalParse.place_group,
+      place_group_name: modalParse.place_group_name,
+    };
+    dispatch(__RootMaker(saveData));
+    alert('저장성공');
   };
 
   return (
@@ -121,7 +175,9 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
               <h3>{nickname}</h3>
               <p>{mbti?.toUpperCase()}</p>
             </div>
-            <div className="post-header-route">{location}</div>
+            <div className="post-header-route">
+              {groupName.place_group_name}
+            </div>
           </div>
 
           <img
@@ -157,8 +213,32 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
               </StIcon>
             )}
           </div>
-          <div className="post-bottom-icon">B</div>
-          <div className="post-bottom-icon">C</div>
+          <div className="post-bottom-pin">
+            <div onClick={pick} className="detail-btn">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+              >
+                <path fill="none" d="M0 0h24v24H0z" />
+                <path d="M18 3v2h-1v6l2 3v2h-6v7h-2v-7H5v-2l2-3V5H6V3h12zM9 5v6.606L7.404 14h9.192L15 11.606V5H9z" />
+              </svg>
+            </div>
+          </div>
+          <div className="post-bottom-route">
+            <div onClick={saveRoute}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+              >
+                <path fill="none" d="M0 0h24v24H0z" />
+                <path d="M13 10h5l-6 6-6-6h5V3h2v7zm-9 9h16v-7h2v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8h2v7z" />
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -194,6 +274,36 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
                   <p>{mbti?.toUpperCase()}</p>
                 </div>
                 <p>{description}</p>
+                <RouteButton
+                  onClick={openRoutine}
+                  style={{ marginTop: '20px' }}
+                >
+                  루트
+                </RouteButton>
+                <RouteShow show={routeOpen}>
+                  {placeName?.map((item: any, index: number) => {
+                    return (
+                      <div key={index}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="15"
+                          height="15"
+                          color="#644EEE"
+                          fill="currentColor"
+                          className="bi bi-geo-alt-fill"
+                          viewBox="0 0 16 16"
+                        >
+                          <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                        </svg>
+                        <div
+                          style={{ display: 'inline-block', marginTop: '10px' }}
+                        >
+                          {item.place_name}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </RouteShow>
                 <div className="detail-bottom">
                   <p>{date}</p>
                   <div style={{ display: 'flex' }}>
@@ -222,8 +332,32 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
                         </StIcon>
                       )}
                     </div>
-                    <div className="detail-btn">댓</div>
-                    <div className="detail-btn">저장</div>
+                    <div className="post-bottom-pin">
+                      <div onClick={pick}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          width="24"
+                          height="24"
+                        >
+                          <path fill="none" d="M0 0h24v24H0z" />
+                          <path d="M18 3v2h-1v6l2 3v2h-6v7h-2v-7H5v-2l2-3V5H6V3h12zM9 5v6.606L7.404 14h9.192L15 11.606V5H9z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="post-bottom-route">
+                      <div onClick={saveRoute}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          width="24"
+                          height="24"
+                        >
+                          <path fill="none" d="M0 0h24v24H0z" />
+                          <path d="M13 10h5l-6 6-6-6h5V3h2v7zm-9 9h16v-7h2v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8h2v7z" />
+                        </svg>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -706,4 +840,11 @@ const StGroupPost = styled.div`
   @media screen and (max-width: 900px) {
     width: 100%;
   }
+`;
+
+const RouteButton = styled.div`
+  cursor: pointer;
+`;
+const RouteShow = styled.div<IAppState>`
+  display: ${props => (props.show ? 'none' : '')};
 `;
