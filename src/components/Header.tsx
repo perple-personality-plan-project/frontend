@@ -13,14 +13,14 @@ const MainHeader = () => {
   const NavArr = ['커뮤니티', '맵', '그룹', '마이 페이지'];
   const NavArrEng = ['community', 'map', 'group', 'mypage'];
 
-  const token = localStorage.getItem('accessToken');
+  const token = sessionStorage.getItem('accessToken');
   const navigate = useNavigate();
   const [trigger, setTrigger] = useState(false);
 
   const logout = async () => {
     if (window.confirm('로그아웃 하시겠습니까?')) {
       await client.post('api/user/logout');
-      localStorage.clear();
+      sessionStorage.clear();
       setTrigger(!trigger);
       navigate('/signin');
     }

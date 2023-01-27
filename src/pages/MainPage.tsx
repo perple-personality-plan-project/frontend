@@ -23,16 +23,16 @@ const MainPage = () => {
   const paramId = useParams();
   const dispatch = useAppDispatch();
 
-  const mbti = localStorage.getItem('mbti');
+  const mbti = sessionStorage.getItem('mbti');
   const [mbtiCheck, setMbtiCheck] = useState(mbti || '사람들');
   const { mainFeedList } = useAppSelector(store => store.post);
   const { mainMbtiList } = useAppSelector(store => store.post);
   const [mainPosts, setMainPosts] = useState<mainPostPreset[]>([]);
 
-  const userId = localStorage.getItem('userId');
+  const userId = sessionStorage.getItem('userId');
 
-  if (localStorage.getItem('userId') === null) {
-    localStorage.setItem('userId', '0');
+  if (sessionStorage.getItem('userId') === null) {
+    sessionStorage.setItem('userId', '0');
   }
 
   useEffect(() => {

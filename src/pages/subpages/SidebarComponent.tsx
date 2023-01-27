@@ -8,7 +8,7 @@ interface props {
 }
 const SidebarComponent: React.FC<props> = ({ sidebar, closeSidebar }) => {
   const navigate = useNavigate();
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem('accessToken');
 
   const mypage = () => {
     if (accessToken !== null) {

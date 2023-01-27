@@ -52,7 +52,7 @@ const GroupDetail = () => {
     paramId.id ? group.group_id === +paramId.id : null,
   );
 
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem('accessToken');
 
   // console.log(groupSubscribe.admin_flag);
   // const groupSubscribeCheck: subscribeInfoPreset = groupSubscribe;

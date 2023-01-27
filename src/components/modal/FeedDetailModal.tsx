@@ -58,7 +58,7 @@ const FeedDetailModal: React.FC<Props> = () => {
     .replace('.', '월 ')
     .replace('.', '일');
   const [comment, setComment] = useState('');
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem('accessToken');
   const thumbnailArray = mainFeedDetail?.thumbnail?.split(',');
   const imgLink = process.env.REACT_APP_IMG_SERVER;
   const postComment = async () => {

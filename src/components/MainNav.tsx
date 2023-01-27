@@ -14,7 +14,7 @@ import SidebarCompelete from '../pages/subpages/SidebarCompelete';
 
 const MainNav = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const token = localStorage.getItem('accessToken');
+  const token = sessionStorage.getItem('accessToken');
   const navigate = useNavigate();
   const [trigger, setTrigger] = useState(false);
 
@@ -24,7 +24,7 @@ const MainNav = () => {
   const logout = async () => {
     if (window.confirm('로그아웃 하시겠습니까?')) {
       await client.post('api/user/logout');
-      localStorage.clear();
+      sessionStorage.clear();
       // setTrigger(!trigger);
       // window.location.reload();
       navigate('/community');

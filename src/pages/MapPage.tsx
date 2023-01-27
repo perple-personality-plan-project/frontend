@@ -119,7 +119,7 @@ const MapPage = () => {
   const onChangeRootTitle = (e: any) => {
     setRootTitle(e);
   };
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem('accessToken');
   //dispatch __RootMaker
   const dispatchRoot = (event: any) => {
     if (accessToken === null) {
@@ -334,7 +334,7 @@ const MapPage = () => {
   const logout = async () => {
     if (window.confirm('로그아웃 하시겠습니까?')) {
       await client.post('api/user/logout');
-      localStorage.clear();
+      sessionStorage.clear();
       setTrigger(!trigger);
     }
   };

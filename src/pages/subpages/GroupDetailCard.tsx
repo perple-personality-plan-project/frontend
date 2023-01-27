@@ -45,7 +45,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
 
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState<{}[]>([]);
-  const userId: number = Number(localStorage.getItem('userId'));
+  const userId: number = Number(sessionStorage.getItem('userId'));
 
   const date = created_at
     .replace('T', '. ')

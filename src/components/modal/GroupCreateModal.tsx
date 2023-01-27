@@ -9,8 +9,6 @@ import { groupPreset } from '../../pages/GroupPage';
 import { useAppDispatch, useAppSelector } from '../hooks/typescripthook/hooks';
 import { __groupGetDate, __groupGetRank } from '../../redux/modules/groupSlice';
 import { useNavigate } from 'react-router';
-import nonTokenClient from '../../api/noClient';
-import client from '../../api/client';
 import loggedIn from '../../api/loggedIn';
 
 interface tagPreset {
@@ -143,7 +141,7 @@ const GroupCreateModal: React.FC<Props> = ({
     // }
   };
 
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem('accessToken');
 
   return (
     <div>
