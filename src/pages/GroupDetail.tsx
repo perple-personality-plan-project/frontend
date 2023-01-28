@@ -16,6 +16,7 @@ import GroupDetailCard from './subpages/GroupDetailCard';
 import { groupPreset } from './GroupPage';
 import GroupDetailEmptyShow from './subpages/GroupDetailEmptyShow';
 import loggedIn from '../api/loggedIn';
+import nonTokenClient from '../api/noClient';
 
 export interface subscribeInfoPreset {
   admin_flag?: number;
@@ -39,6 +40,16 @@ export interface groupFeedPreset {
   nickname: string;
   likeCount: number;
   isLike: number | string;
+  user_id: number;
+}
+
+export interface placePreset {
+  created_at: string;
+  map_id: number;
+  place_group: string;
+  place_group_name: string;
+  updated_at: string;
+  user_id: number;
 }
 
 const GroupDetail = () => {
@@ -48,11 +59,13 @@ const GroupDetail = () => {
   const { groupRank } = useAppSelector(store => store.group);
   const { groupSubscribe } = useAppSelector(store => store.group);
   const { groupFeedList } = useAppSelector(store => store.group);
+  const [places, setPlaces] = useState<placePreset[]>([]);
   const filteredByPage: any = groupRank.filter((group: groupPreset) =>
     paramId.id ? group.group_id === +paramId.id : null,
   );
 
   const accessToken = sessionStorage.getItem('accessToken');
+  const userId = sessionStorage.getItem('userId');
 
   // console.log(groupSubscribe.admin_flag);
   // const groupSubscribeCheck: subscribeInfoPreset = groupSubscribe;
@@ -62,8 +75,18 @@ const GroupDetail = () => {
   //페이지 시작할 때 그룹 정보와 그룹 게시글 정보들을 가져옴
   useEffect(() => {
     dispatch(__groupGetRank());
-    dispatch(__groupFeedList({ id: paramId.id }));
+    fetchData();
+    dispatch(__groupFeedList({ id: paramId.id, userId: userId }));
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const { data } = await loggedIn.get('/api/map');
+      setPlaces(data.data);
+    } catch (error) {
+      navigate('/signin');
+    }
+  };
 
   //이 페이지에서 구독한지 확인하기
   useEffect(() => {
@@ -75,7 +98,7 @@ const GroupDetail = () => {
       await loggedIn.put(`api/group/${paramId.id}`); //구독 or 구독 취소 => 나중에 thunk에 넣기
       await dispatch(__groupSubscribeCheck({ id: paramId.id })); //구독 확인
       await dispatch(__groupGetRank()); //여기서 그룹 정보 들고옴
-      await dispatch(__groupFeedList({ id: paramId.id })); //그룹 게시글 들고옴
+      await dispatch(__groupFeedList({ id: paramId.id, userId: userId })); //그룹 게시글 들고옴
     } else {
       alert('로그인 후 구독해주세요!');
     }
@@ -182,6 +205,7 @@ const GroupDetail = () => {
                   feed={feed}
                   paramId={paramId}
                   groupSubscribe={groupSubscribe}
+                  places={places}
                 />
               ))
             ) : (

@@ -31,7 +31,7 @@ export const __mainFeedlist = createAsyncThunk<
   async (payload, thunkAPI) => {
     try {
       const { data } = await nonTokenClient.get(
-        `api/feed?userId=${payload.userId}`,
+        `api/feed?user_id=${payload.userId}`,
       );
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
@@ -47,10 +47,9 @@ export const __mainMbtilist = createAsyncThunk<
   'main/feedlist/mbti',
 
   async (payload, thunkAPI) => {
-    console.log(payload);
     try {
       const { data } = await nonTokenClient.get(
-        `api/feed/search?mbti=${payload.mbtiCheck}&userId=${payload.userId}`,
+        `api/feed/search?mbti=${payload.mbtiCheck}&user_id=${payload.userId}`,
       );
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
@@ -61,13 +60,15 @@ export const __mainMbtilist = createAsyncThunk<
 
 export const __mainFeedDetail = createAsyncThunk<
   {},
-  { feedId: number | string }
+  { feedId: number | string; userId: string | number | null }
 >(
   'main/feedDetail',
 
   async (payload, thunkAPI) => {
     try {
-      const { data } = await nonTokenClient.get(`/api/feed/${payload.feedId}`);
+      const { data } = await nonTokenClient.get(
+        `/api/feed/${payload.feedId}?user_id=${payload.userId}`,
+      );
       console.log(data);
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {

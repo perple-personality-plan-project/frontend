@@ -38,15 +38,16 @@ const StOverLayStyle = styled.div`
 `;
 
 const StModalStyle = styled.div`
+  /* aspect-ratio: 1186/500; */
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
   width: 80%;
-  max-width: 1000px;
+  max-width: 1186px;
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 800px) {
     width: 350px;
   }
 `;
