@@ -58,6 +58,15 @@ const GroupPage = () => {
     setTags([...randomTags]);
   };
 
+  const handlekeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const { data } = await nonTokenClient.get(
+        `/api/group?sort=date&search=${word}`,
+      );
+      setGroupByfilter(data.data);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -70,6 +79,7 @@ const GroupPage = () => {
             value={word}
             onChange={e => setWord(e.target.value)}
             placeholder="원하는 그룹을 검색해 보세요!"
+            onKeyDown={handlekeyDown}
           />
           <div className="input-clear" onClick={() => setWord('')}>
             x
@@ -136,17 +146,17 @@ const GroupPage = () => {
           )}
 
           {groupByfilter.map((group: groupPreset) => {
-            const tags = group.hashtags;
-            const groupNames = group.group_name;
-            if (word === '') {
-              return <GroupCard key={group.group_id} group={group} />;
-            }
-            if (groupNames?.includes(word) || tags?.includes(word)) {
-              return <GroupCard key={group.group_id} group={group} />;
-            } else {
-              return null;
-            }
-            // return <GroupCard key={group.group_id} group={group} />;
+            // const tags = group.hashtags;
+            // const groupNames = group.group_name;
+            // if (word === '') {
+            //   return <GroupCard key={group.group_id} group={group} />;
+            // }
+            // if (groupNames?.includes(word) || tags?.includes(word)) {
+            //   return <GroupCard key={group.group_id} group={group} />;
+            // } else {
+            //   return null;
+            // }
+            return <GroupCard key={group.group_id} group={group} />;
           })}
 
           {/* {groupRank.map((group: groupPreset) => {
