@@ -1,18 +1,16 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router';
+
+import { __RemoveItem, __RootMaker } from '../redux/modules/mapSlice';
+import client from '../api/client';
 import Map from '../components/Map';
 import MapForm from '../components/MapForm';
 import MapList from '../components/MapList';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router';
 import {
   useAppDispatch,
   useAppSelector,
 } from '../components/hooks/typescripthook/hooks';
-
-import { __RemoveItem } from '../redux/modules/mapSlice';
-import { __RootMaker } from '../redux/modules/mapSlice';
-import client from '../api/client';
-import NaviBar from '../components/NaviBar';
 
 // Window 인터페이스에 Kakao API를 위한 kakao 객체 정의
 declare global {
@@ -97,18 +95,16 @@ const MapPage = () => {
   const [kakaoPagination, setKakaoPagination] =
     useState<KakaoPagination | null>(null);
   const [kakaoMarkers, setKakaoMarkers] = useState<KakaoMarker[]>([]);
+  const [checkedInputs, setCheckedInputs] = useState<any>([]);
+  const [Root, setRoot] = useState<any>([]);
+  const [RootTitle, setRootTitle] = useState<any>([]);
+  const [checked, setChecked] = useState(false);
+  const [Modals, setModals] = useState(true);
 
   const useselector = useAppSelector(state => state.map.MapPost);
   const dispatch = useAppDispatch();
 
   const maplist = useselector;
-
-  console.log(useselector);
-
-  const [checkedInputs, setCheckedInputs] = useState<any>([]);
-
-  const [Root, setRoot] = useState<any>([]);
-  const [RootTitle, setRootTitle] = useState<any>([]);
 
   const stringRoot = JSON.stringify(maplist);
 
@@ -124,7 +120,12 @@ const MapPage = () => {
   const dispatchRoot = (event: any) => {
     if (accessToken === null) {
       event.preventDefault();
-      alert('로그인이 필요합니다.');
+      // eslint-disable-next-line no-restricted-globals
+      if (confirm('로그인이 필요합니다.로그인을 하시겠습니까?')) {
+        navigate('/signin');
+      } else {
+        return;
+      }
     } else {
       event.preventDefault();
       const Roots: RootType = {
@@ -144,7 +145,7 @@ const MapPage = () => {
       setCheckedInputs(checkedInputs.filter((el: any) => el !== id));
     }
   };
-  const [checked, setChecked] = useState(false);
+
   function togglechange() {
     setCheckedInputs([...checkedInputs, 0, 1, 2, 3, 4]);
     setChecked(!checked);
@@ -153,8 +154,6 @@ const MapPage = () => {
     setCheckedInputs([]);
     setChecked(!checked);
   }
-
-  const [Modals, setModals] = useState(true);
 
   const ModalShow = () => {
     setModals(!Modals);

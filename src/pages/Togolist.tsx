@@ -13,8 +13,6 @@ const { kakao } = window;
 const TogoUserlist = () => {
   const letsgo = useAppSelector(state => state.mypage.toGoList);
 
-  console.log(letsgo);
-
   const goList = letsgo.map((item: any, index) => ({
     content: `<div style="height:55px;"><div>${item.place_name}</div><div>${item.address_name}</div></div>`,
     latlng: [item.y, item.x],
@@ -38,7 +36,6 @@ const TogoUserlist = () => {
         latlng: new kakao.maps.LatLng(goList[i].latlng[0], goList[i].latlng[1]),
       });
     }
-    console.log(newGoList);
 
     for (var i = 0; i < newGoList.length; i++) {
       // 마커를 생성합니다

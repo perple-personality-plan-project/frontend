@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import ImagePreviewMultiHook from '../hooks/ImagePreviewMultiHook';
 import styled from 'styled-components';
-import GroupModalTemplate from './GroupModalTemplate';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper';
+
 import 'swiper/css';
 import 'swiper/css/navigation';
-
-import nonTokenClient from '../../api/noClient';
-import { useAppDispatch } from '../hooks/typescripthook/hooks';
-import { __FeedPost } from '../../redux/modules/mySlice';
-import { __myFeed } from '../../redux/modules/mySlice';
-import { useAppSelector } from '../hooks/typescripthook/hooks';
+import { useAppDispatch, useAppSelector } from '../hooks/typescripthook/hooks';
+import { __FeedPost, __myFeed } from '../../redux/modules/mySlice';
+import GroupModalTemplate from './GroupModalTemplate';
+import ImagePreviewMultiHook from '../hooks/ImagePreviewMultiHook';
 
 interface detailCreatePreset {
   location: string;
@@ -35,9 +32,9 @@ const FeedModal: React.FC = () => {
     location: '',
     thumbnail: [],
   });
-  const mapList = useAppSelector((store: any) => store.mypage.maplist);
-
   const dispatch = useAppDispatch();
+
+  const mapList = useAppSelector((store: any) => store.mypage.maplist);
 
   const closeModal = () => {
     setIsOpen(false);
@@ -89,8 +86,6 @@ const FeedModal: React.FC = () => {
       alert('형식을 모두 작성해주세요');
     }
   };
-
-  const myfeed = useAppSelector((store: any) => store.mypage.myFeed);
 
   return (
     <div>

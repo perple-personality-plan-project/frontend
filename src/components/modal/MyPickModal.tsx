@@ -5,11 +5,8 @@ import { Navigation } from 'swiper';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { MyFeedDetailModal } from '../../components/modal/MyFeedDetailModal';
-import {
-  useAppDispatch,
-  useAppSelector,
-} from '../../components/hooks/typescripthook/hooks';
+import { MyFeedDetailModal } from './MyFeedDetailModal';
+import { useAppDispatch, useAppSelector } from '../hooks/typescripthook/hooks';
 import loggedIn from '../../api/loggedIn';
 import { __groupFeedDetail } from '../../redux/modules/groupSlice';
 import { __mainFeedDetail } from '../../redux/modules/postSlice';
@@ -25,7 +22,7 @@ interface IAppState {
   show: boolean;
 }
 
-const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
+const MyPickModal: React.FC<Props> = ({ state, close }) => {
   const dispatch = useAppDispatch();
 
   // const [isOpen, setIsOpen] = useState(false);
@@ -33,7 +30,6 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
   const [comment, setComment] = useState('');
 
   const mainFeedDetail: any = useAppSelector(store => store.mypage.myData);
-  const userId = sessionStorage.getItem('userId');
   const accessToken = localStorage.getItem('accessToken');
   const thumbnailArray = mainFeedDetail?.thumbnail?.split(',');
   const imgLink = process.env.REACT_APP_IMG_SERVER;
@@ -63,7 +59,10 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
           comment,
         });
         dispatch(
-          __mainFeedDetail({ feedId: mainFeedDetail.feed_id, userId: userId }),
+          __mainFeedDetail({
+            feedId: mainFeedDetail.feed_id,
+            userId: mainFeedDetail.user_id,
+          }),
         );
         setComment('');
       } else {
@@ -78,16 +77,12 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
   const deleteComment = async (commentId: string | number) => {
     await loggedIn.delete(`api/comment/${mainFeedDetail.feed_id}/${commentId}`);
     dispatch(
-      __mainFeedDetail({ feedId: mainFeedDetail.feed_id, userId: userId }),
+      __mainFeedDetail({
+        feedId: mainFeedDetail.feed_id,
+        userId: mainFeedDetail.user_id,
+      }),
     );
   };
-
-  // const openModal = () => {
-  //   setIsOpen(true);
-  //   dispatch(
-  //     __mainFeedDetail({ feedId: mainFeedDetail.feed_id, userId: userId }),
-  //   );
-  // };
 
   const modalOpen = useAppSelector((store: any) => store.mypage.modalOpen);
 
@@ -281,7 +276,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
   );
 };
 
-export default FeedDetailModal;
+export default MyPickModal;
 
 const StDetailContainer = styled.div`
   display: flex;

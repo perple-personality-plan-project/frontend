@@ -1,9 +1,10 @@
 import { useMemo, useCallback, useRef, useState, useEffect } from 'react';
-import { KakaoPagination, KakaoPlace } from '../pages/MapPage';
-import './MapListStyle.scss';
 import styled from 'styled-components';
+
+import './MapListStyle.scss';
 import { useAppDispatch } from './hooks/typescripthook/hooks';
 import { __MoveCart } from '../redux/modules/mapSlice';
+import { KakaoPagination, KakaoPlace } from '../pages/MapPage';
 
 interface MapListProps {
   places: KakaoPlace[];
