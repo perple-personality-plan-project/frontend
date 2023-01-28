@@ -31,7 +31,7 @@ const SignUpPage = () => {
     'ENFJ',
     'ENTJ',
     'ENFP',
-    'ENTJ',
+    'ENTP',
     'ESFP',
     'ESFJ',
     'ESTP',
