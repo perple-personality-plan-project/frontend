@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ImagePreviewMultiHook from '../hooks/ImagePreviewMultiHook';
 import styled from 'styled-components';
 import GroupModalTemplate from './GroupModalTemplate';
@@ -7,9 +7,10 @@ import { Navigation } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-import { useAppDispatch } from '../hooks/typescripthook/hooks';
+import { useAppDispatch, useAppSelector } from '../hooks/typescripthook/hooks';
 import { __groupFeedList } from '../../redux/modules/groupSlice';
 import loggedIn from '../../api/loggedIn';
+import { __getMap } from '../../redux/modules/mySlice';
 
 interface Props {
   paramId: any;
@@ -25,17 +26,29 @@ interface tnumbnailPreset {
   thumbnail: any;
 }
 
+interface mapPreset {
+  created_at: string;
+  map_id: number;
+  place_group: string;
+  place_group_name: string;
+  updated_at: string;
+  user_id: number;
+}
+
 const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
   const { imageSrc, setImageSrc, handleImagePreview } = ImagePreviewMultiHook();
   const [toggle, setToggle] = useState(false);
   const [route, setRoute] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const [thumbnail, setThumbnail] = useState<tnumbnailPreset['thumbnail']>();
+  const [thumbnail, setThumbnail] = useState<tnumbnailPreset['thumbnail']>([]);
   const [groupInfos, setgroupInfos] = useState<detailCreatePreset>({
     description: '',
     location: '',
     thumbnail: [],
   });
+
+  const maplist: mapPreset[] = useAppSelector(store => store.mypage.maplist);
+  const userId = sessionStorage.getItem('userId');
 
   const dispatch = useAppDispatch();
 
@@ -60,8 +73,11 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
   };
 
   const fetchData = async (formData: any) => {
-    await loggedIn.post(`api/group/${paramId.id}/feed`, formData);
-    await dispatch(__groupFeedList({ id: paramId.id }));
+    await loggedIn.post(
+      `api/group/${paramId.id}/feed?user_id=${userId}`,
+      formData,
+    );
+    await dispatch(__groupFeedList({ id: paramId.id, userId: userId }));
   };
 
   const sendData = async () => {
@@ -76,7 +92,7 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
       alert('게시글 내용을 작성해주세요!');
     } else if (route === '') {
       alert('루트를 추가해주세요!');
-    } else if (thumbnail?.length === 0) {
+    } else if (thumbnail?.length < 1) {
       alert('사진을 최소 한장 이상 등록해주세요!');
     } else if (groupInfos.description && route !== '' && thumbnail) {
       fetchData(formData);
@@ -87,6 +103,10 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
       alert('게시글 작성 완료!');
     }
   };
+
+  useEffect(() => {
+    dispatch(__getMap());
+  }, []);
 
   return (
     <div>
@@ -161,50 +181,37 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
                       <StCategory
                         onClick={() => {
                           setToggle(prev => !prev);
-                          setRoute('A');
+                          setRoute('');
                         }}
-                      >
-                        A
-                      </StCategory>
+                      ></StCategory>
+                      {maplist.map((map: any, index: number) => {
+                        return (
+                          <StCategory
+                            key={index}
+                            onClick={() => {
+                              setToggle(prev => !prev);
+                              setRoute(map.place_group_name);
+                            }}
+                          >
+                            {map.place_group_name}
+                          </StCategory>
+                        );
+                      })}
                       <StCategory
                         onClick={() => {
                           setToggle(prev => !prev);
-                          setRoute('B');
+                          setRoute('없음');
                         }}
                       >
-                        B
-                      </StCategory>
-                      <StCategory
-                        onClick={() => {
-                          setToggle(prev => !prev);
-                          setRoute('C');
-                        }}
-                      >
-                        C
-                      </StCategory>
-                      <StCategory
-                        onClick={() => {
-                          setToggle(prev => !prev);
-                          setRoute('D');
-                        }}
-                      >
-                        D
-                      </StCategory>
-                      <StCategory
-                        onClick={() => {
-                          setToggle(prev => !prev);
-                          setRoute('E');
-                        }}
-                      >
-                        E
+                        없음
                       </StCategory>
                     </StCategoryGroup>
-                    <div
+                    {/* <div
                       onClick={() => setToggle(prev => !prev)}
                       className="tag-btn"
                     >
                       -
-                    </div>
+                    </div> */}
                   </div>
                 ) : (
                   <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -219,12 +226,12 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
                         {route}
                       </StCategory>
                     </StCategoryGroup>
-                    <div
+                    {/* <div
                       onClick={() => setToggle(prev => !prev)}
                       className="tag-btn"
                     >
                       +
-                    </div>
+                    </div> */}
                   </div>
                 )}
               </StGroupInput>
@@ -263,8 +270,14 @@ const StGroupContainer = styled.div`
 
     @media screen and (max-width: 800px) {
       max-width: 250px;
-      margin: 0 auto 10px;
+      /* margin: 0 auto 10px; */
     }
+  }
+
+  @media screen and (max-width: 800px) {
+    max-width: 350px;
+    width: 100%;
+    /* margin: 0 auto 10px; */
   }
 `;
 
@@ -273,7 +286,7 @@ const StGroup = styled.div`
   justify-content: center;
 
   @media screen and (max-width: 800px) {
-    max-width: 250px;
+    /* max-width: 250px; */
 
     flex-direction: column;
     align-items: center;
@@ -285,7 +298,7 @@ const StGroup = styled.div`
 const StGroupImgSwiper = styled.div`
   position: relative;
   width: 100%;
-  max-width: 400px;
+  max-width: 370px;
   height: 100%;
 
   p {
@@ -351,16 +364,33 @@ const StGroupImgSwiper = styled.div`
   }
 
   @media screen and (max-width: 1400px) {
+    width: 100%;
     max-width: 300px;
   }
 
+  @media screen and (max-width: 1200px) {
+    width: 100%;
+    max-width: 270px;
+  }
+
   @media screen and (max-width: 1024px) {
+    width: 100%;
     max-width: 250px;
+  }
+
+  @media screen and (max-width: 970px) {
+    width: 100%;
+    max-width: 220px;
+  }
+
+  @media screen and (max-width: 850px) {
+    width: 100%;
+    max-width: 200px;
   }
 
   @media screen and (max-width: 800px) {
     width: 100%;
-    max-width: 250px;
+    max-width: 270px;
   }
 `;
 
@@ -401,7 +431,7 @@ const StGroupImg = styled.div`
   }
 
   @media screen and (max-width: 800px) {
-    max-width: 250px;
+    /* max-width: 250px; */
   }
 `;
 
@@ -490,6 +520,18 @@ const StCategory = styled.button`
   border: 0;
   font-size: 15px;
   background-color: white;
+
+  &:hover {
+    background-color: #ada6d8;
+    color: white;
+  }
+
+  &:first-of-type {
+    &:hover {
+      background-color: white;
+      color: black;
+    }
+  }
 `;
 
 const StTagSet = styled.div`
@@ -528,6 +570,9 @@ const StTagSet = styled.div`
 `;
 
 const StGroupTextArea = styled.div`
+  * {
+    box-sizing: border-box;
+  }
   p {
     font-size: 14px;
     margin: 0 0 5px 0;

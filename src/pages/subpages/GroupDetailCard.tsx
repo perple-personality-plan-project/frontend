@@ -7,7 +7,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 import { GroupDetailCardModal } from '../../components/modal/GroupDetailCardModal';
-import { groupFeedPreset } from '../GroupDetail';
+import { groupFeedPreset, placePreset } from '../GroupDetail';
 import {
   useAppDispatch,
   useAppSelector,
@@ -20,12 +20,14 @@ interface feedCardPreset {
   feed: groupFeedPreset;
   paramId: object;
   groupSubscribe: object;
+  places: placePreset[];
 }
 
 const GroupDetailCard: React.FC<feedCardPreset> = ({
   feed,
   paramId,
   groupSubscribe,
+  places,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useAppDispatch();
@@ -41,11 +43,22 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
     updated_at,
     likeCount,
     isLike,
+    user_id,
   } = feed;
 
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState<{}[]>([]);
+  const [toggleRoute, setToggleRoute] = useState(false);
   const userId: number = Number(sessionStorage.getItem('userId'));
+
+  const filtered = places.filter(place => place.place_group_name === location);
+
+  let Routes: any = [];
+  if (filtered.length === 0) {
+    // console.log('zero');
+  } else {
+    Routes = [...JSON.parse(filtered[0].place_group)];
+  }
 
   const date = created_at
     .replace('T', '. ')
@@ -104,14 +117,19 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
   };
 
   const toggleHeart = async (feedId: number) => {
-    await loggedIn.put(`/api/group/${groupId}/feed/${feedId}/like`); //좋아요 / 좋아요 취소 api
-    dispatch(__groupFeedList({ id: groupId }));
+    const x = await loggedIn.put(`/api/group/${groupId}/feed/${feedId}/like`); //좋아요 / 좋아요 취소 api
+    console.log(x);
+    dispatch(__groupFeedList({ id: groupId, userId: userId }));
   };
 
   const deletePost = async () => {
-    // await loggedIn.put(`/api/group/${groupId}/feed/${feedId}/like`); //좋아요 / 좋아요 취소 api
-    // dispatch(__groupFeedList({ id: groupId }));
-    console.log('delete');
+    if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
+      await loggedIn.delete(`/api/group/${groupId}/feed/${feed_id}`); //좋아요 / 좋아요 취소 api
+      dispatch(__groupFeedList({ id: groupId, userId: userId }));
+      alert('게시글이 삭제되었습니다!');
+    } else {
+      // alert('취소합니다.');
+    }
   };
 
   return (
@@ -137,6 +155,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
           />
           <div className="post-desc">
             <p className="desc-title">{description}</p>
+
             <div className="post-bottom">
               <p className="post-date ">{date}</p>
             </div>
@@ -144,7 +163,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
         </div>
         <div className="post-bottom-right">
           <div className="post-bottom-icon">
-            {isLike === '0' ? (
+            {isLike === 1 ? (
               <StIcon>
                 <i
                   className="ri-heart-3-fill"
@@ -166,15 +185,17 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
           </div>
           {/* <div className="post-bottom-icon">B</div>
           <div className="post-bottom-icon">C</div> */}
-          <div className="post-bottom-icon">
-            <StIcon>
-              <i
-                onClick={() => deletePost()}
-                className="ri-delete-bin-line"
-                style={{ fontSize: '25px' }}
-              ></i>
-            </StIcon>
-          </div>
+          {userId === user_id ? (
+            <div className="post-bottom-icon">
+              <StIcon>
+                <i
+                  onClick={() => deletePost()}
+                  className="ri-delete-bin-line"
+                  style={{ fontSize: '25px' }}
+                ></i>
+              </StIcon>
+            </div>
+          ) : null}
         </div>
       </div>
 
@@ -213,11 +234,52 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                   <h2>{nickname}</h2>
                   <p>{mbti.toUpperCase()}</p>
                 </div>
-                <p style={{ fontSize: '14px' }}>{description}</p>
+                <p style={{ fontSize: '13px', marginBottom: '10px' }}>
+                  {description}
+                </p>
+                {!toggleRoute ? (
+                  <div style={{ width: '190px' }} className="detail-route ">
+                    <p
+                      className="detail-route-route"
+                      onClick={() => setToggleRoute(!toggleRoute)}
+                    >
+                      루트 펼치기
+                    </p>{' '}
+                    <p className="detail-route-count">{Routes.length}</p>
+                  </div>
+                ) : (
+                  <div className="detail-route">
+                    <p
+                      className="detail-route-route"
+                      onClick={() => setToggleRoute(!toggleRoute)}
+                    >
+                      루트 접기
+                    </p>
+                    {Routes?.map((route: any, index: number) => {
+                      return (
+                        <div className="detail-route-list">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="13"
+                            height="13"
+                            color="#644EEE"
+                            fill="currentColor"
+                            className="bi bi-geo-alt-fill"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                          </svg>
+                          <p key={index}>{route.place_name}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
                 <div className="detail-bottom">
                   <p>{date}</p>
                   <div style={{ display: 'flex' }}>
-                    {isLike === '0' ? (
+                    {isLike === 1 ? (
                       <StIcon>
                         <i
                           className="ri-heart-3-fill"
@@ -240,14 +302,18 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                         </p>
                       </StIcon>
                     )}
-                    <div className="detail-btn">댓</div>
-                    <StIcon>
-                      <i
-                        onClick={() => deletePost()}
-                        className="ri-delete-bin-line"
-                        style={{ fontSize: '25px' }}
-                      ></i>
-                    </StIcon>
+                    {/* <div className="detail-btn">댓</div> */}
+                    {userId === user_id ? (
+                      <div className="post-bottom-icon">
+                        <StIcon>
+                          <i
+                            onClick={() => deletePost()}
+                            className="ri-delete-bin-line"
+                            style={{ fontSize: '25px' }}
+                          ></i>
+                        </StIcon>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -344,10 +410,10 @@ const StDetailContainer = styled.div`
     background-color: #b6b6b6;
   }
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 800px) {
     /* aspect-ratio: 1/1; */
     width: 350px;
-    /* height: 100%; */
+
     flex-direction: column;
     margin: 0 auto;
 
@@ -372,7 +438,7 @@ const StDetailInput = styled.div`
     outline: 0;
   }
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 800px) {
     padding: 10px 20px;
   }
   input {
@@ -387,7 +453,7 @@ const StDetailInput = styled.div`
     width: 80px;
     height: 30px;
     border: 0;
-    background-color: #f2f2f2;
+    /* background-color: #f2f2f2; */
 
     cursor: pointer;
   }
@@ -400,19 +466,19 @@ const StDetailInfo = styled.div`
   width: 60%;
   background-color: white;
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 800px) {
     width: 100%;
   }
 `;
 
 const StDetailDesc = styled.div`
   box-sizing: border-box;
-  padding: 20px 20px 10px 20px;
+  padding: 30px 22px 15px 22px;
   display: flex;
   img {
     margin-right: 10px;
-    width: 40px;
-    height: 40px;
+    width: 29px;
+    height: 29px;
     border-radius: 50%;
   }
   .detail-info {
@@ -432,31 +498,78 @@ const StDetailDesc = styled.div`
       margin: 0 0 10px 0;
       font-size: 15px;
       h2 {
-        font-size: 18px;
+        font-family: 'Nanum_EB';
+        font-size: 13px;
         margin: 0 10px 0 0;
         color: #555555;
       }
 
       p {
+        font-family: 'Nanum_EB';
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 20px;
-        width: 60px;
+        border: 1px solid #8e8e8e;
+        width: 57px;
         height: 20px;
-        background-color: #d9d9d9;
+        background-color: white;
         color: #9e9e9e;
         letter-spacing: 1px;
+        font-size: 12px;
+      }
+    }
+
+    .detail-route {
+      position: relative;
+      p {
+        color: #9e9e9e;
+        height: 20px;
+      }
+
+      .detail-route-route {
+        color: #9e9e9e;
+        font-size: 10px;
+        cursor: pointer;
+      }
+
+      .detail-route-count {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        font-size: 10px;
+        width: 15px;
+        height: 15px;
+        background-color: rgb(100, 78, 238);
+        color: white;
+        position: absolute;
+        top: -12px;
+        right: 130px;
+        /* display: none; */
+      }
+
+      .detail-route-list {
+        display: flex;
+        align-items: center;
+        /* justify-content: center; */
+        p {
+          font-size: 11px;
+          margin-top: 10px;
+          margin-left: 5px;
+          color: #323232;
+        }
       }
     }
 
     .detail-bottom {
       display: flex;
       justify-content: space-between;
-      margin-top: 30px;
+      align-items: center;
+      margin-top: 23px;
 
       p {
-        font-size: 13px;
+        font-size: 10px;
         color: #9e9e9e;
       }
 
@@ -482,9 +595,9 @@ const StDetailComments = styled.div`
   display: flex;
   flex-direction: column;
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 800px) {
     width: 100%;
-    height: 300px;
+    height: 250px;
   }
 `;
 
@@ -561,7 +674,6 @@ const StDetailComment = styled.div`
 
 const StDetailBorder = styled.div`
   border-bottom: 1px solid #b6b6b6;
-  margin-top: 10px;
 `;
 
 const StXIcon = styled.div`
@@ -579,6 +691,13 @@ const StXIcon = styled.div`
   top: -30px;
   right: -30px;
   cursor: pointer;
+
+  @media screen and (max-width: 800px) {
+    top: 10px;
+    right: 10px;
+
+    z-index: 3;
+  }
 `;
 
 const StGroupPost = styled.div`

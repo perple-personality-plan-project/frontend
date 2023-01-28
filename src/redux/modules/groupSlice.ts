@@ -66,17 +66,19 @@ export const __groupSubscribeCheck = createAsyncThunk<
   }
 });
 
-export const __groupFeedList = createAsyncThunk<[], { id: string | undefined }>(
-  'group/feedlist',
-  async (payload, thunkAPI) => {
-    try {
-      const { data } = await nonTokenClient.get(`api/group/${payload.id}/feed`);
-      return thunkAPI.fulfillWithValue(data.data);
-    } catch (e) {
-      thunkAPI.rejectWithValue(e);
-    }
-  },
-);
+export const __groupFeedList = createAsyncThunk<
+  [],
+  { id: string | undefined; userId: string | number | null }
+>('group/feedlist', async (payload, thunkAPI) => {
+  try {
+    const { data } = await nonTokenClient.get(
+      `api/group/${payload.id}/feed?user_id=${payload.userId}`,
+    );
+    return thunkAPI.fulfillWithValue(data.data);
+  } catch (e) {
+    thunkAPI.rejectWithValue(e);
+  }
+});
 
 export const __groupFeedDetail = createAsyncThunk<
   [],
