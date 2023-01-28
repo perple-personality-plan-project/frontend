@@ -19,6 +19,17 @@ const GroupCard: React.FC<groupCardPreset> = ({ group }): JSX.Element => {
     hashtags,
   } = group;
 
+  const accessToken = sessionStorage.getItem('accessToken');
+
+  const navigateValidation = () => {
+    if (accessToken) {
+      navigate(`/${group_id}`);
+    } else {
+      alert('로그인이 필요한 서비스입니다!');
+      navigate('/signin');
+    }
+  };
+
   return (
     <StGroupContainer>
       <StIcons>
@@ -29,7 +40,7 @@ const GroupCard: React.FC<groupCardPreset> = ({ group }): JSX.Element => {
           B
         </button>
       </StIcons>
-      <StGroup key={group_id} onClick={() => navigate(`/${group_id}`)}>
+      <StGroup key={group_id} onClick={navigateValidation}>
         <div className="img-container">
           <img
             src={process.env.REACT_APP_IMG_SERVER + thumbnail}
