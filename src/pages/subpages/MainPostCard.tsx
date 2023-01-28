@@ -90,7 +90,7 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
         await loggedIn.post(`api/comment/${feed_id}`, {
           comment,
         });
-        dispatch(__mainFeedDetail({ feedId: feed_id }));
+        dispatch(__mainFeedDetail({ feedId: feed_id, userId: userId }));
         setComment('');
       } else {
         alert('로그인 해주세요!');
@@ -109,7 +109,7 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
 
   const deleteComment = async (commentId: string | number) => {
     await loggedIn.delete(`api/comment/${feed_id}/${commentId}`);
-    dispatch(__mainFeedDetail({ feedId: feed_id }));
+    dispatch(__mainFeedDetail({ feedId: feed_id, userId: userId }));
   };
 
   // const feedLike = async () => {
@@ -135,7 +135,7 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
 
   const openModal = () => {
     setIsOpen(true);
-    dispatch(__mainFeedDetail({ feedId: feed_id }));
+    dispatch(__mainFeedDetail({ feedId: feed_id, userId: userId }));
   };
 
   let modalParse: { place_group: string; place_group_name: string } = {

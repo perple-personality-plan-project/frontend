@@ -48,6 +48,7 @@ const FeedDetailModal: React.FC<Props> = () => {
   };
 
   const mainFeedDetail: any = useAppSelector(store => store.mypage.myData);
+  const userId = sessionStorage.getItem('userId');
 
   const date = mainFeedDetail?.created_at
     ?.replace('T', '. ')
@@ -67,7 +68,9 @@ const FeedDetailModal: React.FC<Props> = () => {
         await loggedIn.post(`api/comment/${mainFeedDetail.feed_id}`, {
           comment,
         });
-        dispatch(__mainFeedDetail({ feedId: mainFeedDetail.feed_id }));
+        dispatch(
+          __mainFeedDetail({ feedId: mainFeedDetail.feed_id, userId: userId }),
+        );
         setComment('');
       } else {
         alert('로그인 해주세요!');
@@ -80,12 +83,16 @@ const FeedDetailModal: React.FC<Props> = () => {
 
   const deleteComment = async (commentId: string | number) => {
     await loggedIn.delete(`api/comment/${mainFeedDetail.feed_id}/${commentId}`);
-    dispatch(__mainFeedDetail({ feedId: mainFeedDetail.feed_id }));
+    dispatch(
+      __mainFeedDetail({ feedId: mainFeedDetail.feed_id, userId: userId }),
+    );
   };
 
   const openModal = () => {
     setIsOpen(true);
-    dispatch(__mainFeedDetail({ feedId: mainFeedDetail.feed_id }));
+    dispatch(
+      __mainFeedDetail({ feedId: mainFeedDetail.feed_id, userId: userId }),
+    );
   };
 
   const modalOpen = useAppSelector((store: any) => store.mypage.modalOpen);

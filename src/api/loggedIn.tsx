@@ -14,7 +14,7 @@ loggedIn.interceptors.request.use(function (config: any) {
 
 loggedIn.interceptors.response.use(
   function (response) {
-    console.log(response);
+    // console.log(response);
     return response;
   },
   async function (error) {
