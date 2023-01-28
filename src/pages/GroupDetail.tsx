@@ -33,7 +33,7 @@ export interface groupFeedPreset {
   description: string;
   feed_id: number;
   group_user_id: number;
-  location: null;
+  location: string;
   thumbnail: string;
   updated_at: string;
   mbti: string;

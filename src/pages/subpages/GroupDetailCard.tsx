@@ -51,13 +51,17 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
   const [toggleRoute, setToggleRoute] = useState(false);
   const userId: number = Number(sessionStorage.getItem('userId'));
 
-  const filtered = places.filter(place => place.place_group_name === location);
+  //place group name 찾기 위해 필터링 사용
+  //전체 맵 데이터와 게시글 생성시 넣은 루트 데이터를 비교하여 같은걸 필터링 함
+  //이게 안되네 ... 계정 바뀌면 맵도 달라져서 안됌...
+  // const filtered = places.filter(place => place.place_group === location);
 
-  let Routes: any = [];
-  if (filtered.length === 0) {
-    // console.log('zero');
+  let parsedLocation: {}[] = [];
+  if (feed.location !== 'undefined') {
+    parsedLocation = [...JSON.parse(feed.location)];
+    // console.log('not undefined');
   } else {
-    Routes = [...JSON.parse(filtered[0].place_group)];
+    parsedLocation = [];
   }
 
   const date = created_at
@@ -146,7 +150,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
               <h3>{nickname}</h3>
               <p>{mbti.toUpperCase()}</p>
             </div>
-            <div className="post-header-route">{location}</div>
+            <div className="post-header-route">route</div>
           </div>
 
           <img
@@ -245,7 +249,9 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                     >
                       루트 펼치기
                     </p>{' '}
-                    <p className="detail-route-count">{Routes.length}</p>
+                    <p className="detail-route-count">
+                      {parsedLocation.length}
+                    </p>
                   </div>
                 ) : (
                   <div className="detail-route">
@@ -255,9 +261,9 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                     >
                       루트 접기
                     </p>
-                    {Routes?.map((route: any, index: number) => {
+                    {parsedLocation?.map((route: any, index: number) => {
                       return (
-                        <div className="detail-route-list">
+                        <div key={index} className="detail-route-list">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="13"
@@ -269,7 +275,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                           >
                             <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
                           </svg>
-                          <p key={index}>{route.place_name}</p>
+                          <p>{route.place_name}</p>
                         </div>
                       );
                     })}
