@@ -46,6 +46,8 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
     user_id,
   } = feed;
 
+  // console.log(feed);
+
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState<{}[]>([]);
   const [toggleRoute, setToggleRoute] = useState(false);
@@ -56,13 +58,16 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
   //이게 안되네 ... 계정 바뀌면 맵도 달라져서 안됌...
   // const filtered = places.filter(place => place.place_group === location);
 
+  const parsedData = JSON.parse(feed.location);
+  const parsedPlace = JSON.parse(parsedData.place_group);
+
   let parsedLocation: {}[] = [];
-  if (feed.location !== 'undefined') {
-    parsedLocation = [...JSON.parse(feed.location)];
-    // console.log('not undefined');
-  } else {
-    parsedLocation = [];
-  }
+  // if (feed.location !== 'undefined') {
+  //   parsedLocation = [...JSON.parse(feed.location)];
+  //   // console.log('not undefined');
+  // } else {
+  //   parsedLocation = [];
+  // }
 
   const date = created_at
     .replace('T', '. ')
@@ -150,7 +155,9 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
               <h3>{nickname}</h3>
               <p>{mbti.toUpperCase()}</p>
             </div>
-            <div className="post-header-route">route</div>
+            <div className="post-header-route">
+              {parsedData.place_group_name}
+            </div>
           </div>
 
           <img
@@ -249,9 +256,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                     >
                       루트 펼치기
                     </p>{' '}
-                    <p className="detail-route-count">
-                      {parsedLocation.length}
-                    </p>
+                    <p className="detail-route-count">{parsedPlace.length}</p>
                   </div>
                 ) : (
                   <div className="detail-route">
@@ -261,7 +266,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                     >
                       루트 접기
                     </p>
-                    {parsedLocation?.map((route: any, index: number) => {
+                    {parsedPlace?.map((route: any, index: number) => {
                       return (
                         <div key={index} className="detail-route-list">
                           <svg

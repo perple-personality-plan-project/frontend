@@ -54,6 +54,8 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
 
   const filtered = maplist.filter((map: any) => map.place_group_name === route);
 
+  // console.log(JSON.stringify(filtered[0]));
+
   const closeModal = () => {
     setIsOpen(false);
     setImageSrc([]);
@@ -87,7 +89,7 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
     for (let i = 0; i < thumbnail?.length; i++) {
       formData.append('thumbnail', thumbnail[i]);
     }
-    formData.append('location', filtered[0]?.place_group);
+    formData.append('location', JSON.stringify(filtered[0]));
     formData.append('description', groupInfos.description);
 
     if (groupInfos.description === '') {
