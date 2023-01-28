@@ -38,7 +38,6 @@ const MainPage = () => {
     sessionStorage.setItem('userId', '0');
   }
 
-  console.log(mainFeedList);
   useEffect(() => {
     if (mbtiCheck === 'All' || mbtiCheck === '사람들') {
       dispatch(__mainFeedlist({ userId }));
@@ -80,7 +79,7 @@ const MainPage = () => {
                 marginLeft: '53%',
               }}
               onClick={() =>
-                window.open('http://localhost:3000/mbti', '_blank')
+                window.open('https://16platter.site/mbti', '_blank')
               }
             >
               ✔ MBTI 검사하기
