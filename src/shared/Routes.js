@@ -106,7 +106,14 @@ const Router = () => {
           <Route
             path="/map"
             element={
-              <div>
+              <div
+                style={{
+                  maxWidth: '1440px',
+                  margin: '0 auto',
+                  position: 'relative',
+                  // justifyContent: 'center',
+                }}
+              >
                 <Navbar />
                 <MapPage />
               </div>

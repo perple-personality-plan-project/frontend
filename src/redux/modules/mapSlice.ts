@@ -52,7 +52,6 @@ export const __RootMaker = createAsyncThunk<RootMaker, {}>(
   'RootMaker',
   async (payload, thunkAPI) => {
     try {
-      console.log(payload);
       const { data } = await loggedIn.post(`api/map`, payload);
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {

@@ -3,10 +3,6 @@ import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
-import {
-  useAppDispatch,
-  useAppSelector,
-} from '../components/hooks/typescripthook/hooks';
 
 import {
   __getMyProfile,
@@ -18,12 +14,18 @@ import {
   __profilePic,
   __backgroundpic,
   __modalData,
+  __Togo,
+  __modalOpen,
 } from '../redux/modules/mySlice';
 import FeedModal from '../components/modal/MyFeedCreateModal';
-import { __Togo } from '../redux/modules/mySlice';
 import FeedDetailModal from '../components/modal/FeedDetailModal';
-import { __modalOpen } from '../redux/modules/mySlice';
 import Navbar from '../components/Navbar';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../components/hooks/typescripthook/hooks';
+import { __mainFeedDetail } from '../redux/modules/postSlice';
+import MyPickModal from '../components/modal/MyPickModal';
 interface IAppState {
   show: boolean;
 }
@@ -36,13 +38,14 @@ function MyPage() {
   const [dibs, setDibs] = useState(false);
   const [myGroup, setMyGroup] = useState(false);
   const [profileEdit, setProfileEdit] = useState(false);
-
   const [dataSource, setDataSource] = useState(Array.from({ length: 4 }));
   const [hasMore, setHasMore] = useState(true);
   const [Modals, setModals] = useState(true);
-
   const [MBTI, setMBTI] = useState(false);
   const [nickName, setnickName] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isPickModalOpen, setIsPickModalOpen] = useState(false);
+
   const onChangeMBTI = (e: any) => {
     setMBTI(e);
   };
@@ -152,9 +155,18 @@ function MyPage() {
     await dispatch(__getMyProfile());
   };
 
+  const modalClose = async (e: any) => {
+    setIsOpen(false);
+  };
+
+  const pickModal = async (e: any) => {
+    setIsPickModalOpen(!isPickModalOpen);
+  };
+
   const modalOpen = async (e: any) => {
-    await dispatch(__modalOpen(true));
+    setIsOpen(!isOpen);
     await dispatch(__modalData(e));
+    await dispatch(__mainFeedDetail({ feedId: e.feed_id, userId: e.userId }));
   };
   const token = sessionStorage.getItem('accessToken');
 
@@ -354,7 +366,10 @@ function MyPage() {
                       }}
                     />
                     <Address>{item.mbti}🏃</Address>
-                    <FeedDetailModal post={item}></FeedDetailModal>
+                    <FeedDetailModal
+                      state={isOpen}
+                      close={modalClose}
+                    ></FeedDetailModal>
                   </Feed>
                 );
               })}
@@ -422,7 +437,10 @@ function MyPage() {
                     />
                     {/* <TopGradation></TopGradation> */}
                     <Address>{item.mbti}🏃</Address>
-                    <FeedDetailModal post={item}></FeedDetailModal>
+                    <MyPickModal
+                      state={isPickModalOpen}
+                      close={pickModal}
+                    ></MyPickModal>
                   </Feed>
                 );
               })}
@@ -439,7 +457,21 @@ function MyPage() {
                       alt="group-img"
                     />
                     <Title>{item.group_name}</Title>
-                    <Description>{item.description}</Description>
+                    <Description>
+                      게시글{item.feedCount}개/{item.group_user_count}명이
+                      소통중이에요
+                    </Description>
+                    <HashBox>
+                      {item.hashtags === null ? (
+                        <NoTag>태그가 없습니다</NoTag>
+                      ) : (
+                        item.hashtags
+                          .split(',')
+                          .map((item: any, index: any) => {
+                            return <HashTag key={index}>{item}</HashTag>;
+                          })
+                      )}
+                    </HashBox>
                   </GroupFeed>
                 );
               })}
@@ -554,12 +586,23 @@ const Image = styled.div`
     z-index: 100;
   }
   @media (max-width: 412px) {
-    margin-left: 34%;
+    margin-left: 32%;
+  }
+  @media (max-width: 390px) {
+    margin-left: 31%;
   }
 `;
 const Retest = styled.a`
   text-decoration: underline;
   margin-left: 300px;
+  @media screen and (max-width: 390px) {
+    margin-left: 240px;
+    font-size: 15px;
+  }
+  @media screen and (max-width: 412px) {
+    margin-left: 240px;
+    font-size: 15px;
+  }
 `;
 
 const Mbti = styled.div<IAppState>`
@@ -567,6 +610,11 @@ const Mbti = styled.div<IAppState>`
   text-align: center;
   margin-left: 184px;
   margin-top: 110px;
+  //text center of the box (vertical)
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   font-size: 20px;
   width: 80px;
   height: 30px;
@@ -576,7 +624,10 @@ const Mbti = styled.div<IAppState>`
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
   display: ${props => (props.show ? 'none' : '')};
   @media (max-width: 412px) {
-    margin-left: 41%;
+    margin-left: 39%;
+  }
+  @media (max-width: 390px) {
+    margin-left: 39%;
   }
 `;
 
@@ -789,12 +840,11 @@ const ToGoAddress = styled.div`
   width: 350px;
   height: 40px;
   position: absolute;
-
   z-index: 1;
   @media (max-width: 412px) {
-    margin-top: 20px;
-    margin-left: 190px;
-    width: 140px;
+    margin-top: 30px;
+    margin-left: 20px;
+    width: 200px;
     height: 30px;
   }
 `;
@@ -822,6 +872,9 @@ const Icon = styled.svg`
   margin-left: 400px;
   position: absolute;
   z-index: 2;
+  @media (max-width: 412px) {
+    margin-left: 240px;
+  }
 `;
 const TogoShow = styled.div`
   z-index: 100;
@@ -846,6 +899,10 @@ const PlaceNum = styled.div`
   font-weight: bold;
   position: absolute;
   z-index: 1;
+  @media (max-width: 412px) {
+    margin-left: 280px;
+    font-size: 30px;
+  }
 `;
 const Feed = styled.div`
   //css append row
@@ -933,7 +990,7 @@ const GroupFeed = styled.div`
   margin-left: 20px;
   width: 800px;
   height: 200px;
-  background-color: #f3f3f3;
+
   border: solid #e6e6e6 1px;
   border-radius: 15px;
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
@@ -942,7 +999,12 @@ const GroupFeed = styled.div`
   }
   @media (max-width: 412px) {
     width: 120%;
-    height: 120px;
+    height: 130px;
+  }
+  @media (max-width: 390px) {
+    width: 120%;
+    height: 130px;
+    margin-left: 40px;
   }
 `;
 
@@ -964,7 +1026,7 @@ const GroupProfile = styled.img`
 const Title = styled.div`
   //css append row
   display: inline-block;
-  margin-left: 40px;
+  margin-left: 30px;
   position: absolute;
   margin-top: 60px;
   font-size: 25px;
@@ -977,7 +1039,7 @@ const Title = styled.div`
 `;
 const Description = styled.div`
   display: inline-block;
-  margin-left: 40px;
+  margin-left: 30px;
   position: absolute;
   margin-top: 110px;
   font-size: 15px;
@@ -985,6 +1047,48 @@ const Description = styled.div`
     font-size: 10px;
     margin-top: 70px;
     margin-left: 20px;
+  }
+`;
+const HashBox = styled.div`
+  display: inline-block;
+  margin-left: 15px;
+  margin-top: -50px;
+`;
+const HashTag = styled.div`
+  display: inline-block;
+  font-size: 15px;
+  width: fit-content;
+  height: 20px;
+  border-radius: 10px;
+  background-color: #eeeeee;
+  text-align: center;
+  color: #959595;
+  margin-left: 15px;
+  // text center of the box (vertical)
+  line-height: 15px;
+
+  @media (max-width: 412px) {
+    font-size: 10px;
+    height: 15px;
+    margin-top: -10px;
+  }
+`;
+const NoTag = styled.div`
+  display: inline-block;
+  margin-top: 140px;
+  font-size: 15px;
+  width: 150px;
+  height: 20px;
+  border-radius: 10px;
+  text-align: center;
+  color: #959595;
+
+  @media (max-width: 412px) {
+    font-size: 10px;
+    margin-top: 70px;
+    margin-left: 5px;
+    width: 40px;
+    height: 15px;
   }
 `;
 

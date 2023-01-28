@@ -135,6 +135,20 @@ export const __myGroupList = createAsyncThunk(
     }
   },
 );
+export const __myFeedDetail = createAsyncThunk(
+  'myFeedDetail',
+  async (payload, thunkAPI) => {
+    try {
+      const { data } = await loggedIn.get(
+        `api/feed/:${payload}?user_id=user_id`,
+      );
+      return thunkAPI.fulfillWithValue(data.data);
+    } catch (e) {
+      thunkAPI.rejectWithValue(e);
+    }
+  },
+);
+
 export const __myFeed = createAsyncThunk(
   'myFeed',
   async (payload, thunkAPI) => {

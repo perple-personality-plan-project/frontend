@@ -2,21 +2,18 @@ import React, { useState } from 'react';
 // import { Swiper, SwiperSlide } from 'swiper/react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { Modal } from '../components/SidebarModal';
-import SwiperSlides from '../components/Swiper';
 import { useNavigate } from 'react-router-dom';
-import client from '../api/client';
 import 'remixicon/fonts/remixicon.css';
 
 import 'swiper/css';
-import Sidebar from '../pages/subpages/Sidebar';
+import client from '../api/client';
 import SidebarCompelete from '../pages/subpages/SidebarCompelete';
+import { Modal } from '../components/SidebarModal';
 
 const MapNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const token = sessionStorage.getItem('accessToken');
   const navigate = useNavigate();
-  const [trigger, setTrigger] = useState(false);
 
   const NavArr = ['커뮤니티', '맵', '그룹', '마이 페이지'];
   const NavArrEng = ['community', 'map', 'group', 'mypage'];
