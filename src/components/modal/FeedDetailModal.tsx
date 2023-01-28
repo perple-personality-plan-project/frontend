@@ -34,7 +34,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
 
   const mainFeedDetail: any = useAppSelector(store => store.mypage.myData);
   const userId = sessionStorage.getItem('userId');
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem('accessToken');
   const thumbnailArray = mainFeedDetail?.thumbnail?.split(',');
   const imgLink = process.env.REACT_APP_IMG_SERVER;
   const profileInfo = useAppSelector((store: any) => store.mypage.profileInfo);

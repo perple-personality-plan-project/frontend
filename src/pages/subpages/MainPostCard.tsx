@@ -77,7 +77,7 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
   const [comment, setComment] = useState('');
   const [toggle, setToggle] = useState(false);
   const [pintoggle, setPinToggle] = useState(false);
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem('accessToken');
   const [routeOpen, setRouteOpen] = useState(false);
   const thumbnailArray = thumbnail.split(',');
   const imgLink = process.env.REACT_APP_IMG_SERVER;
