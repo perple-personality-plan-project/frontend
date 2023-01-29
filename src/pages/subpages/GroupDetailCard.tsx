@@ -46,7 +46,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
     user_id,
   } = feed;
 
-  console.log(feed, places);
+  // console.log(feed, places);
 
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState<{}[]>([]);
@@ -80,8 +80,6 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
 
     // console.log(JSON.parse(feed.location));
     parsedLocation = { ...JSON.parse(feed.location) };
-    console.log(parsedLocation, parsedPlace);
-    // console.log('not undefined');
   } else {
     parsedLocation = {
       created_at: '',
@@ -150,8 +148,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
   };
 
   const toggleHeart = async (feedId: number) => {
-    const x = await loggedIn.put(`/api/group/${groupId}/feed/${feedId}/like`); //좋아요 / 좋아요 취소 api
-    console.log(x);
+    await loggedIn.put(`/api/group/${groupId}/feed/${feedId}/like`); //좋아요 / 좋아요 취소 api
     dispatch(__groupFeedList({ id: groupId, userId: userId }));
   };
 
@@ -273,16 +270,16 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                   {description}
                 </p>
                 {!toggleRoute ? (
-                  <div style={{ width: '190px' }} className="detail-route ">
+                  <div style={{ width: '190px' }} className="detail-route">
                     <p
                       className="detail-route-route"
                       onClick={() => setToggleRoute(!toggleRoute)}
                     >
                       루트 펼치기
                     </p>{' '}
-                    <p className="detail-route-count">
+                    <div className="detail-route-count">
                       <p>{parsedPlace?.length || 0}</p>
-                    </p>
+                    </div>
                   </div>
                 ) : (
                   <div className="detail-route">
@@ -602,8 +599,8 @@ const StDetailDesc = styled.div`
           color: white;
           margin: 0;
           position: absolute;
-          top: 1px;
-          right: 5px;
+          top: 1.5px;
+          right: 4.6px;
         }
       }
 
