@@ -19,12 +19,14 @@ import { Provider } from 'react-redux';
 import MainNav from '../components/MainNav';
 import KakaoRedirect from '../pages/subpages/KakaoRedirect';
 import Navbar from '../components/Navbar';
+import MBTIKakao from '../pages/MBTIKakao';
 
 const Router = () => {
   return (
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
+          <Route path="/mbtikakao" element={<MBTIKakao />} />
           <Route path="/kakaocallback" element={<KakaoRedirect />} />
           <Route
             path="/:id"
