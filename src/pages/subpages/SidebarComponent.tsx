@@ -41,9 +41,30 @@ const SidebarComponent: React.FC<props> = ({ sidebar, closeSidebar }) => {
             className="ri-menu-line"
           ></i> */}
         </div>
-        <li onClick={() => navigate('/')}>커뮤니티</li>
-        <li onClick={() => navigate('/map')}>맵</li>
-        <li onClick={() => navigate('/group')}>그룹</li>
+        <li
+          onClick={() => {
+            navigate('/');
+            closeSidebar();
+          }}
+        >
+          커뮤니티
+        </li>
+        <li
+          onClick={() => {
+            navigate('/map');
+            closeSidebar();
+          }}
+        >
+          맵
+        </li>
+        <li
+          onClick={() => {
+            navigate('/group');
+            closeSidebar();
+          }}
+        >
+          그룹
+        </li>
         <li onClick={mypage}>마이페이지</li>
       </div>
     </StSidebar>
