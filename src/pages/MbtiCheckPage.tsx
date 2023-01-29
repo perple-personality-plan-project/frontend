@@ -138,6 +138,10 @@ const StGroupPosts = styled.div`
     border-radius: 10px;
     overflow: hidden;
 
+    &:hover {
+      transform: scale(1.05);
+    }
+
     @media screen and (max-width: 412px) {
       margin: auto;
     }
