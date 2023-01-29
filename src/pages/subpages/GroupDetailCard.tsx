@@ -46,7 +46,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
     user_id,
   } = feed;
 
-  // console.log(feed);
+  console.log(feed, places);
 
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState<{}[]>([]);
@@ -58,16 +58,40 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
   //이게 안되네 ... 계정 바뀌면 맵도 달라져서 안됌...
   // const filtered = places.filter(place => place.place_group === location);
 
-  const parsedData = JSON.parse(feed.location);
-  const parsedPlace = JSON.parse(parsedData.place_group);
-
-  let parsedLocation: {}[] = [];
   // if (feed.location !== 'undefined') {
-  //   parsedLocation = [...JSON.parse(feed.location)];
-  //   // console.log('not undefined');
-  // } else {
-  //   parsedLocation = [];
+  //   const parsedData = JSON.parse(feed.location);
+  //   const parsedPlace = JSON.parse(parsedData.place_group);
   // }
+
+  let parsedLocation: {
+    created_at: string;
+    map_id: number;
+    place_group: string;
+    place_group_name: string;
+    updated_at: string;
+    user_id: number;
+  };
+
+  let parsedData;
+  let parsedPlace;
+  if (feed.location !== 'undefined') {
+    parsedData = JSON.parse(feed.location);
+    parsedPlace = JSON.parse(parsedData.place_group);
+
+    // console.log(JSON.parse(feed.location));
+    parsedLocation = { ...JSON.parse(feed.location) };
+    console.log(parsedLocation, parsedPlace);
+    // console.log('not undefined');
+  } else {
+    parsedLocation = {
+      created_at: '',
+      map_id: 0,
+      place_group: '',
+      place_group_name: '없음',
+      updated_at: '',
+      user_id: 0,
+    };
+  }
 
   const date = created_at
     .replace('T', '. ')
@@ -156,7 +180,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
               <p>{mbti.toUpperCase()}</p>
             </div>
             <div className="post-header-route">
-              {parsedData.place_group_name}
+              {parsedLocation.place_group_name}
             </div>
           </div>
 
@@ -256,7 +280,9 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                     >
                       루트 펼치기
                     </p>{' '}
-                    <p className="detail-route-count">{parsedPlace.length}</p>
+                    <p className="detail-route-count">
+                      <p>{parsedPlace?.length || 0}</p>
+                    </p>
                   </div>
                 ) : (
                   <div className="detail-route">
@@ -392,6 +418,7 @@ const StIcon = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  margin-left: 5px;
 
   .heart-number {
     position: absolute;
@@ -436,14 +463,15 @@ const StDetailContainer = styled.div`
 `;
 
 const StDetailInput = styled.div`
-  background-color: #f2f2f2;
+  /* background-color: #f2f2f2; */
+  background-color: white;
   border-top: 1px solid #b6b6b6;
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  height: 10%;
+  /* height: 10%; */
   width: 100%;
-  padding: 30px 20px;
+  padding: 25px 24px;
 
   input {
     outline: 0;
@@ -453,17 +481,29 @@ const StDetailInput = styled.div`
     padding: 10px 20px;
   }
   input {
-    border: 1px solid gray;
+    background-color: #f6f7fa;
+    /* border: 1px solid gray; */
+    border: 0;
     border-radius: 20px;
     text-indent: 10px;
     width: 100%;
-    height: 30px;
+    height: 44px;
+
+    &::placeholder {
+      color: #b8b8b8;
+    }
   }
 
   button {
-    width: 80px;
-    height: 30px;
+    /* text-align: center; */
+    margin-left: 10px;
+    width: 50px;
+    height: 25px;
     border: 0;
+    font-family: 'Nanum_EB';
+    color: #644eee;
+    font-size: 15px;
+    background-color: white;
     /* background-color: #f2f2f2; */
 
     cursor: pointer;
@@ -499,6 +539,7 @@ const StDetailDesc = styled.div`
 
     p {
       margin: 0;
+      /* width: 90%; */
       /* width: 20ch; */
     }
 
@@ -539,15 +580,13 @@ const StDetailDesc = styled.div`
       }
 
       .detail-route-route {
+        margin-top: 10px;
         color: #9e9e9e;
         font-size: 10px;
         cursor: pointer;
       }
 
       .detail-route-count {
-        display: flex;
-        justify-content: center;
-        align-items: center;
         border-radius: 50%;
         font-size: 10px;
         width: 15px;
@@ -555,9 +594,17 @@ const StDetailDesc = styled.div`
         background-color: rgb(100, 78, 238);
         color: white;
         position: absolute;
-        top: -12px;
+        top: 0px;
         right: 130px;
         /* display: none; */
+
+        p {
+          color: white;
+          margin: 0;
+          position: absolute;
+          top: 1px;
+          right: 5px;
+        }
       }
 
       .detail-route-list {
@@ -620,7 +667,8 @@ const StDetailComment = styled.div`
   position: relative;
 
   p {
-    font-size: 14px;
+    width: 90%;
+    font-size: 13px;
   }
 
   img {
@@ -645,7 +693,8 @@ const StDetailComment = styled.div`
       align-items: center;
       font-size: 15px;
       h2 {
-        font-size: 18px;
+        font-family: 'Nanum_EB';
+        font-size: 13px;
         margin: 0 10px 0 0;
       }
 
@@ -661,8 +710,8 @@ const StDetailComment = styled.div`
     }
 
     .detail-del {
-      width: 30px;
-      height: 30px;
+      width: 25px;
+      height: 25px;
       border-radius: 50%;
 
       display: flex;
@@ -670,7 +719,7 @@ const StDetailComment = styled.div`
       align-items: center;
 
       &:hover {
-        background-color: #f54e4e;
+        background-color: rgb(220, 218, 230);
         color: white;
 
         cursor: pointer;
@@ -861,7 +910,7 @@ const StGroupPost = styled.div`
       /* background-color: pink; */
 
       /* border-radius: 50%; */
-      margin: 0 5px;
+      /* margin: 0 5px; */
     }
   }
   @media screen and (max-width: 900px) {

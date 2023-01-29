@@ -282,16 +282,16 @@ const StSubscribeOn = styled.div`
 
   .group-subscribe-on {
     color: #9d9d9d !important;
-    background-color: #f3f1f8 !important;
+    background-color: #f5f3fe !important;
   }
 
   .group-subscribe-del {
     background-color: white !important;
-    color: red !important;
-    border: 1px solid red !important;
+    color: #888888 !important;
+    border: 1px solid #888888 !important;
 
     &:hover {
-      background-color: red !important;
+      background-color: #888888 !important;
       color: white !important;
     }
   }
@@ -386,16 +386,16 @@ const StGroupInfo = styled.div`
 
   .group-subscribe {
     width: 100%;
-    height: 48px;
+    height: 52px;
     /* border: 1px solid gray; */
     border: 0;
-    border-radius: 5px;
+    border-radius: 10px;
     color: white;
     cursor: pointer;
     padding: 10px 0;
     font-size: 16px;
     font-weight: bold;
-    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    /* box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25); */
     background-color: #644eee;
   }
 `;
