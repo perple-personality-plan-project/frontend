@@ -38,7 +38,9 @@ type FeedPost = {
   description: string;
   location: number;
 };
-
+type MapId = {
+  MapId: number;
+};
 export const __getMap = createAsyncThunk(
   'getmap',
   async (payload, thunkAPI) => {
@@ -154,6 +156,17 @@ export const __myFeed = createAsyncThunk(
   async (payload, thunkAPI) => {
     try {
       const { data } = await loggedIn.get(`api/user/my-feed`);
+      return thunkAPI.fulfillWithValue(data.data);
+    } catch (e) {
+      thunkAPI.rejectWithValue(e);
+    }
+  },
+);
+export const __togoDelete = createAsyncThunk<MapId, number>(
+  'togoDelete',
+  async (payload, thunkAPI) => {
+    try {
+      const { data } = await loggedIn.delete(`/api/map/${payload}`);
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
       thunkAPI.rejectWithValue(e);

@@ -16,6 +16,7 @@ import {
   __modalData,
   __Togo,
   __modalOpen,
+  __togoDelete,
 } from '../redux/modules/mySlice';
 import FeedModal from '../components/modal/MyFeedCreateModal';
 import FeedDetailModal from '../components/modal/FeedDetailModal';
@@ -59,6 +60,7 @@ function MyPage() {
   const myGroupList = useAppSelector((store: any) => store.mypage.myGroupList);
   const mapList = useAppSelector((store: any) => store.mypage.maplist);
   const myPick = useAppSelector((store: any) => store.mypage.myPick);
+  const userId = sessionStorage.getItem('userId');
 
   useEffect(() => {
     fetchData();
@@ -166,9 +168,19 @@ function MyPage() {
   const modalOpen = async (e: any) => {
     setIsOpen(!isOpen);
     await dispatch(__modalData(e));
-    await dispatch(__mainFeedDetail({ feedId: e.feed_id, userId: e.userId }));
+    await dispatch(__mainFeedDetail({ feedId: e.feed_id, userId: userId }));
+  };
+
+  const modalPickOpen = async (e: any) => {
+    setIsPickModalOpen(!isPickModalOpen);
+    await dispatch(__modalData(e));
+    await dispatch(__mainFeedDetail({ feedId: e.feed_id, userId: userId }));
   };
   const token = sessionStorage.getItem('accessToken');
+  const deleteTogo = async (mapId: number) => {
+    await dispatch(__togoDelete(mapId));
+    await dispatch(__getMap());
+  };
 
   if (token === null) {
     return (
@@ -176,9 +188,9 @@ function MyPage() {
         <Navbar />
         <Banner>
           <label htmlFor="banner">
-            {profileInfo?.map((item: any) => {
+            {profileInfo?.map((item: any, index: number) => {
               return (
-                <div>
+                <div key={index}>
                   <img
                     src={
                       profileInfo[0].background_img === null
@@ -252,16 +264,17 @@ function MyPage() {
           />
         </Banner>
         <Profile>
-          {profileInfo?.map((item: any) => {
+          {profileInfo?.map((item: any, index: number) => {
             return (
-              <div>
+              <div key={index}>
                 <Mbti show={profileEdit}>{item.mbti}</Mbti>
                 <form onSubmit={updateProfile}>
                   <MbtiInput
-                    onChange={e => onChangeMBTI(e.target.value)}
+                    onChange={e => onChangeMBTI(e.target.value.toUpperCase())}
                     show={profileEdit}
                     required
-                    pattern="^(intj|infj|infj|intj|istp|isfp|infp|intp|estp|esfp|enfp|entp|estj|esfj|enfj|entj)$"
+                    value={item.mbti}
+                    pattern="^(intj|infj|infj|intj|istp|isfp|infp|intp|estp|esfp|enfp|entp|estj|esfj|enfj|entj|INTJ|INFJ|INTJ|ISTP|ISFP|INFP|INTP|ESTP|ESFP|ENFP|ENTP|ESTJ|ESFJ|ENFJ|ENTJ)$"
                     onInvalid={e =>
                       (e.target as HTMLInputElement).setCustomValidity(
                         'MBTI를 올바르게 입력해 주세요',
@@ -276,8 +289,8 @@ function MyPage() {
                       <div>
                         <img
                           src={
-                            item.profile_img === null
-                              ? require('../defaultprofile.png')
+                            item.profile_img === undefined
+                              ? require('../마이페이지.png')
                               : process.env.REACT_APP_IMG_SERVER +
                                 item.profile_img
                           }
@@ -299,6 +312,7 @@ function MyPage() {
                     onChange={e => onChangeNickName(e.target.value)}
                     show={profileEdit}
                     required
+                    value={item.nickname}
                     pattern="^[가-힣]{2,8}$"
                     onInvalid={e =>
                       (e.target as HTMLInputElement).setCustomValidity(
@@ -310,7 +324,7 @@ function MyPage() {
                     }
                   />
                   <Edit show={profileEdit} onClick={profileEditShow}>
-                    내프로필 편집하기
+                    내 프로필 편집하기
                   </Edit>
                   <Editsend show={profileEdit}>편집하기</Editsend>
                 </form>
@@ -365,29 +379,32 @@ function MyPage() {
                         modalOpen(item);
                       }}
                     />
-                    <Address>{item.mbti}🏃</Address>
-                    <FeedDetailModal
-                      state={isOpen}
-                      close={modalClose}
-                    ></FeedDetailModal>
+                    <Address>
+                      {JSON.parse(item?.location).place_group_name}🏃
+                    </Address>
                   </Feed>
                 );
               })}
+              <FeedDetailModal
+                state={isOpen}
+                close={modalClose}
+              ></FeedDetailModal>
             </MyFeed>
             <ToGoList show={toGoList}>
               {mapList.map((item: any, index: number) => {
                 return (
-                  <ToGoFeed
-                    key={index}
-                    onClick={() => letsGo(JSON.parse(item.place_group))}
-                  >
+                  <ToGoFeed key={index}>
                     <ToGoAddress>
-                      <div>{item.place_group_name}</div>
+                      <TogoTitle
+                        onClick={() => letsGo(JSON.parse(item.place_group))}
+                      >
+                        {item.place_group_name}
+                      </TogoTitle>
                       <Icon
                         xmlns="http://www.w3.org/2000/svg"
-                        width="35"
-                        height="35"
-                        color="#644EEE"
+                        width="30"
+                        height="30"
+                        color="#8979f5"
                         fill="currentColor"
                         className="bi bi-geo-alt-fill"
                         viewBox="0 0 16 16"
@@ -395,27 +412,43 @@ function MyPage() {
                         <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
                       </Icon>
                       <PlaceNum>{JSON.parse(item.place_group).length}</PlaceNum>
+                      <DeleteTogo onClick={() => deleteTogo(item.map_id)}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          width="24"
+                          height="24"
+                        >
+                          <path fill="none" d="M0 0h24v24H0z" />
+                          <path
+                            d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-11.414L9.172 7.757 7.757 9.172 10.586 12l-2.829 2.828 1.415 1.415L12 13.414l2.828 2.829 1.415-1.415L13.414 12l2.829-2.828-1.415-1.415L12 10.586z"
+                            fill="rgba(225,226,232,1)"
+                          />
+                        </svg>
+                      </DeleteTogo>
                     </ToGoAddress>
                     <TogoIcons>
                       <TogoShow>
-                        {JSON.parse(item.place_group).map((item: any) => {
-                          return (
-                            <TogoContainer>
-                              <SideIcon
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="25"
-                                height="25"
-                                color="#644EEE"
-                                fill="currentColor"
-                                className="bi bi-geo-alt-fill"
-                                viewBox="0 0 16 16"
-                              >
-                                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                              </SideIcon>
-                              <TogoText>{item.place_name}</TogoText>
-                            </TogoContainer>
-                          );
-                        })}
+                        {JSON.parse(item.place_group).map(
+                          (item: any, index: number) => {
+                            return (
+                              <TogoContainer key={index}>
+                                <SideIcon
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="20"
+                                  height="20"
+                                  color="#644EEE"
+                                  fill="currentColor"
+                                  className="bi bi-geo-alt-fill"
+                                  viewBox="0 0 16 16"
+                                >
+                                  <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                                </SideIcon>
+                                <TogoText>{item.place_name}</TogoText>
+                              </TogoContainer>
+                            );
+                          },
+                        )}
                       </TogoShow>
                     </TogoIcons>
                   </ToGoFeed>
@@ -432,18 +465,20 @@ function MyPage() {
                         item.thumbnail.split(',')[0]
                       }
                       onClick={() => {
-                        modalOpen(item);
+                        modalPickOpen(item);
                       }}
                     />
                     {/* <TopGradation></TopGradation> */}
-                    <Address>{item.mbti}🏃</Address>
-                    <MyPickModal
-                      state={isPickModalOpen}
-                      close={pickModal}
-                    ></MyPickModal>
+                    <Address>
+                      {JSON.parse(item?.location).place_group_name}🏃
+                    </Address>
                   </Feed>
                 );
               })}
+              <MyPickModal
+                state={isPickModalOpen}
+                close={pickModal}
+              ></MyPickModal>
             </DibsList>
             <MyGroupList show={myGroup}>
               {myGroupList?.map((item: any, index: any) => {
@@ -483,6 +518,7 @@ function MyPage() {
     );
   }
 }
+
 const LoginRequire = styled.button`
   //로그인 필요
   width: 100%;
@@ -532,15 +568,14 @@ const Banner = styled.div`
   }
 `;
 const Profile = styled.div`
-  width: 450px;
-  height: 420px;
+  width: 429px;
+  height: 444px;
   background-color: #ffffff;
   position: absolute;
-  margin-top: 10vh;
+  margin-top: 98px;
   margin-left: 80px;
-  border: solid #e6e6e6 1px;
+  border: solid #d9d9d9 1px;
   border-radius: 15px;
-  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
   @media (max-width: 412px) {
     margin-top: 200px;
     margin-left: 5%;
@@ -557,10 +592,9 @@ const Image = styled.div`
   height: 130px;
   background-color: #f3f3f3;
   margin-top: 30px;
-  margin-left: 160px;
+  margin-left: 150px;
   border: solid #e6e6e6 1px;
   border-radius: 50%;
-  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
   z-index: 100;
   img {
     width: 130px;
@@ -594,7 +628,11 @@ const Image = styled.div`
 `;
 const Retest = styled.a`
   text-decoration: underline;
-  margin-left: 300px;
+  margin-left: 280px;
+  bottom: 61%;
+  position: absolute;
+  font-family: 'Nanum_R';
+  cursor: pointer;
   @media screen and (max-width: 390px) {
     margin-left: 240px;
     font-size: 15px;
@@ -608,7 +646,7 @@ const Retest = styled.a`
 const Mbti = styled.div<IAppState>`
   position: absolute;
   text-align: center;
-  margin-left: 184px;
+  margin-left: 174px;
   margin-top: 110px;
   //text center of the box (vertical)
   display: flex;
@@ -621,20 +659,19 @@ const Mbti = styled.div<IAppState>`
   background-color: #f3f3f3;
   border: solid #e6e6e6 1px;
   border-radius: 15px;
-  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
   display: ${props => (props.show ? 'none' : '')};
   @media (max-width: 412px) {
     margin-left: 39%;
   }
   @media (max-width: 390px) {
-    margin-left: 39%;
+    margin-left: 38%;
   }
 `;
 
 const MbtiInput = styled.input<IAppState>`
   position: absolute;
   text-align: center;
-  margin-left: 184px;
+  margin-left: 174px;
   margin-top: 110px;
   font-size: 20px;
   width: 80px;
@@ -642,22 +679,31 @@ const MbtiInput = styled.input<IAppState>`
   background-color: #f3f3f3;
   border: solid #e6e6e6 1px;
   border-radius: 15px;
-  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
   display: ${props => (props.show ? 'flex' : 'none')};
+  @media (max-width: 390px) {
+    margin-left: 130px;
+  }
 `;
+
 const Name = styled.div<IAppState>`
   text-align: center;
-  margin-top: 10px;
+  margin-top: 30px;
   font-size: 30px;
   display: ${props => (props.show ? 'none' : '')};
+  font-family: 'Nanum_R';
+  @media (max-width: 390px) {
+  }
 `;
 const NameInput = styled.input<IAppState>`
   text-align: center;
   width: 200px;
   margin-top: 10px;
   font-size: 30px;
-  margin-left: 125px;
+  margin-left: 115px;
   display: ${props => (props.show ? 'flex' : 'none')};
+  @media (max-width: 390px) {
+    margin-left: 75px;
+  }
 `;
 
 const Edit = styled.button<IAppState>`
@@ -665,11 +711,12 @@ const Edit = styled.button<IAppState>`
   margin-top: 20px;
   margin-left: auto;
   margin-right: auto;
-  width: 350px;
-  height: 35px;
-  background-color: #f2f2f2;
-  border: solid #e6e6e6 1px;
-  border-radius: 15px;
+  width: 360px;
+  height: 50px;
+  background-color: #f2f2f8;
+  border: solid #f6f6fa 1px;
+  border-radius: 25px;
+  font-family: 'Nanum_R';
   font-size: 20px;
   &:hover {
     background-color: #e6e6e6;
@@ -713,21 +760,23 @@ const ProfileBox = styled.div`
   }
 `;
 const FeedType = styled.div`
-  font-size: 20px;
+  font-size: 13px;
   display: flex;
+  margin-top: 3px;
   justify-content: center;
   align-items: center;
-  color: #d9d9d9;
+  color: #5b5b5b;
   font-weight: bold;
 `;
 
 const FeedNum = styled.div`
-  font-size: 30px;
+  font-size: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 15px;
-  color: #d9d9d9;
+  color: #5b5b5b;
+  font-family: 'Nanum_L';
   @media (max-width: 412px) {
     margin-top: 60px;
   }
@@ -750,8 +799,8 @@ const BtnComp = styled.div`
   width: 60%;
   min-width: 440px;
   @media (max-width: 1120px) {
-    margin-top: 550px;
-    margin-left: 40px;
+    margin-top: 570px;
+    margin-left: 30px;
   }
   @media (max-width: 412px) {
     margin-top: 650px;
@@ -766,9 +815,9 @@ const MyFeedBtn = styled.button<IAppState>`
   margin-left: 10px;
   width: 150px;
   height: 40px;
-  background-color: #ffffff;
+  background-color: ${props => (props.show ? ' #F6F7FA' : '#ffffff')};
   border: ${props => (props.show ? 'solid #644eee 2px' : 'solid #DEDEDE 2px')};
-  border-radius: 15px;
+  border-radius: 20px;
   font-size: 15px;
   z-index: 200;
   &:hover {
@@ -809,31 +858,30 @@ const MyGroupList = styled.div<IAppState>`
   display: ${props => (props.show ? 'inline-block' : 'none')};
 `;
 const Address = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  margin-left: 220px;
   font-size: 15px;
-  width: 100px;
+  padding-left: 10px;
+  padding-right: 10px;
+  position: relative;
+  margin-top: 18px;
+  margin-right: 18px;
+  width: fit-content;
   height: 30px;
-  background-color: #d9d9d9;
-  border: solid #d9d9d9 2px;
-  border-radius: 15px;
+  //background black tranclucent
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  color: #ffffff;
   position: absolute;
-
   z-index: 1;
-  @media (max-width: 412px) {
-    margin-top: 20px;
-    margin-left: 190px;
-    width: 140px;
-    height: 30px;
-  }
+`;
+const TogoTitle = styled.div`
+  font-size: 22px;
+  margin-left: 15px;
+  cursor: pointer;
 `;
 const ToGoAddress = styled.div`
   display: flex;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 30px;
   margin-left: 20px;
   font-size: 25px;
   font-weight: bold;
@@ -851,10 +899,9 @@ const ToGoAddress = styled.div`
 const TogoIcons = styled.div`
   border-top: solid #d9d9d9 2px;
   height: 200px;
-  width: 90%;
+  width: 80%;
   margin-top: 80px;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 30px;
 `;
 
 const TopGradation = styled.div`
@@ -869,7 +916,7 @@ const TopGradation = styled.div`
   z-index: 1;
 `;
 const Icon = styled.svg`
-  margin-left: 400px;
+  margin-left: 275px;
   position: absolute;
   z-index: 2;
   @media (max-width: 412px) {
@@ -878,8 +925,11 @@ const Icon = styled.svg`
 `;
 const TogoShow = styled.div`
   z-index: 100;
+  margin-top: 10px;
 `;
-const TogoContainer = styled.div``;
+const TogoContainer = styled.div`
+  margin-top: -5px;
+`;
 
 const SideIcon = styled.svg`
   margin-top: 12px;
@@ -888,25 +938,39 @@ const SideIcon = styled.svg`
 const TogoText = styled.div`
   display: inline-block;
   position: absolute;
-  margin-top: 14px;
+  margin-top: 15px;
   margin-left: 10px;
 `;
 
 const PlaceNum = styled.div`
   display: inline-block;
-  margin-left: 440px;
-  font-size: 40px;
+  margin-left: 310px;
+  margin-top: 5px;
+  font-size: 38px;
   font-weight: bold;
   position: absolute;
+  font-family: 'Nanum_L';
+  color: gray;
   z-index: 1;
   @media (max-width: 412px) {
     margin-left: 280px;
     font-size: 30px;
   }
 `;
+
+const DeleteTogo = styled.div`
+  position: absolute;
+  right: -25px;
+  top: -20px;
+  cursor: pointer;
+  @media (max-width: 412px) {
+    right: -120px;
+  }
+`;
 const Feed = styled.div`
   //css append row
-  display: inline-block;
+  display: inline-flex;
+  justify-content: end;
   margin-top: 20px;
   margin-left: 20px;
   width: 35%;
@@ -916,9 +980,8 @@ const Feed = styled.div`
   background-color: #f3f3f3;
   border: solid #e6e6e6 1px;
   border-radius: 15px;
-  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
   @media (max-width: 1120px) {
-    margin-left: 90px;
+    margin-left: 70px;
   }
   @media (max-width: 412px) {
     min-width: 350px;
@@ -933,15 +996,14 @@ const ToGoFeed = styled.div`
   display: inline-block;
   margin-top: 20px;
   margin-left: 20px;
-  width: 40%;
-  min-width: 500px;
-  height: 300px;
+  width: 407px;
+  height: 270px;
   border: solid #d9d9d9 1px;
   border-radius: 15px;
   @media (max-width: 412px) {
-    min-width: 350px;
+    width: 347px;
+    height: 300px;
     height: 20%;
-    min-height: 350px;
     margin-left: 30px;
   }
 `;
@@ -974,8 +1036,7 @@ const PostImage = styled.img`
   height: 350px;
   background-color: #f3f3f3;
   border: solid #e6e6e6 1px;
-  border-radius: 15px;
-  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
   background-size: cover;
   @media (max-width: 412px) {
     width: 350px;
@@ -990,21 +1051,20 @@ const GroupFeed = styled.div`
   margin-left: 20px;
   width: 800px;
   height: 200px;
-
   border: solid #e6e6e6 1px;
   border-radius: 15px;
-  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.1);
   @media (max-width: 1120px) {
     width: 500px;
   }
   @media (max-width: 412px) {
-    width: 120%;
+    width: 360px;
     height: 130px;
   }
   @media (max-width: 390px) {
-    width: 120%;
+    width: 350px;
     height: 130px;
-    margin-left: 40px;
+    margin-left: 30px;
   }
 `;
 
@@ -1077,7 +1137,7 @@ const NoTag = styled.div`
   display: inline-block;
   margin-top: 140px;
   font-size: 15px;
-  width: 150px;
+  width: 200px;
   height: 20px;
   border-radius: 10px;
   text-align: center;
@@ -1087,7 +1147,7 @@ const NoTag = styled.div`
     font-size: 10px;
     margin-top: 70px;
     margin-left: 5px;
-    width: 40px;
+    width: 100px;
     height: 15px;
   }
 `;
