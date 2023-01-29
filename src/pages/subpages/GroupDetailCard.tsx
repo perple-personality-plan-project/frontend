@@ -416,6 +416,7 @@ const StIcon = styled.div`
   align-items: center;
   position: relative;
   margin-left: 5px;
+  cursor: pointer;
 
   .heart-number {
     position: absolute;
@@ -645,6 +646,7 @@ const StDetailDesc = styled.div`
 const StDetailComments = styled.div`
   aspect-ratio: 1/1;
   overflow: auto;
+  flex: 1;
   box-sizing: border-box;
   padding: 20px 20px 10px 20px;
   display: flex;
