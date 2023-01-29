@@ -54,7 +54,7 @@ const GroupPage = () => {
 
   const fetchData = async () => {
     const { data } = await nonTokenClient.get(`api/group/hashtag`);
-    const randomTags = data.data.sort(() => Math.random() - 0.5).splice(0, 18);
+    const randomTags = data.data.sort(() => Math.random() - 0.5).splice(0, 11);
     setTags([...randomTags]);
   };
 
@@ -81,8 +81,20 @@ const GroupPage = () => {
             placeholder="원하는 그룹을 검색해 보세요!"
             onKeyDown={handlekeyDown}
           />
+          <div className="input-search">
+            <i
+              style={{
+                fontSize: '20px',
+                color: '#c2c0cf',
+              }}
+              className="ri-search-2-line"
+            ></i>
+          </div>
           <div className="input-clear" onClick={() => setWord('')}>
-            x
+            <i
+              style={{ fontSize: '28px', color: 'rgb(220, 218, 230)' }}
+              className="ri-close-circle-fill"
+            ></i>
           </div>
         </StInput>
       </StInputContainer>
@@ -188,33 +200,77 @@ export default GroupPage;
 
 const StInput = styled.div`
   position: relative;
+  min-width: 420px;
   width: 100%;
+
+  /* font-size: 12px; */
+
+  .input-search {
+    /* position: absolute; */
+    position: absolute;
+    /* top: 20px;
+    left: 14px; */
+    top: 13px;
+    left: 15px;
+    @media screen and (max-width: 800px) {
+      left: 24%;
+    }
+    @media screen and (max-width: 600px) {
+      left: 15%;
+    }
+
+    @media screen and (max-width: 500px) {
+      left: 4%;
+      /* min-width: 400px; */
+    }
+  }
 
   .input-clear {
     display: flex;
     justify-content: center;
     border-radius: 50%;
     color: white;
-    background-color: #e2e1ea;
+    /* background-color: #e2e1ea; */
     width: 28px;
     height: 28px;
     position: absolute;
-    top: 17px;
-    left: 40%;
+    top: 10px;
+    left: 280px;
     font-size: 25px;
+
+    @media screen and (min-width: 996px) {
+      left: 30.7%;
+    }
 
     @media screen and (max-width: 800px) {
       left: 72%;
     }
 
     @media screen and (max-width: 600px) {
-      left: 71%;
+      left: 78%;
+    }
+
+    @media screen and (max-width: 500px) {
+      left: 90%;
     }
   }
 
   @media screen and (max-width: 800px) {
     display: flex;
     justify-content: center;
+  }
+
+  @media screen and (max-width: 600px) {
+    display: flex;
+    justify-content: center;
+    max-width: 298px;
+  }
+
+  @media screen and (max-width: 500px) {
+    display: flex;
+    justify-content: center;
+    width: 95%;
+    min-width: 390px;
   }
 `;
 
@@ -295,14 +351,16 @@ const StCategory = styled.button`
 //원하는 그룹을 검색해 보세요!
 const StUpperInput = styled.input`
   width: 95%;
-  max-width: 40%;
+  max-width: 30%;
+  min-width: 273px;
   height: 20px;
-  padding: 20px;
+  padding: 11px 20px;
   background-color: white;
   outline: 0;
-  text-indent: 12px;
+  text-indent: 22px;
   margin: 0 0 51px 0;
-  font-size: 20px;
+  /* font-size: 20px; */
+  font-size: 15px;
 
   border: double 3px transparent;
   border-radius: 40px;
@@ -319,12 +377,14 @@ const StUpperInput = styled.input`
     text-indent: 0;
   }
 
-  @media screen and (max-width: 600px) {
-    font-size: 17px;
-  }
+  /* @media screen and (max-width: 600px) {
+    font-size: 12px;
+  } */
 
   @media screen and (max-width: 500px) {
     font-size: 14px;
+    max-width: 100%;
+    width: 95%;
   }
 `;
 
@@ -332,7 +392,7 @@ const StUpperInput = styled.input`
 const StRecommend = styled.p`
   background-color: white;
   color: #7a7a7a;
-  font-size: 22px;
+  font-size: 16.33px;
   padding: 0 0 25px 69px;
   margin: 0;
 
@@ -361,10 +421,11 @@ const StRecommendList = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 140px;
-  height: 47px;
+  width: 114.34px;
+  height: 38.38px;
   color: #7a7a7a;
   margin: 5px;
+  font-size: 16.33px;
 
   border-radius: 30px;
   background-color: #f5f5f5;

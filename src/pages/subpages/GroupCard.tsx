@@ -32,14 +32,14 @@ const GroupCard: React.FC<groupCardPreset> = ({ group }): JSX.Element => {
 
   return (
     <StGroupContainer>
-      <StIcons>
+      {/* <StIcons>
         <button onClick={() => console.log('a')} className="icon">
           A
         </button>
         <button onClick={() => console.log('b')} className="icon">
           B
         </button>
-      </StIcons>
+      </StIcons> */}
       <StGroup key={group_id} onClick={navigateValidation}>
         <div className="img-container">
           <img
@@ -149,7 +149,7 @@ const StGroup = styled.div`
     }
 
     @media screen and (max-width: 500px) {
-      height: 170px;
+      /* height: 170px; */
       flex-direction: row;
       align-items: flex-end;
     }
