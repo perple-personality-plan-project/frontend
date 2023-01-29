@@ -23,18 +23,23 @@ const SidebarComponent: React.FC<props> = ({ sidebar, closeSidebar }) => {
         <div
           style={{
             width: '100%',
-            height: '70px',
-            marginLeft: '20px',
+            height: '90px',
+            paddingLeft: '20px',
             display: 'flex',
             alignItems: 'center',
             cursor: 'pointer',
+            borderBottom: '1px solid #c2bebe',
           }}
           onClick={closeSidebar}
         >
           <i
             style={{ fontSize: '30px', color: 'black' }}
-            className="ri-menu-line"
+            className="ri-close-line"
           ></i>
+          {/* <i
+            style={{ fontSize: '30px', color: 'black' }}
+            className="ri-menu-line"
+          ></i> */}
         </div>
         <li onClick={() => navigate('/')}>커뮤니티</li>
         <li onClick={() => navigate('/map')}>맵</li>
@@ -52,12 +57,12 @@ const StSidebar = styled.div`
   .sidebar {
     position: absolute;
     /* background-color: #222f3e; */
-    background-color: #c2bebe;
-    color: white;
+    background-color: white;
+    color: #323232;
     top: 0;
     left: 0;
-    /* height: 50vh; */
-    width: 150px;
+    height: 100%;
+    width: 30%;
     transform: translateX(-100%);
     transition: all 0.4s;
 
@@ -71,11 +76,11 @@ const StSidebar = styled.div`
       font-size: 18px;
       border-bottom: 1px solid #c2bebe;
       /* border-right: 1px solid red; */
-      height: 70px;
+      height: 90px;
 
       &:hover {
-        background-color: white;
-        color: black;
+        background-color: #644eee;
+        color: white;
       }
     }
   }
