@@ -5,14 +5,17 @@ import { Navigation } from 'swiper';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { MyFeedDetailModal } from './MyFeedDetailModal';
-import { useAppDispatch, useAppSelector } from '../hooks/typescripthook/hooks';
+import { MyPickDetailModal } from '../modal/MyPickDetailModal';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../components/hooks/typescripthook/hooks';
 import loggedIn from '../../api/loggedIn';
 import { __groupFeedDetail } from '../../redux/modules/groupSlice';
 import { __mainFeedDetail } from '../../redux/modules/postSlice';
 import { __modalOpen, __myFeed } from '../../redux/modules/mySlice';
 import { __RootMaker } from '../../redux/modules/mapSlice';
-import { __getPicked } from '../../redux/modules/mySlice';
+import { __getPicked, __getMap } from '../../redux/modules/mySlice';
 
 type Props = {
   state: React.ReactNode;
@@ -30,6 +33,7 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
   const [comment, setComment] = useState('');
 
   const mainFeedDetail: any = useAppSelector(store => store.mypage.myData);
+  const userId = sessionStorage.getItem('userId');
   const accessToken = sessionStorage.getItem('accessToken');
   const thumbnailArray = mainFeedDetail?.thumbnail?.split(',');
   const imgLink = process.env.REACT_APP_IMG_SERVER;
@@ -39,6 +43,7 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
   const mainFeedComment: any = useAppSelector(
     store => store.post.mainFeedDetail,
   );
+  console.log(mainFeedComment);
 
   const openRoutine = () => {
     setRouteOpen(!routeOpen);
@@ -59,10 +64,7 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
           comment,
         });
         dispatch(
-          __mainFeedDetail({
-            feedId: mainFeedDetail.feed_id,
-            userId: mainFeedDetail.user_id,
-          }),
+          __mainFeedDetail({ feedId: mainFeedDetail.feed_id, userId: userId }),
         );
         setComment('');
       } else {
@@ -77,12 +79,16 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
   const deleteComment = async (commentId: string | number) => {
     await loggedIn.delete(`api/comment/${mainFeedDetail.feed_id}/${commentId}`);
     dispatch(
-      __mainFeedDetail({
-        feedId: mainFeedDetail.feed_id,
-        userId: mainFeedDetail.user_id,
-      }),
+      __mainFeedDetail({ feedId: mainFeedDetail.feed_id, userId: userId }),
     );
   };
+
+  // const openModal = () => {
+  //   setIsOpen(true);
+  //   dispatch(
+  //     __mainFeedDetail({ feedId: mainFeedDetail.feed_id, userId: userId }),
+  //   );
+  // };
 
   const modalOpen = useAppSelector((store: any) => store.mypage.modalOpen);
 
@@ -93,21 +99,29 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
   let placeName: [] = [];
 
   if (mainFeedDetail.location === undefined) {
+    modalParse = { place_group: '', place_group_name: '' };
+    placeName = [];
+  } else if (mainFeedDetail.location === '{}') {
+    modalParse = { place_group: '', place_group_name: '' };
+    placeName = [];
   } else {
     modalParse = JSON.parse(mainFeedDetail.location);
     placeName = JSON.parse(modalParse.place_group);
   }
 
-  const saveRoute = () => {
+  const saveRoute = async () => {
     const saveData = {
       place_group: modalParse.place_group,
       place_group_name: modalParse.place_group_name,
     };
-
-    dispatch(__RootMaker(saveData));
-    alert('저장성공');
+    if (saveData.place_group_name === '') {
+      alert('해당 게시물에 루트가 없습니다');
+    } else {
+      await dispatch(__RootMaker(saveData));
+      await dispatch(__getMap());
+      alert('저장성공');
+    }
   };
-
   const deletePost = async () => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
       await loggedIn.delete(`api/feed/${mainFeedDetail.feed_id}`);
@@ -115,6 +129,9 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
       await close();
     } else {
     }
+  };
+  const toggleHeart = async () => {
+    const x = await loggedIn.put(`/api/feed/${mainFeedDetail.feed_id}/like`); //좋아요 / 좋아요 취소 api
   };
 
   const pick = async () => {
@@ -133,8 +150,8 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
   };
 
   return (
-    <MyFeedDetailModal
-      onClose={() => close}
+    <MyPickDetailModal
+      onClose={() => close()}
       open={state}
       id={mainFeedDetail?.feed_id}
     >
@@ -159,8 +176,8 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
           <StDetailDesc>
             <img
               src={
-                profileInfo[0].profile_img === null
-                  ? require('../../빡빡이1.png')
+                profileInfo[0]?.profile_img === undefined
+                  ? require('../../마이페이지.png')
                   : process.env.REACT_APP_IMG_SERVER +
                     profileInfo[0].profile_img
               }
@@ -173,8 +190,20 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
                 <PostDelete onClick={deletePost}>X</PostDelete>
               </div>
               <p>{mainFeedDetail.description}</p>
-              <RouteButton onClick={openRoutine} style={{ marginTop: '20px' }}>
-                루트
+              <NumberOfPlace>{placeName?.length}</NumberOfPlace>
+              <RouteFoldButton
+                show={routeOpen}
+                onClick={openRoutine}
+                style={{ marginTop: '20px' }}
+              >
+                루트 접기
+              </RouteFoldButton>
+              <RouteButton
+                show={routeOpen}
+                onClick={openRoutine}
+                style={{ marginTop: '20px' }}
+              >
+                루트 펼치기
               </RouteButton>
               <RouteShow show={routeOpen}>
                 {placeName?.map((item: any, index: number) => {
@@ -203,7 +232,29 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
               <div className="detail-bottom">
                 <p>{date}</p>
                 <div style={{ display: 'flex' }}>
-                  <div className="detail-btn">좋</div>
+                  {mainFeedDetail.isLike === 1 ? (
+                    <StIcon>
+                      <i
+                        className="ri-heart-3-fill"
+                        style={{ color: 'red', fontSize: '25px' }}
+                        onClick={() => toggleHeart()}
+                      ></i>
+                      <p className="heart-number heart-position">
+                        {mainFeedDetail.likeCount}
+                      </p>
+                    </StIcon>
+                  ) : (
+                    <StIcon>
+                      <i
+                        className="ri-heart-3-line"
+                        style={{ color: 'red', fontSize: '25px' }}
+                        onClick={() => toggleHeart()}
+                      ></i>
+                      <p className="heart-number heart-position">
+                        {mainFeedDetail.like_count}
+                      </p>
+                    </StIcon>
+                  )}
                   <div onClick={pick} className="detail-btn">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -212,7 +263,10 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
                       height="24"
                     >
                       <path fill="none" d="M0 0h24v24H0z" />
-                      <path d="M18 3v2h-1v6l2 3v2h-6v7h-2v-7H5v-2l2-3V5H6V3h12zM9 5v6.606L7.404 14h9.192L15 11.606V5H9z" />
+                      <path
+                        d="M18 3v2h-1v6l2 3v2h-6v7h-2v-7H5v-2l2-3V5H6V3z"
+                        fill="rgba(100,78,238,1)"
+                      />
                     </svg>
                   </div>
                   <div onClick={saveRoute} className="detail-btn">
@@ -272,7 +326,7 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
           </CommentBox>
         </StDetailInfo>
       </StDetailContainer>
-    </MyFeedDetailModal>
+    </MyPickDetailModal>
   );
 };
 
@@ -353,12 +407,55 @@ const StDetailInfo = styled.div`
     width: 100%;
   }
 `;
-const RouteButton = styled.div`
+const NumberOfPlace = styled.div`
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  border-radius: 50%;
+  background-color: #644eee;
+  color: white;
+  font-size: 15px;
+  //text center vertical
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  margin-top: 60px;
+  margin-left: 60px;
+`;
+const RouteButton = styled.div<IAppState>`
   color: #9e9e9e;
   cursor: pointer;
+  font-size: 13px;
+  display: ${props => (props.show ? '' : 'none')};
+`;
+
+const RouteFoldButton = styled.div<IAppState>`
+  color: #9e9e9e;
+  cursor: pointer;
+  font-size: 13px;
+  display: ${props => (props.show ? 'none' : '')};
 `;
 const RouteShow = styled.div<IAppState>`
   display: ${props => (props.show ? 'none' : '')};
+`;
+
+const StIcon = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  .heart-number {
+    position: absolute;
+    top: -35px;
+    right: 9px;
+    /* font-size: 20px; */
+  }
+
+  .heart-position {
+    top: -13px;
+    right: 9px;
+  }
 `;
 
 const PostDelete = styled.button`

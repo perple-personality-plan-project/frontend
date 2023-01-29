@@ -132,8 +132,12 @@ const MapPage = () => {
         place_group: stringRoot,
         place_group_name: RootTitle,
       };
-      dispatch(__RootMaker(Roots));
-      alert('루트가 생성되었습니다.');
+      if (Roots.place_group === '[]') {
+        alert('장바구니에 루트를 담아주세요');
+      } else {
+        dispatch(__RootMaker(Roots));
+        alert('루트가 생성되었습니다.');
+      }
     }
   };
 
@@ -357,11 +361,11 @@ const MapPage = () => {
       <Modal show={Modals}>
         <SelectAll show={checked}>
           <input onClick={togglechange} type="checkbox" checked={false}></input>
-          전체 선택
+          <SelectText>전체 선택</SelectText>
         </SelectAll>
         <UnselectAll show={checked}>
-          <input onClick={toggleUncheck} type="checkbox" checked></input>전체
-          해제
+          <input onClick={toggleUncheck} type="checkbox" checked></input>
+          <SelectText>선택 해제</SelectText>
         </UnselectAll>
         <BoxContainer>
           <Box>
@@ -387,8 +391,8 @@ const MapPage = () => {
                     />
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="70"
-                      height="70"
+                      width="60"
+                      height="60"
                       color="#B2A7F7"
                       fill="currentColor"
                       className="bi bi-geo-alt-fill"
@@ -466,20 +470,29 @@ const Modal = styled.div<any>`
   @media (max-width: 412px) {
     width: 412px;
   }
+  @media (max-width: 390px) {
+    width: 390px;
+  }
 `;
 
 const SelectAll = styled.div<IAppState>`
   //position top left
   position: absolute;
-  top: 30px;
+  top: 35px;
   left: 50px;
   font-weight: bold;
   display: ${props => (props.show ? 'none' : '')};
 `;
+const SelectText = styled.div`
+  position: absolute;
+  width: 200px;
+  left: 25px;
+  top: 0px;
+`;
 
 const UnselectAll = styled.div<IAppState>`
   position: absolute;
-  top: 30px;
+  top: 35px;
   left: 50px;
   font-weight: bold;
   display: ${props => (props.show ? '' : 'none')};
@@ -506,7 +519,7 @@ const BoxContainer = styled.div`
   width: 450px;
   height: 750px;
   @media (max-width: 412px) {
-    left: 51.5%;
+    left: 45%;
   }
 `;
 
@@ -528,6 +541,9 @@ const Box = styled.div`
   );
   ::-webkit-scrollbar {
     display: none;
+  }
+  @media (max-width: 412px) {
+    width: 410px;
   }
 `;
 
@@ -553,12 +569,22 @@ const CheckBoxForm = styled.div`
   margin-top: 20px;
   //box shadow black
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+  @media (max-width: 412px) {
+    margin-left: 26px;
+  }
+  @media (max-width: 390px) {
+    width: 380px;
+    margin-left: 10px;
+  }
 `;
 const BorderBox = styled.div`
   width: 450px;
   z-index: 100;
   height: 100px;
   border-bottom: 1px solid #e2e2e2;
+  @media (max-width: 412px) {
+    margin-left: 40px;
+  }
 `;
 
 const Indicator = styled.div`
@@ -585,6 +611,7 @@ const CheckBox = styled.input`
   border: 1px solid black;
   border-radius: 5px;
   background-color: white;
+  margin-left: 20px;
   cursor: pointer;
   &:checked {
     background-color: #644eee;
@@ -604,6 +631,7 @@ const CheckBox = styled.input`
 //Radio button label style
 const CheckLabel = styled.div`
   //css font size fit box
+  font-size: 20px;
   height: 20px;
   font-weight: bold;
   width: 250px;
@@ -614,8 +642,9 @@ const CheckLabel = styled.div`
 `;
 
 const CheckDesc = styled.div`
-  font-size: 15px;
+  font-size: 14px;
   margin-top: 10px;
+  font-family: 'Nanum_R';
 `;
 const RootName = styled.input`
   //position bottom
@@ -624,12 +653,15 @@ const RootName = styled.input`
   left: 47%;
   transform: translate(-50%, 0);
   width: 350px;
-  height: 50px;
+  height: 45px;
   background-color: #f1f1f1;
   border: 1px #f1f1f1;
   border-radius: 15px;
-  font-size: 20px;
+  font-size: 15px;
   padding: 0 20px;
+  @media (max-width: 412px) {
+    margin-left: 30px;
+  }
 `;
 
 //Root button style
@@ -639,7 +671,7 @@ const RootBtn = styled.button`
   left: 48%;
   transform: translate(-50%, 0);
   width: 400px;
-  height: 50px;
+  height: 45px;
   background-color: #644eee;
   color: white;
   font-size: 20px;
@@ -647,6 +679,9 @@ const RootBtn = styled.button`
   border-radius: 15px;
   border: 1px solid rgba(0, 0, 0, 0);
   cursor: pointer;
+  @media (max-width: 412px) {
+    margin-left: 30px;
+  }
 `;
 
 export default MapPage;
