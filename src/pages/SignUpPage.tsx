@@ -226,7 +226,7 @@ const SignUpPage = () => {
           </div>
           <StButton
             type="button"
-            onClick={() => window.open('https://16platter.site/mbti', '_blank')}
+            onClick={() => window.open('/mbti', '_blank')}
           >
             <div>검사하러가기✔</div>
           </StButton>
