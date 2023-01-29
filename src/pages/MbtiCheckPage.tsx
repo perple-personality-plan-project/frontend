@@ -21,6 +21,7 @@ const MbtiCheckPage = () => {
               <p>Platter 간편 검사</p>
             </div>
           </div>
+
           <div
             className="post-container"
             onClick={() => {
@@ -130,6 +131,7 @@ const StGroupPosts = styled.div`
     position: relative;
     width: 376px;
     height: 417px;
+    cursor: pointer;
 
     background-color: white;
     box-shadow: 0 0 15px 4px rgba(0, 0, 0, 0.1);
