@@ -47,8 +47,6 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
     profile_img,
   } = feed;
 
-  console.log(profile_img);
-
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState<{}[]>([]);
   const [toggleRoute, setToggleRoute] = useState(false);
@@ -432,6 +430,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                   value={comment}
                   onChange={e => setComment(e.target.value)}
                   placeholder="댓글을 입력하세요"
+                  max={100}
                 />
                 <button onClick={postComment}>완료</button>
               </StDetailInput>
@@ -616,6 +615,7 @@ const StDetailInfo = styled.div`
 `;
 
 const StDetailDesc = styled.div`
+  word-break: break-all;
   box-sizing: border-box;
   padding: 30px 22px 15px 22px;
   display: flex;
@@ -920,6 +920,7 @@ const StGroupPost = styled.div`
     }
 
     .post-desc {
+      word-break: break-all;
       margin: 15px 22px;
       p {
         max-width: 60%;

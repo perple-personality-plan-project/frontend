@@ -96,9 +96,7 @@ const MainPage = () => {
                   paddingLeft: '1em',
                   maxWidth: '420px',
                 }}
-
                 src={require(`../../src/components/images/mainlogo/메인이미지.png`)}
-
               />
             </MainImg>
           </StHeader>
@@ -109,10 +107,18 @@ const MainPage = () => {
       <PostListContainer>
         {mbtiCheck === '사람들' || mbtiCheck === 'All'
           ? mainFeedList?.map((post: any) => (
-              <MainPostCard key={post.feed_id} post={post} />
+              <MainPostCard
+                key={post.feed_id}
+                post={post}
+                mbtiCheck={mbtiCheck}
+              />
             ))
           : mainMbtiList?.map((post: any) => (
-              <MainPostCard key={post.feed_id} post={post} />
+              <MainPostCard
+                key={post.feed_id}
+                post={post}
+                mbtiCheck={mbtiCheck}
+              />
             ))}
       </PostListContainer>
     </Wrap>

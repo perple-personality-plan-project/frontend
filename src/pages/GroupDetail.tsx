@@ -270,6 +270,7 @@ const StBgImages = styled.div`
 `;
 
 const StMainContainer = styled.div`
+  word-break: break-all;
   width: 460px;
   min-width: 460px;
 
