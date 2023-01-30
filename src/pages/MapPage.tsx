@@ -109,7 +109,6 @@ const MapPage = () => {
   const dispatch = useAppDispatch();
 
   const maplist = useselector;
-  console.log(maplist);
 
   const stringRoot = JSON.stringify(maplist);
 

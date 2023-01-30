@@ -50,7 +50,6 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
     store => store.post.mainFeedDetail,
   );
 
-  console.log(mainFeedComment);
   const openRoutine = () => {
     setRouteOpen(!routeOpen);
   };
@@ -222,13 +221,6 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
               </div>
               <p>{mainFeedDetail.description}</p>
               <NumberOfPlace>{placeName?.length}</NumberOfPlace>
-              <RouteFoldButton
-                show={routeOpen}
-                onClick={openRoutine}
-                style={{ marginTop: '20px' }}
-              >
-                루트 접기
-              </RouteFoldButton>
               <RouteButton
                 show={routeOpen}
                 onClick={openRoutine}
@@ -236,34 +228,43 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
               >
                 루트 펼치기
               </RouteButton>
-              <RouteShow show={routeOpen}>
-                {placeName?.map((item: any, index: number) => {
-                  return (
-                    <div key={index}>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="15"
-                        height="15"
-                        color="#644EEE"
-                        fill="currentColor"
-                        className="bi bi-geo-alt-fill"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                      </svg>
-                      <div
-                        style={{
-                          display: 'inline-block',
-                          marginTop: '10px',
-                          fontSize: '11px',
-                        }}
-                      >
-                        {item.place_name}
+              <RouteShowBox show={routeOpen}>
+                <RouteFoldButton
+                  show={routeOpen}
+                  onClick={openRoutine}
+                  style={{ marginTop: '20px' }}
+                >
+                  루트 접기
+                </RouteFoldButton>
+                <RouteShow show={routeOpen}>
+                  {placeName?.map((item: any, index: number) => {
+                    return (
+                      <div key={index}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="15"
+                          height="15"
+                          color="#644EEE"
+                          fill="currentColor"
+                          className="bi bi-geo-alt-fill"
+                          viewBox="0 0 16 16"
+                        >
+                          <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                        </svg>
+                        <div
+                          style={{
+                            display: 'inline-block',
+                            marginTop: '10px',
+                            fontSize: '11px',
+                          }}
+                        >
+                          {item.place_name}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </RouteShow>
+                    );
+                  })}
+                </RouteShow>
+              </RouteShowBox>
               <div className="detail-bottom">
                 <p>{date}</p>
                 <div style={{ display: 'flex' }}>
@@ -495,23 +496,61 @@ const NumberOfPlace = styled.div`
   align-items: center;
   position: absolute;
   margin-top: 60px;
-  margin-left: 60px;
+  margin-left: 65px;
+  z-index: 100;
 `;
 const RouteButton = styled.div<IAppState>`
-  color: #9e9e9e;
+  width: 60px;
+  height: 5px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 500px;
+  font-size: 12px;
+  background-color: #f6f4fd;
+  box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.25);
+  color: gray;
   cursor: pointer;
-  font-size: 13px;
-  display: ${props => (props.show ? '' : 'none')};
+  display: ${props => (props.show ? 'none' : '')};
+  @media screen and (max-width: 1120px) {
+    bottom: 445px;
+  }
+  @media screen and (max-width: 412px) {
+    bottom: 245px;
+  }
 `;
 
 const RouteFoldButton = styled.div<IAppState>`
-  color: #9e9e9e;
+  color: gray;
   cursor: pointer;
-  font-size: 13px;
-  display: ${props => (props.show ? 'none' : '')};
+  font-size: 12px;
+  position: absolute;
+  top: -12px;
+  display: ${props => (props.show ? '' : 'none')};
 `;
+const RouteShowBox = styled.div<IAppState>`
+  background-color: #f6f4fd;
+  box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.25);
+  position: absolute;
+  bottom: 365px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  z-index: 10;
+  padding-top: 25px;
+  display: ${props => (props.show ? '' : 'none')};
+  @media screen and (max-width: 1120px) {
+    bottom: 325px;
+  }
+  @media screen and (max-width: 412px) {
+    bottom: 125px;
+  }
+`;
+
 const RouteShow = styled.div<IAppState>`
-  display: ${props => (props.show ? 'none' : '')};
+  bottom: 385px;
+  display: ${props => (props.show ? '' : 'none')};
 `;
 
 const StIcon = styled.div`
@@ -649,6 +688,7 @@ const StDetailDesc = styled.div`
       p {
         font-size: 10px;
         color: #9e9e9e;
+        margin-top: 40px;
       }
 
       .detail-btn {
@@ -758,11 +798,14 @@ const StDetailComment = styled.div`
 const CommentBox = styled.div`
   display: flex;
   flex-direction: column;
-  height: 400px;
+  height: 455px;
   justify-content: space-between;
   background-color: white;
   &::-webkit-scrollbar {
     display: none;
+  }
+  @media screen and (max-width: 1120px) {
+    height: 400px;
   }
 
   @media screen and (max-width: 412px) {
@@ -795,6 +838,6 @@ const StXIcon = styled.div`
     z-index: 100;
   }
   @media screen and (max-width: 390px) {
-    right: 0px;
+    right: 30px;
   }
 `;

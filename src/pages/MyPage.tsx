@@ -91,6 +91,7 @@ function MyPage() {
       nickname: nickName,
       mbti: MBTI,
     };
+
     await dispatch(__updateProfile(patchProfile));
     await dispatch(__getMyProfile());
     setProfileEdit(false);

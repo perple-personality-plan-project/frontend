@@ -19,16 +19,29 @@ const MapForm = ({ handleSubmit }: MapFormProps) => {
 
 const ClearAll = styled.input`
   position: absolute;
-  margin-left: -40px;
+  margin-left: 93%;
+  top: 2px;
   background-color: transparent;
   border: 0;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #dcdae6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   cursor: pointer;
   margin-top: 12px;
+  @media screen and (max-width: 1120px) {
+    margin-left: 87%;
+  }
   @media screen and (max-width: 412px) {
     position: absolute;
-    margin-left: 250px;
+    margin-left: 87%;
     background-color: transparent;
     border: 0;
     font-size: 20px;
