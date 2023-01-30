@@ -44,9 +44,8 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
     likeCount,
     isLike,
     user_id,
+    profile_img,
   } = feed;
-
-  // console.log(feed, places);
 
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState<{}[]>([]);
@@ -168,17 +167,28 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
         <div onClick={openModal} style={{ height: 'stretch' }}>
           <div className="post-header">
             <div className="post-header-info">
-              <img
-                style={{ width: '40px', height: '40px' }}
-                src={require('../../빡빡이1.png')}
-                alt="group-img"
-              />
+              {feed.profile_img === null ? (
+                <img
+                  style={{ width: '40px', height: '40px' }}
+                  src={require('../../마이페이지.png')}
+                  alt="group-img"
+                />
+              ) : (
+                <img
+                  style={{ width: '40px', height: '40px' }}
+                  src={`${process.env.REACT_APP_IMG_SERVER}/${feed.profile_img}`}
+                  alt="group-img"
+                />
+              )}
+
               <h3>{nickname}</h3>
               <p>{mbti.toUpperCase()}</p>
             </div>
-            <div className="post-header-route">
-              {parsedLocation.place_group_name}
-            </div>
+            {parsedLocation.place_group_name !== '없음' ? (
+              <div className="post-header-route">
+                {parsedLocation.place_group_name}
+              </div>
+            ) : null}
           </div>
 
           <img
@@ -260,7 +270,15 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
           </Swiper>
           <StDetailInfo>
             <StDetailDesc>
-              <img src={require('../../빡빡이1.png')} alt="detail-img" />
+              {feed.profile_img === null ? (
+                <img src={require('../../마이페이지.png')} alt="detail-img" />
+              ) : (
+                <img
+                  src={`${process.env.REACT_APP_IMG_SERVER}/${feed.profile_img}`}
+                  alt="group-img"
+                />
+              )}
+              {/* <img src={require('../../빡빡이1.png')} alt="detail-img" /> */}
               <div className="detail-info">
                 <div className="detail-top" style={{ display: 'flex' }}>
                   <h2>{nickname}</h2>
@@ -269,46 +287,48 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                 <p style={{ fontSize: '13px', marginBottom: '10px' }}>
                   {description}
                 </p>
-                {!toggleRoute ? (
-                  <div style={{ width: '190px' }} className="detail-route">
-                    <p
-                      className="detail-route-route"
-                      onClick={() => setToggleRoute(!toggleRoute)}
-                    >
-                      루트 펼치기
-                    </p>{' '}
-                    <div className="detail-route-count">
-                      <p>{parsedPlace?.length || 0}</p>
+                {parsedLocation.place_group_name !== '없음' ? (
+                  !toggleRoute ? (
+                    <div className="detail-route">
+                      <p
+                        className="detail-route-route"
+                        onClick={() => setToggleRoute(!toggleRoute)}
+                      >
+                        루트 펼치기
+                      </p>{' '}
+                      <div className="detail-route-count">
+                        <p>{parsedPlace?.length || 0}</p>
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="detail-route">
-                    <p
-                      className="detail-route-route"
-                      onClick={() => setToggleRoute(!toggleRoute)}
-                    >
-                      루트 접기
-                    </p>
-                    {parsedPlace?.map((route: any, index: number) => {
-                      return (
-                        <div key={index} className="detail-route-list">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="13"
-                            height="13"
-                            color="#644EEE"
-                            fill="currentColor"
-                            className="bi bi-geo-alt-fill"
-                            viewBox="0 0 16 16"
-                          >
-                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                          </svg>
-                          <p>{route.place_name}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
+                  ) : (
+                    <div className="detail-route">
+                      <p
+                        className="detail-route-route"
+                        onClick={() => setToggleRoute(!toggleRoute)}
+                      >
+                        루트 접기
+                      </p>
+                      {parsedPlace?.map((route: any, index: number) => {
+                        return (
+                          <div key={index} className="detail-route-list">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="13"
+                              height="13"
+                              color="#644EEE"
+                              fill="currentColor"
+                              className="bi bi-geo-alt-fill"
+                              viewBox="0 0 16 16"
+                            >
+                              <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                            </svg>
+                            <p>{route.place_name}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )
+                ) : null}
 
                 <div className="detail-bottom">
                   <p>{date}</p>
@@ -366,10 +386,18 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                 {comments.map((comment: any) => {
                   return (
                     <StDetailComment key={comment.comment_id}>
-                      <img
-                        src={require('../../빡빡이1.png')}
-                        alt="detail-img"
-                      />
+                      {comment.profile_img === null ? (
+                        <img
+                          src={require('../../마이페이지.png')}
+                          alt="detail-img"
+                        />
+                      ) : (
+                        <img
+                          src={`${process.env.REACT_APP_IMG_SERVER}/${comment.profile_img}`}
+                          alt="detail-img"
+                        />
+                      )}
+
                       <div className="detail-info">
                         <div className="detail-top" style={{ display: 'flex' }}>
                           <h2 className="detail-nickname">
@@ -393,6 +421,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                   );
                 })}
               </StDetailComments>
+
               <StDetailInput>
                 <input
                   value={comment}
@@ -531,6 +560,7 @@ const StDetailDesc = styled.div`
     border-radius: 50%;
   }
   .detail-info {
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -571,7 +601,14 @@ const StDetailDesc = styled.div`
     }
 
     .detail-route {
-      position: relative;
+      position: absolute;
+      top: 50px;
+      left: -5px;
+      background-color: white;
+      padding: 0 5px 5px 5px;
+      z-index: 100;
+      background-color: pink;
+
       p {
         color: #9e9e9e;
         height: 20px;
@@ -593,7 +630,7 @@ const StDetailDesc = styled.div`
         color: white;
         position: absolute;
         top: 0px;
-        right: 130px;
+        right: -10px;
         /* display: none; */
 
         p {
@@ -646,13 +683,19 @@ const StDetailDesc = styled.div`
 const StDetailComments = styled.div`
   aspect-ratio: 1/1;
   overflow: auto;
+  /* height: 100%; */
   flex: 1;
   box-sizing: border-box;
   padding: 20px 20px 10px 20px;
   display: flex;
   flex-direction: column;
 
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
   @media screen and (max-width: 800px) {
+    aspect-ratio: 1/0.5;
     width: 100%;
     height: 250px;
   }
@@ -662,6 +705,7 @@ const StDetailComment = styled.div`
   width: 100%;
   /* max-width: 30ch; */
   display: flex;
+  /* align-items: center; */
   margin-bottom: 15px;
   position: relative;
 
@@ -680,9 +724,11 @@ const StDetailComment = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
+    margin-top: 10px;
 
     p {
       margin: 0;
+      word-break: break-all;
       /* width: 20ch; */
     }
 
@@ -691,9 +737,11 @@ const StDetailComment = styled.div`
       justify-content: space-between;
       align-items: center;
       font-size: 15px;
+      height: 25px;
       h2 {
         font-family: 'Nanum_EB';
         font-size: 13px;
+        height: 15px;
         margin: 0 10px 0 0;
       }
 
@@ -747,9 +795,11 @@ const StXIcon = styled.div`
   border-radius: 50%;
 
   position: absolute;
-  top: -30px;
-  right: -30px;
+  top: 25px;
+  right: 20px;
   cursor: pointer;
+
+  z-index: 1000;
 
   @media screen and (max-width: 800px) {
     top: 10px;

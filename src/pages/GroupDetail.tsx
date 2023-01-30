@@ -41,6 +41,7 @@ export interface groupFeedPreset {
   likeCount: number;
   isLike: number | string;
   user_id: number;
+  profile_img: string;
 }
 
 export interface placePreset {
@@ -118,7 +119,7 @@ const GroupDetail = () => {
   return (
     <div>
       <StBgImages>
-        <img src={require('../이미지1.webp')} alt="bg-img" />
+        <img src={require('../그룹배경이미지.jpg')} alt="bg-img" />
       </StBgImages>
       <StContainer>
         <StMainContainer>

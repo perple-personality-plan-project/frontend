@@ -306,6 +306,8 @@ const StGroupImgSwiper = styled.div`
   height: 100%;
 
   p {
+    font-size: 13px;
+    color: gray;
     margin: 0 0 10px 0;
   }
   img {
@@ -405,6 +407,8 @@ const StGroupImg = styled.div`
 
   p {
     margin: 0 0 10px 0;
+    font-size: 13px;
+    color: gray;
   }
   img {
     width: 100%;
@@ -454,7 +458,8 @@ const StGroupInput = styled.div`
   margin-bottom: 10px;
   p {
     /* display: block; */
-    font-size: 14px;
+    font-size: 13px;
+    color: gray;
     margin: 0 0 5px 0;
   }
 
@@ -578,7 +583,8 @@ const StGroupTextArea = styled.div`
     box-sizing: border-box;
   }
   p {
-    font-size: 14px;
+    color: gray;
+    font-size: 13px;
     margin: 0 0 5px 0;
   }
   textarea {
