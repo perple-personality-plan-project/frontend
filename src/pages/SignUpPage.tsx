@@ -108,10 +108,10 @@ const SignUpPage = () => {
       alert('회원 가입 성공!');
       navigate('/signin');
     } catch (error: any) {
-      // if (error.response.status === 400) {
-      //   console.log(error);
-      //   return alert(error.response.data.message);
-      // }
+      if (error.response.status === 409) {
+        console.log(error);
+        return alert(error.response.data.message);
+      }
     }
   };
 
