@@ -281,7 +281,7 @@ const StContainer = styled.div`
   * {
     font-family: 'Nanum_R';
   }
-  background-color: white;
+  background-color: #f9f9ff;
   width: 100%;
   height: 100%;
   margin: 0 auto;
@@ -438,7 +438,7 @@ const StRecommendList = styled.div`
 
 //그룹 컨테이너
 const StGroups = styled.div`
-  background-color: white;
+  background-color: #f9f9ff;
   display: flex;
   /* justify-content: center; */
   width: 1300px;

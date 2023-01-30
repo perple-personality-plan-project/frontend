@@ -192,8 +192,9 @@ const StQuestion = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 52px;
+  line-height: 35px;
   height: 60px;
-  font-size: 30px;
+  font-size: 25px;
 
   p {
     font-family: 'Nanum_R';
