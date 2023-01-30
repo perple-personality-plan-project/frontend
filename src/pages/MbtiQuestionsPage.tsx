@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import styled from 'styled-components';
 import mbtiData from '../assets/mbti/data.json';
 
@@ -17,7 +17,7 @@ const MbtiQuestionsPage = () => {
     setMbti({ ...mbti, [name]: value });
   };
 
-  const getResult = () => {
+  const showMbti = () => {
     if (
       !mbti.firstMBTI ||
       !mbti.secondMBTI ||
@@ -30,6 +30,10 @@ const MbtiQuestionsPage = () => {
         `${mbti.firstMBTI}${mbti.secondMBTI}${mbti.thirdMBTI}${mbti.fourthMBTI}`,
       );
     }
+  };
+
+  const rerollMbti = () => {
+    window.location.reload();
   };
 
   // console.log(mbtiData.E);
@@ -144,7 +148,19 @@ const MbtiQuestionsPage = () => {
           </StInputContainer>
         </StQuestion>
         {result && <StMbtiResult>{result}</StMbtiResult>}
-        <StBtn onClick={getResult}>결과 보기</StBtn>
+        <StBtns>
+          <StBtn
+            style={{
+              backgroundColor: '#F5F3FE',
+              color: '#644EEE',
+              marginRight: '23px',
+            }}
+            onClick={rerollMbti}
+          >
+            다시하기
+          </StBtn>
+          <StBtn onClick={showMbti}>결과 보기</StBtn>
+        </StBtns>
       </StQuestions>
     </div>
   );
@@ -159,7 +175,7 @@ const StTitleContainer = styled.div`
   padding: 67px 0;
   font-size: 30px;
 
-  @media screen and (max-width: 500px) {
+  @media screen and (max-width: 600px) {
     padding: 35px;
   }
 `;
@@ -182,7 +198,7 @@ const StQuestions = styled.div`
     margin: 70px auto 0;
   }
 
-  @media screen and (max-width: 500px) {
+  @media screen and (max-width: 600px) {
     width: 90%;
     margin: 50px auto 0;
   }
@@ -275,11 +291,21 @@ const StInput = styled.div`
   }
 `;
 
-const StLabel = styled.div``;
-
 const StMbtiResult = styled.p`
   font-size: 25px;
   margin: 0;
+`;
+
+const StBtns = styled.div`
+  @media screen and (max-width: 600px) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media screen and (max-width: 600px) {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 const StBtn = styled.button`
@@ -298,13 +324,18 @@ const StBtn = styled.button`
 
   cursor: pointer;
 
+  .redo {
+    background-color: #f5f3fe;
+    color: #644eee;
+  }
+
   @media screen and (max-width: 1100px) {
     width: 230px;
     height: 40px;
     font-size: 18px;
   }
 
-  @media screen and (max-width: 500px) {
+  @media screen and (max-width: 600px) {
     margin-top: 10px;
   }
 `;
