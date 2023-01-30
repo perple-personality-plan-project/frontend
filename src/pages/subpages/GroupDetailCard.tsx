@@ -660,61 +660,6 @@ const StDetailDesc = styled.div`
       }
     }
 
-    .detail-route {
-      position: absolute;
-      top: 50px;
-      left: -5px;
-      background-color: white;
-      padding: 0 5px 5px 5px;
-      z-index: 100;
-      background-color: pink;
-
-      p {
-        color: #9e9e9e;
-        height: 20px;
-      }
-
-      .detail-route-route {
-        margin-top: 10px;
-        color: #9e9e9e;
-        font-size: 10px;
-        cursor: pointer;
-      }
-
-      .detail-route-count {
-        border-radius: 50%;
-        font-size: 10px;
-        width: 15px;
-        height: 15px;
-        background-color: rgb(100, 78, 238);
-        color: white;
-        position: absolute;
-        top: 0px;
-        right: -10px;
-        /* display: none; */
-
-        p {
-          color: white;
-          margin: 0;
-          position: absolute;
-          top: 1.5px;
-          right: 4.6px;
-        }
-      }
-
-      .detail-route-list {
-        display: flex;
-        align-items: center;
-        /* justify-content: center; */
-        p {
-          font-size: 11px;
-          margin-top: 10px;
-          margin-left: 5px;
-          color: #323232;
-        }
-      }
-    }
-
     .detail-bottom {
       display: flex;
       justify-content: space-between;

@@ -61,7 +61,7 @@ const SignUpPage = () => {
     setNickName(e.currentTarget.value);
     const RegExpNick = /^[가-힣a-zA-Z]{4,8}$/;
     if (!RegExpNick.test(e.target.value)) {
-      setNickNameMessage('닉네임은 한글 + 영어 4-8자를 포함해주세요!');
+      setNickNameMessage('닉네임은 한글 또는 영어 4-8자를 포함해주세요!');
     } else {
       setNickNameMessage('성공!');
       // setIdMessage('✔');
@@ -85,9 +85,9 @@ const SignUpPage = () => {
   useEffect(() => {
     if (Password !== ConfirmPassword) {
       // setPwMessage()
-      setPwConfirmMessage('비번 다름 ㅋ');
+      setPwConfirmMessage('실패');
     } else {
-      setPwConfirmMessage('비번 같음 ㅋ');
+      setPwConfirmMessage('성공');
     }
   }, [ConfirmPassword, Password]);
 
@@ -126,7 +126,7 @@ const SignUpPage = () => {
     if (!RegExpId.test(LoginId)) {
       alert('아이디는 영문자 + 숫자를 포함하여 5-10자를 포함해주세요!');
     } else if (!RegExpNick.test(NickName)) {
-      alert('닉네임은 한글 + 영어 4-8자를 포함해주세요!');
+      alert('닉네임은 한글 또는 영어 4-8자를 포함해주세요!');
     } else if (!RegExpPw.test(Password)) {
       alert('비밀번호는 영문자 + 숫자 + 특수문자(!,@,#,$,%)를 포함해주세요!');
     } else if (Password !== ConfirmPassword) {
@@ -284,7 +284,7 @@ const FormWrap = styled.form`
 
   .validation-text {
     font-size: 12px;
-    color: red;
+    color: #644eee;
     margin: 5px 0 0 5px;
   }
 
@@ -318,6 +318,7 @@ const Input = styled.input`
   /* min-width: 120px; */
   font-size: 16px;
   text-indent: 30px;
+  outline: 0;
 `;
 
 const ButtonWrap = styled.div`
