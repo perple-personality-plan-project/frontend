@@ -97,6 +97,10 @@ const GroupPage = () => {
             ></i>
           </div>
         </StInput>
+        <img
+          src={require('../components/images/groupImages/groupimg.png')}
+          alt="group-banner"
+        />
       </StInputContainer>
       <StRecommend>검색이 어려우시다고요? 추천해 드릴게요!</StRecommend>
       <StRecommendLists>
@@ -238,12 +242,12 @@ const StInput = styled.div`
     left: 280px;
     font-size: 25px;
 
-    @media screen and (min-width: 996px) {
-      left: 30.7%;
+    @media screen and (min-width: 866px) {
+      left: 35.7%;
     }
 
     @media screen and (max-width: 800px) {
-      left: 72%;
+      left: 72.5%;
     }
 
     @media screen and (max-width: 600px) {
@@ -292,6 +296,21 @@ const StInputContainer = styled.div`
   box-sizing: border-box;
   background-color: white;
   padding: 50px 0 0 68px;
+  display: flex;
+  justify-content: center;
+
+  img {
+    position: absolute;
+    top: 120px;
+    right: 0;
+    width: 30%;
+    height: 100px;
+    margin-right: 50px;
+
+    @media screen and (max-width: 800px) {
+      display: none;
+    }
+  }
   @media screen and (max-width: 800px) {
     display: flex;
     justify-content: center;
@@ -351,7 +370,7 @@ const StCategory = styled.button`
 //원하는 그룹을 검색해 보세요!
 const StUpperInput = styled.input`
   width: 95%;
-  max-width: 30%;
+  max-width: 35%;
   min-width: 273px;
   height: 20px;
   padding: 11px 20px;
