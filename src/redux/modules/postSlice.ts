@@ -47,7 +47,7 @@ export const __mainMbtilist = createAsyncThunk<
   'main/feedlist/mbti',
 
   async (payload, thunkAPI) => {
-    // console.log(payload);
+  
     try {
       const { data } = await nonTokenClient.get(
         `api/feed/search?mbti=${payload.mbtiCheck}&user_id=${payload.userId}`,
@@ -70,7 +70,7 @@ export const __mainFeedDetail = createAsyncThunk<
       const { data } = await nonTokenClient.get(
         `/api/feed/${payload.feedId}?user_id=${payload.userId}`,
       );
-      console.log(data);
+     
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
       thunkAPI.rejectWithValue(e);

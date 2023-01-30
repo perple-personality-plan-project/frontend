@@ -63,8 +63,6 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
   } = post;
 
   const groupName = JSON.parse(location);
-  // console.log(groupName);
-  // console.log(post);
 
   let parsedLocation: {
     created_at: string;
@@ -84,7 +82,7 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
     parsedData = JSON.parse(location);
     parsedPlace = JSON.parse(parsedData.place_group);
 
-    // console.log(groupName.place_group);
+    
     parsedLocation = { ...JSON.parse(location) };
   } else {
     parsedLocation = {
@@ -96,8 +94,6 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
       user_id: 0,
     };
   }
-
-  console.log(parsedLocation);
 
   const { mainFeedDetail }: any = useAppSelector(store => store.post);
 
@@ -139,14 +135,12 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
 
   const toggleHeart = async (feedId: number) => {
     const x = await loggedIn.put(`/api/feed/${feed_id}/like`);
-    console.log(x);
     dispatch(__mainFeedlist({ userId }));
     // dispatch(__mainMbtilist({ userId: userId, mbtiCheck: 'mbtiCheck' }));
   };
 
   const togglepick = async (feedId: number) => {
     const x = await loggedIn.put(`api/feed/${feed_id}/pick`);
-    console.log(x);
     dispatch(__mainFeedlist({ userId }));
   };
 
@@ -195,15 +189,14 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
       place_group_name: parsedLocation.place_group_name,
     };
 
-    // console.log(saveData);
+   
     if (saveData.place_group_name === '없음') {
-      console.log(saveData);
+    
       return alert('저장할 루트가 없습니다');
     } else {
       dispatch(__RootMaker(saveData));
       alert('저장성공');
     }
-    // console.log(parsedLocation);
   };
 
   return (
