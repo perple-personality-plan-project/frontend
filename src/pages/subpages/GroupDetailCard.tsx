@@ -409,7 +409,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                               className="detail-del"
                             >
                               <i
-                                style={{ color: '#5B5B5B', fontSize: '20px' }}
+                                style={{ color: '#5B5B5B', fontSize: '15px' }}
                                 className="ri-close-line hover-color"
                               ></i>
                             </div>
@@ -448,13 +448,14 @@ const StDiv = styled.div`
   .route-open,
   .route-close {
     position: absolute;
-    background-color: pink;
+    background-color: #f6f4fd;
+    box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.25);
     margin-top: 10px;
     cursor: pointer;
-    padding: 5px;
+    padding: 5px 10px;
     border-radius: 5px;
     z-index: 10;
-    left: -4px;
+    /* left: -4px; */
 
     .route-open-button {
       font-size: 10px;
@@ -664,7 +665,7 @@ const StDetailDesc = styled.div`
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 23px;
+      margin-top: 30px;
 
       p {
         font-size: 10px;
@@ -796,7 +797,7 @@ const StXIcon = styled.div`
   font-weight: bold;
   width: 30px;
   height: 30px;
-  background-color: white;
+  background-color: #e1e2e8;
   border-radius: 50%;
 
   position: absolute;

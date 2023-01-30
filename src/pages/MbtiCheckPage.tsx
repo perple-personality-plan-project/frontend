@@ -16,7 +16,10 @@ const MbtiCheckPage = () => {
             className="post-container"
             onClick={() => navigate('/mbtiquestion')}
           >
-            <img src={require('../빡빡이1.png')} alt="group-img" />
+            <img
+              src={require('../components/images/mbtiTest/simple.png')}
+              alt="group-img"
+            />
             <div className="post-desc">
               <p>Platter 간편 검사</p>
             </div>
@@ -28,7 +31,10 @@ const MbtiCheckPage = () => {
               window.open(url);
             }}
           >
-            <img src={require('../빡빡이1.png')} alt="group-img" />
+            <img
+              src={require('../components/images/mbtiTest/hard.png')}
+              alt="group-img"
+            />
             <div className="post-desc">
               <p>16성격 유형 검사</p>
             </div>

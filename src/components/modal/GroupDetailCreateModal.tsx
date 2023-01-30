@@ -124,7 +124,8 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
       <GroupModalTemplate closeModal={closeModal} open={isOpen}>
         <StGroupContainer>
           <StCloseIcon onClick={closeModal}>
-            <i style={{ color: '#5B5B5B' }} className="ri-close-line"></i>
+            {/* <i style={{color: 'white'}} className="ri-close-circle-fill"></i> */}
+            <i style={{ color: 'white' }} className="ri-close-line"></i>
           </StCloseIcon>
           <h1>게시글 생성하기</h1>
           <StGroup>
@@ -616,17 +617,18 @@ const StCloseIcon = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 20px;
+  font-size: 17px;
 
   position: absolute;
   border-radius: 50%;
   border: 0;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   font-weight: bold;
+  background-color: #e1e2e8;
 
-  top: -30px;
-  right: -30px;
+  top: 10px;
+  right: 10px;
 
   cursor: pointer;
 `;
