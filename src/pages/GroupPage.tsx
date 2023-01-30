@@ -98,7 +98,7 @@ const GroupPage = () => {
           </div>
         </StInput>
         <img
-          src={require('../components/images/groupImages/groupimg.png')}
+          src={require('../components/images/groupImages/groupimg2.png')}
           alt="group-banner"
         />
       </StInputContainer>
