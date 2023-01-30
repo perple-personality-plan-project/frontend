@@ -1003,7 +1003,7 @@ const Feed = styled.div`
 
 const ToGoFeed = styled.div`
   //css append row
-  display: inline-block;
+  display: inline-flex;
   margin-top: 20px;
   margin-left: 20px;
   width: 407px;
