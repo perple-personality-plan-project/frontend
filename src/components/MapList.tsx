@@ -27,6 +27,7 @@ const MapList = ({ places, pagination }: MapListProps) => {
       setAddress(kakaoAddress);
       setX(kakaoX);
       setY(kakaoY);
+      alert('장바구니에 담겼습니다.');
     },
     [],
   );

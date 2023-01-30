@@ -149,6 +149,15 @@ const FeedModal: React.FC = () => {
                 {toggle ? (
                   <div style={{ display: 'flex' }}>
                     <StCategoryGroup>
+                      <StCategory
+                        onClick={() => {
+                          setRoute('없음');
+                          setRouteName('없음');
+                          setToggle(prev => !prev);
+                        }}
+                      >
+                        없음
+                      </StCategory>
                       {mapList.map((map: any, index: any) => {
                         return (
                           <StCategory

@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import nonTokenClient from '../../api/noClient';
 import loggedIn from '../../api/loggedIn';
+import { act } from 'react-dom/test-utils';
 
 type mapState = {
   MapPost: any;
@@ -48,6 +49,17 @@ export const __RemoveItem = createAsyncThunk<Cart, {}>(
   },
 );
 
+export const __RemoveAllItem = createAsyncThunk(
+  'RemoveAllItem',
+  async (payload: any, thunkAPI) => {
+    try {
+      return thunkAPI.fulfillWithValue(payload);
+    } catch (e) {
+      thunkAPI.rejectWithValue(e);
+    }
+  },
+);
+
 export const __RootMaker = createAsyncThunk<RootMaker, {}>(
   'RootMaker',
   async (payload, thunkAPI) => {
@@ -72,7 +84,7 @@ export const mapSlice = createSlice({
     builder.addCase(__MoveCart.fulfilled, (state, action) => {
       state.isLoading = false;
       state.MapPost = [...state.MapPost, action.payload];
-      if (state.MapPost.length > 6) {
+      if (state.MapPost.length > 5) {
         state.MapPost.shift();
         alert('최대 5개까지 저장 가능합니다.');
       }
@@ -94,6 +106,20 @@ export const mapSlice = createSlice({
     });
 
     builder.addCase(__RemoveItem.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    });
+    builder.addCase(__RemoveAllItem.pending, state => {
+      state.isLoading = true;
+    });
+
+    builder.addCase(__RemoveAllItem.fulfilled, (state, action) => {
+      state.isLoading = false;
+      console.log(action.payload);
+      state.MapPost = action.payload;
+    });
+
+    builder.addCase(__RemoveAllItem.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     });
