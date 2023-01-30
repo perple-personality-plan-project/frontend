@@ -158,7 +158,7 @@ const GroupCreateModal: React.FC<Props> = ({
         <StGroupContainer>
           <StCloseIcon onClick={closeModal}>
             <i
-              style={{ color: '#5B5B5B', fontSize: '20px' }}
+              style={{ color: 'white', fontSize: '17px' }}
               className="ri-close-line"
             ></i>
           </StCloseIcon>
@@ -447,16 +447,17 @@ const StCloseIcon = styled.button`
   justify-content: center;
   align-items: center;
   font-size: 14px;
+  background-color: #e1e2e8;
 
   position: absolute;
   border-radius: 50%;
   border: 0;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   font-weight: bold;
 
-  top: -30px;
-  right: -30px;
+  top: 10px;
+  right: 10px;
 
   cursor: pointer;
 `;

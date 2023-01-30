@@ -44,9 +44,9 @@ export default GroupModalTemplate;
 const StModalContainer = styled.div`
   width: 100%;
 
-  /* @media screen and (max-width: 500px) {
-    width: 300px;
-  } */
+  @media screen and (max-width: 800px) {
+    width: 330px;
+  }
 `;
 
 const StModalStyle = styled.div`
@@ -57,7 +57,7 @@ const StModalStyle = styled.div`
   z-index: 1000;
   width: 60%;
 
-  @media screen and (max-width: 500px) {
-    width: 300px;
+  @media screen and (max-width: 800px) {
+    width: 330px;
   }
 `;
