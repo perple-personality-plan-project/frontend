@@ -47,6 +47,8 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
     profile_img,
   } = feed;
 
+  console.log(profile_img);
+
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState<{}[]>([]);
   const [toggleRoute, setToggleRoute] = useState(false);
@@ -176,7 +178,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
               ) : (
                 <img
                   style={{ width: '40px', height: '40px' }}
-                  src={`${process.env.REACT_APP_IMG_SERVER}/${feed.profile_img}`}
+                  src={process.env.REACT_APP_IMG_SERVER + feed.profile_img}
                   alt="group-img"
                 />
               )}
@@ -274,7 +276,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                 <img src={require('../../마이페이지.png')} alt="detail-img" />
               ) : (
                 <img
-                  src={`${process.env.REACT_APP_IMG_SERVER}/${feed.profile_img}`}
+                  src={process.env.REACT_APP_IMG_SERVER + feed.profile_img}
                   alt="group-img"
                 />
               )}
@@ -393,7 +395,10 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                         />
                       ) : (
                         <img
-                          src={`${process.env.REACT_APP_IMG_SERVER}/${comment.profile_img}`}
+                          src={
+                            process.env.REACT_APP_IMG_SERVER +
+                            comment.profile_img
+                          }
                           alt="detail-img"
                         />
                       )}

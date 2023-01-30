@@ -7,8 +7,8 @@ const MBTIKakao = () => {
   const navigate = useNavigate();
   const mbtiList = [
     'ENFJ',
-    'ENTJ',
     'ENFP',
+    'ENTJ',
     'ENTP',
     'ESFP',
     'ESFJ',
@@ -17,15 +17,16 @@ const MBTIKakao = () => {
     'INFP',
     'INFJ',
     'INTP',
+    'INTJ',
     'ISTP',
+    'ISTJ',
     'ISFP',
     'ISFJ',
-    'ISTJ',
-    'INTJ',
   ];
 
   const sendMbti = () => {
     if (mbtiList.includes(data.toUpperCase())) {
+      // console.log(data.toUpperCase());
       sessionStorage.setItem('mbti', data.toUpperCase());
       navigate('/');
     } else {
