@@ -5,7 +5,7 @@ import { Navigation } from 'swiper';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { MyPickDetailModal } from '../modal/MyPickDetailModal';
+import { MyFeedDetailModal } from '../../components/modal/MyFeedDetailModal';
 import {
   useAppDispatch,
   useAppSelector,
@@ -25,14 +25,16 @@ interface IAppState {
   show: boolean;
 }
 
-const MyPickModal: React.FC<Props> = ({ state, close }) => {
+const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
   const dispatch = useAppDispatch();
 
   // const [isOpen, setIsOpen] = useState(false);
   const [routeOpen, setRouteOpen] = useState(false);
   const [comment, setComment] = useState('');
 
-  const mainFeedDetail: any = useAppSelector(store => store.mypage.myData);
+  const mainFeedDetail: any = useAppSelector(
+    store => store.post.mainFeedDetail,
+  );
   const userId = sessionStorage.getItem('userId');
   const accessToken = sessionStorage.getItem('accessToken');
   const thumbnailArray = mainFeedDetail?.thumbnail?.split(',');
@@ -43,8 +45,8 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
   const mainFeedComment: any = useAppSelector(
     store => store.post.mainFeedDetail,
   );
-  console.log(mainFeedComment);
 
+  console.log(mainFeedComment);
   const openRoutine = () => {
     setRouteOpen(!routeOpen);
   };
@@ -104,6 +106,12 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
   } else if (mainFeedDetail.location === '{}') {
     modalParse = { place_group: '', place_group_name: '' };
     placeName = [];
+  } else if (
+    mainFeedDetail.location ===
+    '{"place_group_name":"없음","place_group":"없음"}'
+  ) {
+    modalParse = { place_group: '', place_group_name: '' };
+    placeName = [];
   } else {
     modalParse = JSON.parse(mainFeedDetail.location);
     placeName = JSON.parse(modalParse.place_group);
@@ -131,7 +139,10 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
     }
   };
   const toggleHeart = async () => {
-    const x = await loggedIn.put(`/api/feed/${mainFeedDetail.feed_id}/like`); //좋아요 / 좋아요 취소 api
+    await loggedIn.put(`/api/feed/${mainFeedDetail.feed_id}/like`); //좋아요 / 좋아요 취소 api
+    await dispatch(
+      __mainFeedDetail({ feedId: mainFeedDetail.feed_id, userId: userId }),
+    );
   };
 
   const pick = async () => {
@@ -141,16 +152,27 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
         if (response.data.data.message === '찜하기가 취소되었습니다.') {
           alert('찜 취소');
           dispatch(__getPicked());
-          close();
+          dispatch(
+            __mainFeedDetail({
+              feedId: mainFeedDetail.feed_id,
+              userId: userId,
+            }),
+          );
         } else {
           alert('찜!');
           dispatch(__getPicked());
+          dispatch(
+            __mainFeedDetail({
+              feedId: mainFeedDetail.feed_id,
+              userId: userId,
+            }),
+          );
         }
       });
   };
 
   return (
-    <MyPickDetailModal
+    <MyFeedDetailModal
       onClose={() => close()}
       open={state}
       id={mainFeedDetail?.feed_id}
@@ -174,20 +196,23 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
         </Swiper>
         <StDetailInfo>
           <StDetailDesc>
-            <img
-              src={
-                profileInfo[0]?.profile_img === undefined
-                  ? require('../../마이페이지.png')
-                  : process.env.REACT_APP_IMG_SERVER +
-                    profileInfo[0].profile_img
-              }
-              alt="detail-img"
-            />
+            {profileInfo?.map((profile: any, index: number) => {
+              return (
+                <img
+                  src={
+                    profile?.profile_img !== null
+                      ? process.env.REACT_APP_IMG_SERVER +
+                        profileInfo[0].profile_img
+                      : require('../../마이페이지.png')
+                  }
+                  alt="detail-img"
+                />
+              );
+            })}
             <div className="detail-info">
               <div className="detail-top" style={{ display: 'flex' }}>
-                {/* <p>{profileInfo[0].nickname}</p> */}
-                <p>{mainFeedDetail.mbti?.toUpperCase()}</p>
-                <PostDelete onClick={deletePost}>X</PostDelete>
+                <div>{profileInfo[0]?.nickname}</div>
+                <p>{profileInfo[0]?.mbti}</p>
               </div>
               <p>{mainFeedDetail.description}</p>
               <NumberOfPlace>{placeName?.length}</NumberOfPlace>
@@ -221,7 +246,11 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
                         <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
                       </svg>
                       <div
-                        style={{ display: 'inline-block', marginTop: '10px' }}
+                        style={{
+                          display: 'inline-block',
+                          marginTop: '10px',
+                          fontSize: '11px',
+                        }}
                       >
                         {item.place_name}
                       </div>
@@ -256,18 +285,33 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
                     </StIcon>
                   )}
                   <div onClick={pick} className="detail-btn">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      height="24"
-                    >
-                      <path fill="none" d="M0 0h24v24H0z" />
-                      <path
-                        d="M18 3v2h-1v6l2 3v2h-6v7h-2v-7H5v-2l2-3V5H6V3z"
-                        fill="rgba(100,78,238,1)"
-                      />
-                    </svg>
+                    {mainFeedDetail.isPick === 1 ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        height="24"
+                      >
+                        <path fill="none" d="M0 0h24v24H0z" />
+                        <path
+                          d="M18 3v2h-1v6l2 3v2h-6v7h-2v-7H5v-2l2-3V5H6V3h12zM9 5v6.606L7.404 14h9.192L15 11.606V5H9z"
+                          fill="rgba(100,78,238,1)"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        height="24"
+                      >
+                        <path fill="none" d="M0 0h24v24H0z" />
+                        <path
+                          d="M18 3v2h-1v6l2 3v2h-6v7h-2v-7H5v-2l2-3V5H6V3z"
+                          fill="rgba(100,78,255,1)"
+                        />
+                      </svg>
+                    )}
                   </div>
                   <div onClick={saveRoute} className="detail-btn">
                     <svg
@@ -280,6 +324,17 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
                       <path d="M13 10h5l-6 6-6-6h5V3h2v7zm-9 9h16v-7h2v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8h2v7z" />
                     </svg>
                   </div>
+                  <PostDelete onClick={deletePost}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                    >
+                      <path fill="none" d="M0 0h24v24H0z" />
+                      <path d="M17 6h5v2h-2v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8H2V6h5V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3zm1 2H6v12h12V8zm-9 3h2v6H9v-6zm4 0h2v6h-2v-6zM9 4v2h6V4H9z" />
+                    </svg>
+                  </PostDelete>
                 </div>
               </div>
             </div>
@@ -293,7 +348,7 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
                     <img
                       src={
                         profileInfo[0].profile_img === null
-                          ? require('../../빡빡이1.png')
+                          ? require('../../마이페이지.png')
                           : process.env.REACT_APP_IMG_SERVER +
                             profileInfo[0].profile_img
                       }
@@ -326,11 +381,11 @@ const MyPickModal: React.FC<Props> = ({ state, close }) => {
           </CommentBox>
         </StDetailInfo>
       </StDetailContainer>
-    </MyPickDetailModal>
+    </MyFeedDetailModal>
   );
 };
 
-export default MyPickModal;
+export default FeedDetailModal;
 
 const StDetailContainer = styled.div`
   display: flex;
@@ -364,35 +419,48 @@ const StDetailContainer = styled.div`
 `;
 
 const StDetailInput = styled.div`
-  background-color: #f2f2f2;
+  /* background-color: #f2f2f2; */
+  background-color: white;
   border-top: 1px solid #b6b6b6;
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  height: 50px;
+  /* height: 10%; */
   width: 100%;
-  padding: 30px 20px;
+  padding: 25px 24px;
 
   input {
     outline: 0;
   }
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 800px) {
     padding: 10px 20px;
   }
   input {
-    border: 1px solid gray;
+    background-color: #f6f7fa;
+    /* border: 1px solid gray; */
+    border: 0;
     border-radius: 20px;
     text-indent: 10px;
     width: 100%;
-    height: 30px;
+    height: 44px;
+
+    &::placeholder {
+      color: #b8b8b8;
+    }
   }
 
   button {
-    width: 80px;
-    height: 30px;
+    /* text-align: center; */
+    margin-left: 10px;
+    width: 50px;
+    height: 25px;
     border: 0;
-    background-color: #f2f2f2;
+    font-family: 'Nanum_EB';
+    color: #644eee;
+    font-size: 15px;
+    background-color: white;
+    /* background-color: #f2f2f2; */
 
     cursor: pointer;
   }
@@ -462,27 +530,21 @@ const PostDelete = styled.button`
   background-color: transparent;
   border: transparent;
   font-size: 20px;
-  margin-left: 170px;
+  margin-left: 5px;
   cursor: pointer;
 `;
 
 const StDetailDesc = styled.div`
   box-sizing: border-box;
-  padding: 20px 20px 10px 20px;
+  padding: 30px 22px 15px 22px;
   display: flex;
-
   background-color: white;
   img {
-    margin-right: 10px;
-    width: 40px;
-    height: 40px;
+    margin-right: 12px;
+    width: 29px;
+    height: 29px;
     border-radius: 50%;
   }
-
-  p {
-    font-size: 14px;
-  }
-
   .detail-info {
     display: flex;
     flex-direction: column;
@@ -490,6 +552,7 @@ const StDetailDesc = styled.div`
 
     p {
       margin: 0;
+      /* width: 90%; */
       /* width: 20ch; */
     }
 
@@ -499,33 +562,86 @@ const StDetailDesc = styled.div`
       align-items: center;
       margin: 0 0 10px 0;
       font-size: 15px;
-
       h2 {
-        font-size: 18px;
+        font-family: 'Nanum_EB';
+        font-size: 13px;
         margin: 0 10px 0 0;
         color: #555555;
       }
 
       p {
+        font-family: 'Nanum_EB';
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 20px;
-        width: 60px;
+        border: 1px solid #8e8e8e;
+        width: 57px;
         height: 20px;
-        background-color: #d9d9d9;
+        background-color: white;
         color: #9e9e9e;
         letter-spacing: 1px;
+        font-size: 12px;
+        margin-left: 5px;
+      }
+    }
+
+    .detail-route {
+      position: relative;
+      p {
+        color: #9e9e9e;
+        height: 20px;
+      }
+
+      .detail-route-route {
+        margin-top: 10px;
+        color: #9e9e9e;
+        font-size: 10px;
+        cursor: pointer;
+      }
+
+      .detail-route-count {
+        border-radius: 50%;
+        font-size: 10px;
+        width: 15px;
+        height: 15px;
+        background-color: rgb(100, 78, 238);
+        color: white;
+        position: absolute;
+        top: 0px;
+        right: 130px;
+        /* display: none; */
+
+        p {
+          color: white;
+          margin: 0;
+          position: absolute;
+          top: 1.5px;
+          right: 4.6px;
+        }
+      }
+
+      .detail-route-list {
+        display: flex;
+        align-items: center;
+        /* justify-content: center; */
+        p {
+          font-size: 11px;
+          margin-top: 10px;
+          margin-left: 5px;
+          color: #323232;
+        }
       }
     }
 
     .detail-bottom {
       display: flex;
       justify-content: space-between;
-      margin-top: 30px;
+      align-items: center;
+      margin-top: 23px;
 
       p {
-        font-size: 13px;
+        font-size: 10px;
         color: #9e9e9e;
       }
 
@@ -535,10 +651,9 @@ const StDetailDesc = styled.div`
         align-items: center;
         width: 20px;
         height: 20px;
-        background-color: transparent;
         color: black;
         margin-left: 10px;
-        cursor: pointer;
+        margin-top: 4px;
       }
     }
   }
@@ -547,15 +662,17 @@ const StDetailDesc = styled.div`
 const StDetailComments = styled.div`
   aspect-ratio: 1/1;
   overflow: auto;
+  flex: 1;
   box-sizing: border-box;
   padding: 20px 20px 10px 20px;
   display: flex;
   flex-direction: column;
-  background-color: white;
-
-  @media screen and (max-width: 1024px) {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  @media screen and (max-width: 800px) {
     width: 100%;
-    margin-top: 0px;
+    height: 250px;
   }
 `;
 
@@ -565,13 +682,15 @@ const StDetailComment = styled.div`
   display: flex;
   margin-bottom: 15px;
   position: relative;
+  word-break: break-all;
 
   p {
-    font-size: 14px;
+    width: 90%;
+    font-size: 13px;
   }
 
   img {
-    margin: 10px 10px 0 0;
+    margin: -10px 10px 0 0;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -592,7 +711,8 @@ const StDetailComment = styled.div`
       align-items: center;
       font-size: 15px;
       h2 {
-        font-size: 18px;
+        font-family: 'Nanum_EB';
+        font-size: 13px;
         margin: 0 10px 0 0;
       }
 
@@ -608,8 +728,8 @@ const StDetailComment = styled.div`
     }
 
     .detail-del {
-      width: 30px;
-      height: 30px;
+      width: 25px;
+      height: 25px;
       border-radius: 50%;
 
       display: flex;
@@ -617,10 +737,14 @@ const StDetailComment = styled.div`
       align-items: center;
 
       &:hover {
-        background-color: #f54e4e;
+        background-color: rgb(220, 218, 230);
         color: white;
 
         cursor: pointer;
+
+        .hover-color {
+          color: white !important;
+        }
       }
     }
   }
@@ -628,14 +752,15 @@ const StDetailComment = styled.div`
 const CommentBox = styled.div`
   display: flex;
   flex-direction: column;
-  height: 455px;
+  height: 400px;
   justify-content: space-between;
   background-color: white;
-  @media screen and (max-width: 1024px) {
-    height: 200px;
+  &::-webkit-scrollbar {
+    display: none;
   }
-  @media screen and (max-width: 390px) {
-    height: 150px;
+
+  @media screen and (max-width: 412px) {
+    height: 200px;
   }
 `;
 
@@ -658,6 +783,11 @@ const StXIcon = styled.div`
   top: -30px;
   right: -30px;
   cursor: pointer;
+  @media screen and (max-width: 1120px) {
+    right: 10px;
+    top: 10px;
+    z-index: 100;
+  }
   @media screen and (max-width: 390px) {
     right: 0px;
   }

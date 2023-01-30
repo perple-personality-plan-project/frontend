@@ -34,6 +34,13 @@ interface IAppState {
 function MyPage() {
   const dispatch = useAppDispatch();
 
+  const profileInfo = useAppSelector((store: any) => store.mypage.profileInfo);
+  const myfeed = useAppSelector((store: any) => store.mypage.myFeed);
+  const myGroupList = useAppSelector((store: any) => store.mypage.myGroupList);
+  const mapList = useAppSelector((store: any) => store.mypage.maplist);
+  const myPick = useAppSelector((store: any) => store.mypage.myPick);
+  const userId = sessionStorage.getItem('userId');
+
   const [myFeed, setMyFeed] = useState(true);
   const [toGoList, setToGoList] = useState(false);
   const [dibs, setDibs] = useState(false);
@@ -42,8 +49,8 @@ function MyPage() {
   const [dataSource, setDataSource] = useState(Array.from({ length: 4 }));
   const [hasMore, setHasMore] = useState(true);
   const [Modals, setModals] = useState(true);
-  const [MBTI, setMBTI] = useState(false);
-  const [nickName, setnickName] = useState(false);
+  const [MBTI, setMBTI] = useState(profileInfo[0]?.mbti);
+  const [nickName, setnickName] = useState(profileInfo[0]?.nickname);
   const [isOpen, setIsOpen] = useState(false);
   const [isPickModalOpen, setIsPickModalOpen] = useState(false);
 
@@ -54,13 +61,6 @@ function MyPage() {
   const onChangeNickName = (e: any) => {
     setnickName(e);
   };
-
-  const profileInfo = useAppSelector((store: any) => store.mypage.profileInfo);
-  const myfeed = useAppSelector((store: any) => store.mypage.myFeed);
-  const myGroupList = useAppSelector((store: any) => store.mypage.myGroupList);
-  const mapList = useAppSelector((store: any) => store.mypage.maplist);
-  const myPick = useAppSelector((store: any) => store.mypage.myPick);
-  const userId = sessionStorage.getItem('userId');
 
   useEffect(() => {
     fetchData();
@@ -166,7 +166,7 @@ function MyPage() {
   };
 
   const modalOpen = async (e: any) => {
-    setIsOpen(!isOpen);
+    setIsOpen(true);
     await dispatch(__modalData(e));
     await dispatch(__mainFeedDetail({ feedId: e.feed_id, userId: userId }));
   };
@@ -180,6 +180,7 @@ function MyPage() {
   const deleteTogo = async (mapId: number) => {
     await dispatch(__togoDelete(mapId));
     await dispatch(__getMap());
+    await dispatch(__getMyProfile());
   };
 
   if (token === null) {
@@ -194,7 +195,7 @@ function MyPage() {
                   <img
                     src={
                       profileInfo[0].background_img === null
-                        ? require('../defaultbanner.jpg')
+                        ? require('../gray.png')
                         : process.env.REACT_APP_IMG_SERVER +
                           profileInfo[0].background_img
                     }
@@ -247,7 +248,7 @@ function MyPage() {
                   <img
                     src={
                       profileInfo[0].background_img === null
-                        ? require('../defaultbanner.jpg')
+                        ? require('../gray.png')
                         : process.env.REACT_APP_IMG_SERVER +
                           profileInfo[0].background_img
                     }
@@ -273,7 +274,7 @@ function MyPage() {
                     onChange={e => onChangeMBTI(e.target.value.toUpperCase())}
                     show={profileEdit}
                     required
-                    value={item.mbti}
+                    defaultValue={item.mbti}
                     pattern="^(intj|infj|infj|intj|istp|isfp|infp|intp|estp|esfp|enfp|entp|estj|esfj|enfj|entj|INTJ|INFJ|INTJ|ISTP|ISFP|INFP|INTP|ESTP|ESFP|ENFP|ENTP|ESTJ|ESFJ|ENFJ|ENTJ)$"
                     onInvalid={e =>
                       (e.target as HTMLInputElement).setCustomValidity(
@@ -289,7 +290,7 @@ function MyPage() {
                       <div>
                         <img
                           src={
-                            item.profile_img === undefined
+                            item.profile_img === null
                               ? require('../마이페이지.png')
                               : process.env.REACT_APP_IMG_SERVER +
                                 item.profile_img
@@ -312,11 +313,11 @@ function MyPage() {
                     onChange={e => onChangeNickName(e.target.value)}
                     show={profileEdit}
                     required
-                    value={item.nickname}
-                    pattern="^[가-힣]{2,8}$"
+                    defaultValue={item.nickname}
+                    pattern="^[\w\Wㄱ-ㅎㅏ-ㅣ가-힣]{2,8}$"
                     onInvalid={e =>
                       (e.target as HTMLInputElement).setCustomValidity(
-                        '2글자 이상 8글자 이하 한국어만 가능',
+                        '2글자 이상 8글자 이하',
                       )
                     }
                     onInput={e =>
@@ -379,9 +380,14 @@ function MyPage() {
                         modalOpen(item);
                       }}
                     />
-                    <Address>
-                      {JSON.parse(item?.location).place_group_name}🏃
-                    </Address>
+                    {JSON.parse(item.location).place_group_name === undefined ||
+                    JSON.parse(item.location).place_group_name === '없음' ? (
+                      <div></div>
+                    ) : (
+                      <Address>
+                        {JSON.parse(item?.location).place_group_name} 🏃
+                      </Address>
+                    )}
                   </Feed>
                 );
               })}
@@ -872,6 +878,9 @@ const Address = styled.div`
   color: #ffffff;
   position: absolute;
   z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const TogoTitle = styled.div`
   font-size: 22px;

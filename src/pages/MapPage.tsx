@@ -1,7 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router';
 
-import { __RemoveItem, __RootMaker } from '../redux/modules/mapSlice';
+import {
+  __RemoveItem,
+  __RootMaker,
+  __RemoveAllItem,
+} from '../redux/modules/mapSlice';
 import client from '../api/client';
 import Map from '../components/Map';
 import MapForm from '../components/MapForm';
@@ -105,6 +109,7 @@ const MapPage = () => {
   const dispatch = useAppDispatch();
 
   const maplist = useselector;
+  console.log(maplist);
 
   const stringRoot = JSON.stringify(maplist);
 
@@ -117,7 +122,7 @@ const MapPage = () => {
   };
   const accessToken = sessionStorage.getItem('accessToken');
   //dispatch __RootMaker
-  const dispatchRoot = (event: any) => {
+  const dispatchRoot = async (event: any) => {
     if (accessToken === null) {
       event.preventDefault();
       // eslint-disable-next-line no-restricted-globals
@@ -135,8 +140,9 @@ const MapPage = () => {
       if (Roots.place_group === '[]') {
         alert('장바구니에 루트를 담아주세요');
       } else {
-        dispatch(__RootMaker(Roots));
-        alert('루트가 생성되었습니다.');
+        await dispatch(__RootMaker(Roots));
+        await alert('루트가 생성되었습니다.');
+        await dispatch(__RemoveAllItem([]));
       }
     }
   };
@@ -357,6 +363,7 @@ const MapPage = () => {
             fill="rgba(255,255,255,1)"
           />
         </svg>
+        <CartNum>{maplist.length}</CartNum>
       </Cart>
       <Modal show={Modals}>
         <SelectAll show={checked}>
@@ -457,7 +464,21 @@ const Cart = styled.div`
   cursor: pointer;
   z-index: 100;
 `;
-
+const CartNum = styled.div`
+  position: absolute;
+  top: -5px;
+  left: 15px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #b2a7f7;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const Modal = styled.div<any>`
   position: absolute;
   top: 90px;
