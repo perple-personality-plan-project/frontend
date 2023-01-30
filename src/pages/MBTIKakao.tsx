@@ -1,16 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 
 const MBTIKakao = () => {
+  const [data, setData] = useState('');
   const navigate = useNavigate();
-  const url = 'https://16platter.site/mbti';
+  const mbtiList = [
+    'ENFJ',
+    'ENTJ',
+    'ENFP',
+    'ENTP',
+    'ESFP',
+    'ESFJ',
+    'ESTP',
+    'ESTJ',
+    'INFP',
+    'INFJ',
+    'INTP',
+    'ISTP',
+    'ISFP',
+    'ISFJ',
+    'ISTJ',
+    'INTJ',
+  ];
+
+  const sendMbti = () => {
+    if (mbtiList.includes(data.toUpperCase())) {
+      sessionStorage.setItem('mbti', data.toUpperCase());
+      navigate('/');
+    } else {
+      alert('MBTI를 제대로 입력해주세요!');
+    }
+  };
+
   return (
     <StContainer>
       <h1>잠깐!</h1>
       <h2>Platter를 즐기러 가기 전에 </h2>
       <h2>자신의 MBTI를 입력해 주세요!</h2>
-      <input placeholder="MBTI를 입력해주세요!" />
+      <input
+        maxLength={4}
+        value={data}
+        onChange={e => setData(e.target.value)}
+        placeholder="MBTI를 입력해주세요!"
+      />
       <p>자신의 MBTI... 잘 모르시겠다구요?</p>
       <StTextContent>
         <p>테스트를 통해 간단하게 알아보세요!</p>
@@ -18,7 +51,7 @@ const MBTIKakao = () => {
       </StTextContent>
       <div className="text-arrow">
         <i className="ri-arrow-right-line arrow-active"></i>
-        <p>Platter 즐기러 가기</p>
+        <p onClick={sendMbti}>Platter 즐기러 가기</p>
       </div>
     </StContainer>
   );
@@ -37,8 +70,16 @@ const StContainer = styled.div`
   justify-content: center;
   align-items: center;
 
+  h1 {
+    color: #644eee;
+  }
+
+  h2 {
+    margin: 10px;
+  }
   h2 {
     &:nth-of-type(2) {
+      margin: 0 0 30px 0;
       /* padding-left: 80px; */
     }
   }
