@@ -48,7 +48,11 @@ const SignInPage = () => {
   return (
     <Wrap>
       <Title>
-        <span>Platter</span>
+        {/* <span>Platter</span> */}
+        <img
+          src={require('../components/images/login/loginimg.png')}
+          alt="login-img"
+        />
         <div className="title">서비스 이용을 위한 로그인을 해주세요!</div>
       </Title>
       <FormWrap onSubmit={e => login(e)}>
@@ -119,6 +123,16 @@ const Wrap = styled.div`
 const Title = styled.span`
   font-size: 40px;
   font-weight: 700;
+
+  img {
+    width: 450px;
+    margin-right: 40px;
+
+    @media screen and (max-width: 500px) {
+      width: 90%;
+    }
+  }
+
   .title {
     font-size: 20px;
     font-weight: 300;
