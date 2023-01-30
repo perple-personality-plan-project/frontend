@@ -284,51 +284,51 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                   <h2>{nickname}</h2>
                   <p>{mbti.toUpperCase()}</p>
                 </div>
-                <p style={{ fontSize: '13px', marginBottom: '10px' }}>
+                <StDiv>
                   {description}
-                </p>
-                {parsedLocation.place_group_name !== '없음' ? (
-                  !toggleRoute ? (
-                    <div className="detail-route">
-                      <p
-                        className="detail-route-route"
-                        onClick={() => setToggleRoute(!toggleRoute)}
-                      >
-                        루트 펼치기
-                      </p>{' '}
-                      <div className="detail-route-count">
-                        <p>{parsedPlace?.length || 0}</p>
+                  {parsedLocation.place_group_name !== '없음' ? (
+                    !toggleRoute ? (
+                      <div className="route-open">
+                        <p
+                          className="route-open-button"
+                          onClick={() => setToggleRoute(!toggleRoute)}
+                        >
+                          루트 펼치기
+                        </p>{' '}
+                        <div className="route-open-count">
+                          <p>{parsedPlace?.length || 0}</p>
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="detail-route">
-                      <p
-                        className="detail-route-route"
-                        onClick={() => setToggleRoute(!toggleRoute)}
-                      >
-                        루트 접기
-                      </p>
-                      {parsedPlace?.map((route: any, index: number) => {
-                        return (
-                          <div key={index} className="detail-route-list">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="13"
-                              height="13"
-                              color="#644EEE"
-                              fill="currentColor"
-                              className="bi bi-geo-alt-fill"
-                              viewBox="0 0 16 16"
-                            >
-                              <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                            </svg>
-                            <p>{route.place_name}</p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )
-                ) : null}
+                    ) : (
+                      <div className="route-close">
+                        <p
+                          className="route-close-button"
+                          onClick={() => setToggleRoute(!toggleRoute)}
+                        >
+                          루트 접기
+                        </p>
+                        {parsedPlace?.map((route: any, index: number) => {
+                          return (
+                            <div key={index} className="route-close-list">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="13"
+                                height="13"
+                                color="#644EEE"
+                                fill="currentColor"
+                                className="bi bi-geo-alt-fill"
+                                viewBox="0 0 16 16"
+                              >
+                                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                              </svg>
+                              <p>{route.place_name}</p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )
+                  ) : null}
+                </StDiv>
 
                 <div className="detail-bottom">
                   <p>{date}</p>
@@ -439,6 +439,66 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
 };
 
 export default GroupDetailCard;
+
+const StDiv = styled.div`
+  position: relative;
+  font-size: 13px;
+  margin-bottom: 10px;
+
+  .route-open,
+  .route-close {
+    position: absolute;
+    background-color: pink;
+    margin-top: 10px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    z-index: 10;
+    left: -4px;
+
+    .route-open-button {
+      font-size: 10px;
+      color: gray;
+    }
+
+    .route-close-button {
+      font-size: 10px;
+      color: gray;
+    }
+
+    .route-open-count {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* text-align: center; */
+      color: white;
+      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      font-size: 8px;
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background-color: rgb(100, 78, 238);
+    }
+
+    .route-close-list {
+      display: flex;
+      align-items: center;
+      /* justify-content: center; */
+      padding-top: 5px;
+      height: 20px;
+      p {
+        font-size: 11px;
+        padding-left: 5px;
+        /* margin-top: 10px; */
+
+        /* margin-left: 5px; */
+        color: #323232;
+      }
+    }
+  }
+`;
 
 const StIcon = styled.div`
   display: flex;
@@ -686,7 +746,7 @@ const StDetailComments = styled.div`
   /* height: 100%; */
   flex: 1;
   box-sizing: border-box;
-  padding: 20px 20px 10px 20px;
+  padding: 10px 20px 10px 20px;
   display: flex;
   flex-direction: column;
 
