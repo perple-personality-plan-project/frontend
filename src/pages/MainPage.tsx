@@ -16,9 +16,13 @@ export interface mainPostPreset {
   created_at: string;
   description: string;
   thumbnail: string;
-  like_count: number;
+  location: string;
+  likeCount: number;
+  isLike: number | string;
+  isPick: number | string;
   mbti: string;
   updated_at: string;
+  profile_img: string;
 }
 
 const MainPage = () => {
@@ -85,6 +89,16 @@ const MainPage = () => {
             >
               ✔ MBTI 검사하기
             </button>
+            <MainImg>
+              <img
+                style={{
+                  marginTop: '20px',
+                  paddingLeft: '1em',
+                  maxWidth: '420px',
+                }}
+                src={require(`../../src/메인이미지.png`)}
+              />
+            </MainImg>
           </StHeader>
 
           <MainSlider setMbtiCheck={setMbtiCheck} />
@@ -157,7 +171,7 @@ const StHeader = styled.div`
     background-color: #644eee;
   }
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 800px) {
     font-size: 25px;
     padding: 0;
     display: flex;
@@ -173,6 +187,15 @@ const StTagHeader = styled.div`
 
   @media screen and (max-width: 1024px) {
     justify-content: center;
+  }
+`;
+
+const MainImg = styled.div`
+  @media screen and (max-width: 412px) {
+    position: absolute;
+    /* width: 80px;
+    height: 40px; */
+    margin-top: 20%;
   }
 `;
 
@@ -304,6 +327,6 @@ const PostListContainer = styled.div`
   }
 
   @media screen and (max-width: 500px) {
-    margin-top: 16vh;
+    margin-top: 20vh;
   }
 `;
