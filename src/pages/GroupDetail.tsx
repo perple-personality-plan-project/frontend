@@ -249,6 +249,7 @@ const StPostContainer = styled.div`
   @media screen and (max-width: 900px) {
     h2 {
       margin-left: 0;
+      margin-top: 30px;
     }
   }
 
@@ -408,6 +409,7 @@ const StGroupPosts = styled.div`
   flex-wrap: wrap;
   gap: 18px;
   margin-left: 50px;
+  margin-bottom: 20px;
   position: relative;
   width: 100%;
 
