@@ -12,12 +12,12 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../components/hooks/typescripthook/hooks';
-import { __groupFeedDetail } from '../../redux/modules/groupSlice';
 import nonTokenClient from '../../api/noClient';
 import loggedIn from '../../api/loggedIn';
 import {
   __mainFeedDetail,
   __mainFeedlist,
+  __mainMbtilist,
 } from '../../redux/modules/postSlice';
 import client from '../../api/client';
 import { __RootMaker } from '../../redux/modules/mapSlice';
@@ -38,6 +38,7 @@ interface Props {
     isPick: number | string;
   };
 }
+
 interface IAppState {
   show: boolean;
 }
@@ -59,12 +60,11 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
     updated_at,
     user_id,
   } = post;
-  const groupName = JSON.parse(location);
-  console.log(groupName);
-  // console.log(post);
-  const { mainFeedDetail }: any = useAppSelector(store => store.post);
 
-  // const { mainFeedlike }: any = useAppSelector(store => store.post);
+  const groupName = JSON.parse(location);
+  // console.log(groupName);
+  console.log(post);
+  const { mainFeedDetail }: any = useAppSelector(store => store.post);
 
   const date = created_at
     .replace('T', '. ')
@@ -74,9 +74,10 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
     .replace('.', '년 ')
     .replace('.', '월 ')
     .replace('.', '일');
+
   const [comment, setComment] = useState('');
-  const [toggle, setToggle] = useState(false);
   const [pintoggle, setPinToggle] = useState(false);
+  const [toggleRoute, setToggleRoute] = useState(false);
   const accessToken = sessionStorage.getItem('accessToken');
   const [routeOpen, setRouteOpen] = useState(false);
   const thumbnailArray = thumbnail.split(',');
@@ -101,34 +102,36 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
     }
   };
 
-  const toggleHeart = async () => {
+  const toggleHeart = async (feedId: number) => {
     const x = await loggedIn.put(`/api/feed/${feed_id}/like`);
-    // console.log(x);
+    console.log(x);
+    dispatch(__mainFeedlist({ userId }));
+    // dispatch(__mainMbtilist({ userId: userId, mbtiCheck: 'mbtiCheck' }));
+  };
+
+  const togglepick = async (feedId: number) => {
+    const x = await loggedIn.put(`api/feed/${feed_id}/pick`);
+    console.log(x);
     dispatch(__mainFeedlist({ userId }));
   };
+
+  // const togglepick = async () => {
+  //   await loggedIn
+  //     .put(`api/feed/${mainFeedDetail.feed_id}/pick`)
+  //     .then(response => {
+  //       if (response.data.data.message === '찜하기가 취소되었습니다.') {
+  //         alert('찜 취소');
+  //       } else {
+  //         alert('찜!');
+  //       }
+  //     });
+  // };
 
   const deleteComment = async (commentId: string | number) => {
     await loggedIn.delete(`api/comment/${feed_id}/${commentId}`);
     dispatch(__mainFeedDetail({ feedId: feed_id, userId: userId }));
   };
 
-  // const feedLike = async () => {
-  //   await loggedIn.put(`api/feed/${feed_id}/like`);
-  //   dispatch(__mainFeedDetail({ feedId: feed_id }));
-  //
-  // };
-
-  const pick = async () => {
-    await loggedIn
-      .put(`api/feed/${mainFeedDetail.feed_id}/pick`)
-      .then(response => {
-        if (response.data.data.message === '찜하기가 취소되었습니다.') {
-          alert('찜 취소');
-        } else {
-          alert('찜!');
-        }
-      });
-  };
   const openRoutine = () => {
     setRouteOpen(!routeOpen);
   };
@@ -145,12 +148,23 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
   let placeName: [] = [];
 
   if (mainFeedDetail.location === undefined) {
-    console.log('undefined');
+    modalParse = { place_group: '', place_group_name: '' };
+    placeName = [];
+  } else if (mainFeedDetail.location === '{}') {
+    modalParse = { place_group: '', place_group_name: '' };
+    placeName = [];
   } else {
     modalParse = JSON.parse(mainFeedDetail.location);
     placeName = JSON.parse(modalParse.place_group);
   }
-  console.log(modalParse);
+
+  // if (mainFeedDetail.location === undefined) {
+  //   // console.log('undefined');
+  // } else {
+  //   modalParse = JSON.parse(mainFeedDetail.location);
+  //   placeName = JSON.parse(modalParse.place_group);
+  // }
+  // // console.log(modalParse);
 
   const saveRoute = () => {
     const saveData = {
@@ -169,7 +183,7 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
             <div className="post-header-info">
               <img
                 style={{ width: '40px', height: '40px' }}
-                src={require('../../빡빡이1.png')}
+                src={require('../../마이페이지.png')}
                 alt="group-img"
               />
               <h3>{nickname}</h3>
@@ -193,12 +207,12 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
         </div>
         <div className="post-bottom-right">
           <div className="post-bottom-heart">
-            {isLike === '0' ? (
+            {isLike === 1 ? (
               <StIcon>
                 <i
                   className="ri-heart-3-fill"
                   style={{ color: 'red', fontSize: '25px' }}
-                  onClick={toggleHeart}
+                  onClick={() => toggleHeart(feed_id)}
                 ></i>
                 <p className="heart-number">{likeCount}</p>
               </StIcon>
@@ -206,27 +220,34 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
               <StIcon>
                 <i
                   className="ri-heart-3-line"
-                  onClick={toggleHeart}
-                  style={{ color: 'red', fontSize: '25px' }}
+                  onClick={() => toggleHeart(feed_id)}
+                  style={{ color: '#8E8E8E', fontSize: '25px' }}
                 ></i>
                 <p className="heart-number">{likeCount}</p>
               </StIcon>
             )}
           </div>
           <div className="post-bottom-pin">
-            <div onClick={pick} className="detail-btn">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="24"
-                height="24"
-              >
-                <path fill="none" d="M0 0h24v24H0z" />
-                <path d="M18 3v2h-1v6l2 3v2h-6v7h-2v-7H5v-2l2-3V5H6V3h12zM9 5v6.606L7.404 14h9.192L15 11.606V5H9z" />
-              </svg>
-            </div>
+            {isPick === 1 ? (
+              <StIcon>
+                <i
+                  className="ri-pushpin-2-fill"
+                  style={{ color: '#644eee', fontSize: '24px' }}
+                  onClick={() => togglepick(feed_id)}
+                ></i>
+              </StIcon>
+            ) : (
+              <StIcon>
+                <i
+                  className="ri-pushpin-2-line"
+                  style={{ color: '#644eee', fontSize: '24px' }}
+                  onClick={() => togglepick(feed_id)}
+                ></i>
+              </StIcon>
+            )}
           </div>
-          <div className="post-bottom-route">
+
+          <div className="post-bottom-route" style={{ marginLeft: '5px' }}>
             <div onClick={saveRoute}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -247,7 +268,12 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
         open={isOpen}
         id={mainFeedDetail?.feed_id}
       >
-        <StXIcon onClick={() => setIsOpen(false)}>X</StXIcon>
+        <StXIcon onClick={() => setIsOpen(false)}>
+          <i
+            style={{ color: '#5B5B5B', fontSize: '20px' }}
+            className="ri-close-line"
+          ></i>
+        </StXIcon>
         <StDetailContainer>
           <Swiper
             navigation={true}
@@ -266,86 +292,123 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
           </Swiper>
           <StDetailInfo>
             <StDetailDesc>
-              <img src={require('../../빡빡이1.png')} alt="detail-img" />
+              <img src={require('../../마이페이지.png')} alt="detail-img" />
               <div className="detail-info">
                 <div className="detail-top" style={{ display: 'flex' }}>
                   {/* <h2>{nickname}</h2> */}
                   <h2>{mainFeedDetail.nickname}</h2>
                   <p>{mbti?.toUpperCase()}</p>
                 </div>
-                <p>{description}</p>
-                <RouteButton
-                  onClick={openRoutine}
-                  style={{ marginTop: '20px' }}
-                >
-                  루트
-                </RouteButton>
-                <RouteShow show={routeOpen}>
-                  {placeName?.map((item: any, index: number) => {
-                    return (
-                      <div key={index}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="15"
-                          height="15"
-                          color="#644EEE"
-                          fill="currentColor"
-                          className="bi bi-geo-alt-fill"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                        </svg>
-                        <div
-                          style={{ display: 'inline-block', marginTop: '10px' }}
-                        >
-                          {item.place_name}
+                <p style={{ fontSize: '13px', marginBottom: '10px' }}>
+                  {description}
+                </p>
+                {!toggleRoute ? (
+                  <div style={{ width: '190px' }} className="detail-route">
+                    <p
+                      className="detail-route-route"
+                      onClick={() => setToggleRoute(!toggleRoute)}
+                    >
+                      루트 펼치기
+                    </p>{' '}
+                    <div className="detail-route-count">
+                      <p>{placeName?.length || 0}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="detail-route">
+                    <p
+                      className="detail-route-route"
+                      onClick={() => setToggleRoute(!toggleRoute)}
+                    >
+                      루트 접기
+                    </p>
+                    {placeName?.map((route: any, index: number) => {
+                      return (
+                        <div key={index} className="detail-route-list">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="13"
+                            height="13"
+                            color="#644EEE"
+                            fill="currentColor"
+                            className="bi bi-geo-alt-fill"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                          </svg>
+                          <p>{route.place_name}</p>
                         </div>
-                      </div>
-                    );
-                  })}
-                </RouteShow>
+                      );
+                    })}
+                  </div>
+                )}
                 <div className="detail-bottom">
                   <p>{date}</p>
                   <div style={{ display: 'flex' }}>
                     <div className="post-bottom-heart">
-                      {isLike === '0' ? (
+                      {isLike === 1 ? (
                         <StIcon>
                           <i
                             className="ri-heart-3-fill"
-                            style={{ color: 'red', fontSize: '25px' }}
-                            onClick={toggleHeart}
+                            style={{
+                              color: 'red',
+                              fontSize: '25px',
+                              marginRight: '6px',
+                            }}
+                            onClick={() => toggleHeart(feed_id)}
                           ></i>
-                          <p className="heart-number heart-position">
-                            {likeCount}
-                          </p>
+                          <p className="modal-heart-number">{likeCount}</p>
                         </StIcon>
                       ) : (
                         <StIcon>
                           <i
                             className="ri-heart-3-line"
-                            onClick={toggleHeart}
-                            style={{ color: 'red', fontSize: '25px' }}
+                            onClick={() => toggleHeart(feed_id)}
+                            style={{
+                              color: '#8E8E8E',
+                              fontSize: '25px',
+                              marginRight: '6px',
+                            }}
                           ></i>
-                          <p className="heart-number heart-position">
-                            {likeCount}
-                          </p>
+                          <p className="modal-heart-number">{likeCount}</p>
                         </StIcon>
                       )}
                     </div>
                     <div className="post-bottom-pin">
-                      <div onClick={pick}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          width="24"
-                          height="24"
-                        >
-                          <path fill="none" d="M0 0h24v24H0z" />
-                          <path d="M18 3v2h-1v6l2 3v2h-6v7h-2v-7H5v-2l2-3V5H6V3h12zM9 5v6.606L7.404 14h9.192L15 11.606V5H9z" />
-                        </svg>
-                      </div>
+                      {isPick === 1 ? (
+                        <StIcon>
+                          <i
+                            className="ri-pushpin-2-fill"
+                            style={{
+                              color: '#644eee',
+                              fontSize: '24px',
+                              marginRight: '6px',
+                            }}
+                            onClick={() => togglepick(feed_id)}
+                          ></i>
+                        </StIcon>
+                      ) : (
+                        <StIcon>
+                          <i
+                            className="ri-pushpin-2-line"
+                            style={{
+                              color: '#644eee',
+                              fontSize: '24px',
+                              marginRight: '6px',
+                            }}
+                            onClick={() => togglepick(feed_id)}
+                          ></i>
+                        </StIcon>
+                      )}
                     </div>
-                    <div className="post-bottom-route">
+                    <div
+                      className="post-bottom-route"
+                      style={{
+                        color: '#8E8E8E',
+                        fontSize: '25px',
+                        marginRight: '5px',
+                      }}
+                    >
                       <div onClick={saveRoute}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -377,7 +440,7 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
                   return (
                     <StDetailComment key={comment.comment_id}>
                       <img
-                        src={require('../../빡빡이1.png')}
+                        src={require('../../마이페이지.png')}
                         alt="detail-img"
                       />
                       <div className="detail-info">
@@ -423,9 +486,16 @@ const StIcon = styled.div`
     position: absolute;
     top: -30px;
     right: 8px;
+    color: #9e9e9e;
     /* font-size: 20px; */
   }
-
+  .modal-heart-number {
+    position: absolute;
+    top: -13px;
+    right: 14px;
+    font-size: 13px;
+    color: #9e9e9e;
+  }
   .heart-position {
     top: -10px;
     right: 9px;
@@ -446,7 +516,7 @@ const StDetailContainer = styled.div`
     background-color: #b6b6b6;
   }
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 800px) {
     /* aspect-ratio: 1/1; */
     width: 350px;
     /* height: 100%; */
@@ -461,35 +531,48 @@ const StDetailContainer = styled.div`
 `;
 
 const StDetailInput = styled.div`
-  background-color: #f2f2f2;
+  /* background-color: #f2f2f2; */
+  background-color: white;
   border-top: 1px solid #b6b6b6;
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  height: 10%;
+  /* height: 10%; */
   width: 100%;
-  padding: 30px 20px;
+  padding: 25px 24px;
 
   input {
     outline: 0;
   }
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 800px) {
     padding: 10px 20px;
   }
   input {
-    border: 1px solid gray;
+    background-color: #f6f7fa;
+    /* border: 1px solid gray; */
+    border: 0;
     border-radius: 20px;
     text-indent: 10px;
     width: 100%;
-    height: 30px;
+    height: 44px;
+
+    &::placeholder {
+      color: #b8b8b8;
+    }
   }
 
   button {
-    width: 80px;
-    height: 30px;
+    /* text-align: center; */
+    margin-left: 10px;
+    width: 50px;
+    height: 25px;
     border: 0;
-    background-color: #f2f2f2;
+    font-family: 'Nanum_EB';
+    color: #644eee;
+    font-size: 15px;
+    background-color: white;
+    /* background-color: #f2f2f2; */
 
     cursor: pointer;
   }
@@ -502,7 +585,7 @@ const StDetailInfo = styled.div`
   width: 60%;
   background-color: #f2f2f2;
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 800px) {
     width: 100%;
   }
 `;
@@ -514,14 +597,14 @@ const StDetailDesc = styled.div`
   background-color: white;
   img {
     margin-right: 10px;
-    width: 40px;
-    height: 40px;
+    width: 29px;
+    height: 29px;
     border-radius: 50%;
   }
 
-  p {
+  /* p {
     font-size: 14px;
-  }
+  } */
 
   .detail-info {
     display: flex;
@@ -530,6 +613,7 @@ const StDetailDesc = styled.div`
 
     p {
       margin: 0;
+
       /* width: 20ch; */
     }
 
@@ -541,21 +625,25 @@ const StDetailDesc = styled.div`
       font-size: 15px;
 
       h2 {
-        font-size: 18px;
+        font-family: 'Nanum_EB';
+        font-size: 13px;
         margin: 0 10px 0 0;
         color: #555555;
       }
 
       p {
+        font-family: 'Nanum_EB';
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 20px;
-        width: 60px;
+        border: 1px solid #8e8e8e;
+        width: 57px;
         height: 20px;
-        background-color: #d9d9d9;
+        background-color: white;
         color: #9e9e9e;
         letter-spacing: 1px;
+        font-size: 12px;
       }
     }
 
@@ -581,16 +669,68 @@ const StDetailDesc = styled.div`
       }
     }
   }
+
+  .detail-route {
+    position: relative;
+    p {
+      color: #9e9e9e;
+      height: 20px;
+    }
+
+    .detail-route-route {
+      margin-top: 10px;
+      color: #9e9e9e;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .detail-route-count {
+      border-radius: 50%;
+      font-size: 10px;
+      width: 15px;
+      height: 15px;
+      background-color: rgb(100, 78, 238);
+      color: white;
+      position: absolute;
+      top: 0px;
+      right: 130px;
+      /* display: none; */
+
+      p {
+        color: white;
+        margin: 0;
+        position: absolute;
+        top: 1.5px;
+        right: 4.6px;
+      }
+    }
+
+    .detail-route-list {
+      display: flex;
+      align-items: center;
+      /* justify-content: center; */
+      p {
+        font-size: 11px;
+        margin-top: 10px;
+        margin-left: 5px;
+        color: #323232;
+      }
+    }
+  }
 `;
 
 const StDetailComments = styled.div`
   aspect-ratio: 1/1;
   overflow: auto;
+  flex: 1;
   box-sizing: border-box;
   padding: 20px 20px 10px 20px;
   display: flex;
   flex-direction: column;
   background-color: white;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   @media screen and (max-width: 1024px) {
     width: 100%;
@@ -605,20 +745,22 @@ const StDetailComment = styled.div`
   margin-bottom: 15px;
   position: relative;
 
-  p {
-    font-size: 14px;
-  }
+  /* p {
+    width: 90%;
+    font-size: 13px;
+  } */
 
   img {
     margin: 10px 10px 0 0;
-    width: 40px;
-    height: 40px;
+    width: 29px;
+    height: 29px;
     border-radius: 50%;
   }
   .detail-info {
     display: flex;
     flex-direction: column;
     width: 100%;
+    font-size: 13px;
 
     p {
       margin: 0;
@@ -630,8 +772,10 @@ const StDetailComment = styled.div`
       justify-content: space-between;
       align-items: center;
       font-size: 15px;
+      padding-top: 8px;
       h2 {
-        font-size: 18px;
+        font-family: 'Nanum_EB';
+        font-size: 13px;
         margin: 0 10px 0 0;
       }
 
@@ -656,10 +800,14 @@ const StDetailComment = styled.div`
       align-items: center;
 
       &:hover {
-        background-color: #f54e4e;
+        background-color: rgb(220, 218, 230);
         color: white;
 
         cursor: pointer;
+
+        .hover-color {
+          color: white !important;
+        }
       }
     }
   }
@@ -675,6 +823,7 @@ const StXIcon = styled.div`
   justify-content: center;
   align-items: center;
 
+  font-weight: bold;
   width: 30px;
   height: 30px;
   background-color: white;
@@ -684,6 +833,13 @@ const StXIcon = styled.div`
   top: -30px;
   right: -30px;
   cursor: pointer;
+
+  @media screen and (max-width: 800px) {
+    top: 10px;
+    right: 10px;
+
+    z-index: 3;
+  }
 `;
 
 const StGroupPost = styled.div`
@@ -771,9 +927,9 @@ const StGroupPost = styled.div`
       }
 
       .post-header-route {
-        background-color: white;
+        background-color: rgba(0, 0, 0, 0.4);
         border-radius: 5px;
-        color: #5b5b5b;
+        color: white;
         font-size: 12px;
         font-weight: bold;
         padding: 10px 15px;
@@ -840,11 +996,4 @@ const StGroupPost = styled.div`
   @media screen and (max-width: 900px) {
     width: 100%;
   }
-`;
-
-const RouteButton = styled.div`
-  cursor: pointer;
-`;
-const RouteShow = styled.div<IAppState>`
-  display: ${props => (props.show ? 'none' : '')};
 `;

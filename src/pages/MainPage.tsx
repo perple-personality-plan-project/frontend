@@ -56,8 +56,9 @@ const MainPage = () => {
               <div style={{ margin: '10px 0 0 10px' }}>
                 {/* {mbtiCheck === '사람들' ? '은' : '는'} */}
               </div>
+              <StTagText>는 뭐하고 놀까?</StTagText>
             </StTagHeader>
-            <StTagText>뭐하고 놀까?</StTagText>
+
             <StHeaderText>
               MBTI 검사하고 나에게 맞는 HOT PLACE 찾자!
             </StHeaderText>
@@ -73,8 +74,8 @@ const MainPage = () => {
               className="mbti-button"
               style={{
                 border: '1px solid white',
-                borderRadius: '20px',
-                padding: '10px',
+                borderRadius: '40px',
+                padding: '25px',
                 marginTop: '20px',
                 marginLeft: '53%',
               }}
@@ -104,6 +105,7 @@ const MainPage = () => {
 export default MainPage;
 
 const StHeaderText = styled.div`
+  font-family: 'Nanum_L';
   font-size: 20px;
   color: white;
   margin-top: 20px;
@@ -119,7 +121,7 @@ const StMbti = styled.div`
   border-radius: 50px;
   background-color: white;
   font-weight: 500;
-  margin-left: 20px;
+  /* margin-left: 20px; */
 
   /* @media screen and (max-width: 800px) {
     justify-content: center;
@@ -139,12 +141,16 @@ const StHeader = styled.div`
   padding-left: 150px;
   width: 100%;
   min-width: 400px;
+  margin-top: 3%;
 
   .mbti-button {
     display: flex;
     align-items: center;
-    max-width: 160px;
-    height: 10%;
+    width: 150px;
+    height: 40px;
+    font-family: 'Nanum_L';
+    padding: 10px;
+
     color: white;
     font-size: 13px;
     border: '1px solid white';
@@ -172,8 +178,9 @@ const StTagHeader = styled.div`
 
 const StTagText = styled.div`
   color: white;
+  margin-top: 10px;
 
-  margin: 20px 0 0 33%;
+  /* margin: 20px 0 0 33%; */
 
   @media screen and (max-width: 1024px) {
     margin: 10px 0 0 0;
@@ -193,13 +200,13 @@ const Backgr = styled.div`
   align-items: center;
   position: relative;
   width: 100%;
-  height: 380px;
+  height: 390px;
   font-size: 40px;
   justify-content: center;
   left: 0;
   right: 0;
   border-radius: 0 0 0 250px;
-  padding-top: 10vh;
+  padding-top: 11vh;
   background-color: #644eee;
 
   /* @media screen and (max-width: 800px) {
@@ -297,6 +304,6 @@ const PostListContainer = styled.div`
   }
 
   @media screen and (max-width: 500px) {
-    margin-top: 20vh;
+    margin-top: 16vh;
   }
 `;

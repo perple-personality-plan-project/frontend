@@ -13,19 +13,20 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
     'All', //0
     'ISTJ', //1
     'ISTP', //2
-    'ISFJ',
-    'INTJ',
-    'INTP',
-    'INFJ',
-    'INFP',
-    'ESTJ',
-    'ESTP',
-    'ESFJ',
-    'ESFP',
-    'ENTJ',
-    'ENTP',
-    'ENFJ',
-    'ENFP',
+    'ISFJ', //3
+    'ISFP', //4
+    'INTJ', //5
+    'INTP', //6
+    'INFJ', //7
+    'INFP', //8
+    'ESTJ', //9
+    'ESTP', //10
+    'ESFJ', //11
+    'ESFP', //12
+    'ENTJ', //13
+    'ENTP', //14
+    'ENFJ', //15
+    'ENFP', //16
   ];
   const mbti = sessionStorage.getItem('mbti');
   let mbtiIdx: number;
@@ -46,7 +47,7 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
         mousewheel={true}
         keyboard={true}
         cardsEffect={{
-          perSlideOffset: 15,
+          perSlideOffset: 16,
           rotate: false,
           //   slideShadows: true,
         }}
@@ -67,7 +68,14 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
               key={index}
             >
               <div>
-                <img src={require('../../src/빡빡이1.png')} />
+                <img
+                  style={{
+                    paddingBottom: '70px',
+                    paddingLeft: '80px',
+                    maxWidth: '430px',
+                  }}
+                  src={require(`../../src/components/images/${index}.jpg`)}
+                />
               </div>
               {mbti}
             </SwiperSlide>
@@ -84,44 +92,47 @@ const StSwiper = styled.div`
   box-sizing: border-box;
   width: 100%;
   padding-right: 120px;
+  margin-top: 13px;
+
+  @media screen and (max-width: 500px) {
+    max-width: 380px;
+    margin: 5px auto;
+    width: 90%;
+
+    /* height: -10%; */
+  }
+
   /* .swiper-slide:nth-child(1n) {
     background-color: rgb(206, 17, 17);
   }
   .swiper-slide:nth-child(2n) {
-    background-color: rgb(0, 140, 255);
+    background-color: #d4cdfa;
   }
 
   .swiper-slide:nth-child(3n) {
-    background-color: rgb(10, 184, 111);
+    background-color: #d4cdfa;
   }
 
   .swiper-slide:nth-child(4n) {
-    background-color: rgb(211, 122, 7);
+    background-color: #d4cdfa;
   }
 
   .swiper-slide:nth-child(5n) {
-    background-color: rgb(118, 163, 12);
+    background-color: #d4cdfa;
   }
 
   .swiper-slide:nth-child(6n) {
-    background-color: rgb(180, 10, 47);
+    background-color: #9383f3;
   }
 
   .swiper-slide:nth-child(7n) {
-    background-color: rgb(35, 99, 19);
+    background-color: #9383f3;
   }
 
   .swiper-slide:nth-child(8n) {
-    background-color: rgb(0, 68, 255);
-  }
-
-  .swiper-slide:nth-child(9n) {
-    background-color: rgb(218, 12, 218);
-  }
-
-  .swiper-slide:nth-child(10n) {
-    background-color: rgb(54, 94, 77);
+    background-color: #9383f3;
   } */
+
   .swiper {
     aspect-ratio: 4.5/5;
     max-width: 460px;
