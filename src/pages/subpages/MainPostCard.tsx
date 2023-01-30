@@ -195,10 +195,15 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
       place_group_name: parsedLocation.place_group_name,
     };
 
-    console.log(saveData);
+    // console.log(saveData);
+    if (saveData.place_group_name === '없음') {
+      console.log(saveData);
+      return alert('저장할 루트가 없습니다');
+    } else {
+      dispatch(__RootMaker(saveData));
+      alert('저장성공');
+    }
     // console.log(parsedLocation);
-    dispatch(__RootMaker(saveData));
-    alert('저장성공');
   };
 
   return (
