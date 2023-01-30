@@ -71,7 +71,7 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
                 <img
                   style={{
                     paddingBottom: '70px',
-                    paddingLeft: '80px',
+                    paddingLeft: '70px',
                     maxWidth: '430px',
                   }}
                   src={require(`../../src/components/images/${index}.jpg`)}

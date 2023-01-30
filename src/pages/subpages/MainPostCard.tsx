@@ -36,6 +36,7 @@ interface Props {
     user_id: number;
     isLike: number | string;
     isPick: number | string;
+    profile_img: string;
   };
 }
 
@@ -62,8 +63,8 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
   } = post;
 
   const groupName = JSON.parse(location);
-  // console.log(groupName);
-  console.log(post);
+  console.log(groupName);
+  // console.log(post);
   const { mainFeedDetail }: any = useAppSelector(store => store.post);
 
   const date = created_at
@@ -114,18 +115,6 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
     console.log(x);
     dispatch(__mainFeedlist({ userId }));
   };
-
-  // const togglepick = async () => {
-  //   await loggedIn
-  //     .put(`api/feed/${mainFeedDetail.feed_id}/pick`)
-  //     .then(response => {
-  //       if (response.data.data.message === '찜하기가 취소되었습니다.') {
-  //         alert('찜 취소');
-  //       } else {
-  //         alert('찜!');
-  //       }
-  //     });
-  // };
 
   const deleteComment = async (commentId: string | number) => {
     await loggedIn.delete(`api/comment/${feed_id}/${commentId}`);
@@ -181,11 +170,19 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
         <div onClick={openModal}>
           <div className="post-header">
             <div className="post-header-info">
-              <img
-                style={{ width: '40px', height: '40px' }}
-                src={require('../../마이페이지.png')}
-                alt="group-img"
-              />
+              {post.profile_img === null ? (
+                <img
+                  style={{ width: '40px', height: '40px' }}
+                  src={require('../../마이페이지.png')}
+                  alt="group-img"
+                />
+              ) : (
+                <img
+                  style={{ width: '40px', height: '40px' }}
+                  src={`${process.env.REACT_APP_IMG_SERVER}/${post.profile_img}`}
+                  alt="group-img"
+                />
+              )}
               <h3>{nickname}</h3>
               <p>{mbti?.toUpperCase()}</p>
             </div>
@@ -292,56 +289,71 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
           </Swiper>
           <StDetailInfo>
             <StDetailDesc>
-              <img src={require('../../마이페이지.png')} alt="detail-img" />
+              {post.profile_img === null ? (
+                <img
+                  style={{ width: '40px', height: '40px' }}
+                  src={require('../../마이페이지.png')}
+                  alt="group-img"
+                />
+              ) : (
+                <img
+                  style={{ width: '40px', height: '40px' }}
+                  src={`${process.env.REACT_APP_IMG_SERVER}/${post.profile_img}`}
+                  alt="group-img"
+                />
+              )}
               <div className="detail-info">
                 <div className="detail-top" style={{ display: 'flex' }}>
                   {/* <h2>{nickname}</h2> */}
                   <h2>{mainFeedDetail.nickname}</h2>
                   <p>{mbti?.toUpperCase()}</p>
                 </div>
-                <p style={{ fontSize: '13px', marginBottom: '10px' }}>
+
+                <StDiv>
                   {description}
-                </p>
-                {!toggleRoute ? (
-                  <div style={{ width: '190px' }} className="detail-route">
-                    <p
-                      className="detail-route-route"
-                      onClick={() => setToggleRoute(!toggleRoute)}
-                    >
-                      루트 펼치기
-                    </p>{' '}
-                    <div className="detail-route-count">
-                      <p>{placeName?.length || 0}</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="detail-route">
-                    <p
-                      className="detail-route-route"
-                      onClick={() => setToggleRoute(!toggleRoute)}
-                    >
-                      루트 접기
-                    </p>
-                    {placeName?.map((route: any, index: number) => {
-                      return (
-                        <div key={index} className="detail-route-list">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="13"
-                            height="13"
-                            color="#644EEE"
-                            fill="currentColor"
-                            className="bi bi-geo-alt-fill"
-                            viewBox="0 0 16 16"
-                          >
-                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                          </svg>
-                          <p>{route.place_name}</p>
+                  {groupName.place_group_name !== '없음' ? (
+                    !toggleRoute ? (
+                      <div className="route-open">
+                        <p
+                          className="route-open-button"
+                          onClick={() => setToggleRoute(!toggleRoute)}
+                        >
+                          루트 펼치기
+                        </p>{' '}
+                        <div className="route-open-count">
+                          <p>{placeName?.length || 0}</p>
                         </div>
-                      );
-                    })}
-                  </div>
-                )}
+                      </div>
+                    ) : (
+                      <div className="route-close">
+                        <p
+                          className="route-close-button"
+                          onClick={() => setToggleRoute(!toggleRoute)}
+                        >
+                          루트 접기
+                        </p>
+                        {placeName?.map((route: any, index: number) => {
+                          return (
+                            <div key={index} className="route-close-list">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="13"
+                                height="13"
+                                color="#644EEE"
+                                fill="currentColor"
+                                className="bi bi-geo-alt-fill"
+                                viewBox="0 0 16 16"
+                              >
+                                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                              </svg>
+                              <p>{route.place_name}</p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )
+                  ) : null}
+                </StDiv>
                 <div className="detail-bottom">
                   <p>{date}</p>
                   <div style={{ display: 'flex' }}>
@@ -669,50 +681,63 @@ const StDetailDesc = styled.div`
       }
     }
   }
+`;
 
-  .detail-route {
-    position: relative;
-    p {
-      color: #9e9e9e;
-      height: 20px;
+const StDiv = styled.div`
+  position: relative;
+  font-size: 13px;
+  margin-bottom: 10px;
+
+  .route-open,
+  .route-close {
+    position: absolute;
+    background-color: #f6f4fd;
+    box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.25);
+    margin-top: 10px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    z-index: 10;
+    /* left: -4px; */
+
+    .route-open-button {
+      font-size: 10px;
+      color: gray;
     }
 
-    .detail-route-route {
-      margin-top: 10px;
-      color: #9e9e9e;
+    .route-close-button {
       font-size: 10px;
-      cursor: pointer;
+      color: gray;
     }
 
-    .detail-route-count {
-      border-radius: 50%;
-      font-size: 10px;
-      width: 15px;
-      height: 15px;
-      background-color: rgb(100, 78, 238);
+    .route-open-count {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* text-align: center; */
       color: white;
+      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      font-size: 8px;
       position: absolute;
-      top: 0px;
-      right: 130px;
-      /* display: none; */
-
-      p {
-        color: white;
-        margin: 0;
-        position: absolute;
-        top: 1.5px;
-        right: 4.6px;
-      }
+      top: -10px;
+      right: -10px;
+      background-color: rgb(100, 78, 238);
     }
 
-    .detail-route-list {
+    .route-close-list {
       display: flex;
       align-items: center;
       /* justify-content: center; */
+      padding-top: 5px;
+      height: 20px;
       p {
         font-size: 11px;
-        margin-top: 10px;
-        margin-left: 5px;
+        padding-left: 5px;
+        /* margin-top: 10px; */
+
+        /* margin-left: 5px; */
         color: #323232;
       }
     }
@@ -728,13 +753,14 @@ const StDetailComments = styled.div`
   display: flex;
   flex-direction: column;
   background-color: white;
+
   &::-webkit-scrollbar {
     display: none;
   }
-
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 800px) {
+    aspect-ratio: 1/0.5;
     width: 100%;
-    height: 300px;
+    height: 250px;
   }
 `;
 
