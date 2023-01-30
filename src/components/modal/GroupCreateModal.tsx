@@ -289,6 +289,8 @@ const StGroupImg = styled.div`
 
   p {
     margin: 0 0 10px 0;
+    font-size: 13px;
+    color: gray;
   }
   img {
     width: 100%;
@@ -337,8 +339,9 @@ const StGroupInfo = styled.div`
 const StGroupInput = styled.div`
   margin-bottom: 10px;
   label {
+    color: gray;
     display: block;
-    font-size: 14px;
+    font-size: 13px;
     margin-bottom: 5px;
   }
   input {
@@ -352,6 +355,7 @@ const StGroupInput = styled.div`
   }
 
   .tag-plus {
+    color: gray;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -360,7 +364,7 @@ const StGroupInput = styled.div`
     background-color: white;
     border: 1px solid #d9d9d9;
     border-radius: 10px;
-    color: black;
+    /* color: black; */
     margin-left: 10px;
     cursor: pointer;
 
@@ -408,7 +412,8 @@ const StTagSet = styled.div`
 
 const StGroupTextArea = styled.div`
   p {
-    font-size: 14px;
+    color: gray;
+    font-size: 13px;
     margin: 0 0 5px 0;
   }
   textarea {
