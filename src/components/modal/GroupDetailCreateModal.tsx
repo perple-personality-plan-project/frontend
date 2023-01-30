@@ -246,6 +246,7 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
                 <textarea
                   name="description"
                   onChange={e => handleGroupInfo(e)}
+                  maxLength={100}
                 ></textarea>
               </StGroupTextArea>
               <StGroupBtn onClick={sendData}>모두 작성했어요!</StGroupBtn>

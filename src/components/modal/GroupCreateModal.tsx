@@ -190,6 +190,7 @@ const GroupCreateModal: React.FC<Props> = ({
                   name="group_name"
                   onChange={e => handleGroupInfo(e)}
                   placeholder="내용을 작성해주세요."
+                  maxLength={20}
                 />
               </StGroupInput>
               <StGroupInput>
@@ -201,6 +202,7 @@ const GroupCreateModal: React.FC<Props> = ({
                     onChange={e => setTag(e.target.value)}
                     value={tag}
                     placeholder="태그를 추가해주세요. (최대 3개)"
+                    maxLength={8}
                   />
                   <div onClick={addTag} className="tag-plus">
                     +
@@ -227,6 +229,7 @@ const GroupCreateModal: React.FC<Props> = ({
                 <textarea
                   name="description"
                   onChange={e => handleGroupInfo(e)}
+                  maxLength={100}
                 ></textarea>
               </StGroupTextArea>
               <StGroupBtn

@@ -162,6 +162,7 @@ const SignUpPage = () => {
             value={LoginId}
             onChange={onLoginIdHandler}
             placeholder="아이디"
+            maxLength={10}
           />
           {LoginId ? <p className="validation-text">{IdMessage}</p> : null}
         </div>
@@ -174,6 +175,7 @@ const SignUpPage = () => {
             value={NickName}
             onChange={onNickNameHandler}
             placeholder="닉네임"
+            maxLength={8}
           />
           {NickName ? (
             <p className="validation-text">{nickNameMessage}</p>
@@ -188,6 +190,7 @@ const SignUpPage = () => {
             value={Password}
             onChange={onPasswordHandler}
             placeholder="비밀번호"
+            maxLength={50}
           />
           {Password ? <p className="validation-text">{PwMessage}</p> : null}
         </div>
@@ -200,6 +203,7 @@ const SignUpPage = () => {
             value={ConfirmPassword}
             onChange={e => setConfirmPassword(e.currentTarget.value)}
             placeholder="비밀번호 확인"
+            maxLength={50}
           />
           {ConfirmPassword ? (
             <p className="validation-text">{PwConfirmMessage}</p>
@@ -221,6 +225,7 @@ const SignUpPage = () => {
               value={Mbti}
               onChange={onMbtiHandler}
               placeholder="MBTI를 적어주세요"
+              maxLength={4}
             />
             {Mbti ? <p className="validation-text">{mbtiMessage}</p> : null}
           </div>
