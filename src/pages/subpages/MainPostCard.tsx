@@ -63,8 +63,42 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
   } = post;
 
   const groupName = JSON.parse(location);
-  console.log(groupName);
+  // console.log(groupName);
   // console.log(post);
+
+  let parsedLocation: {
+    created_at: string;
+    map_id: number;
+    place_group: string;
+    place_group_name: string;
+    updated_at: string;
+    user_id: number;
+  };
+
+  let parsedData;
+  let parsedPlace;
+  if (
+    groupName.place_group_name !== undefined &&
+    groupName.place_group_name !== '없음'
+  ) {
+    parsedData = JSON.parse(location);
+    parsedPlace = JSON.parse(parsedData.place_group);
+
+    // console.log(groupName.place_group);
+    parsedLocation = { ...JSON.parse(location) };
+  } else {
+    parsedLocation = {
+      created_at: '',
+      map_id: 0,
+      place_group: '없음',
+      place_group_name: '없음',
+      updated_at: '',
+      user_id: 0,
+    };
+  }
+
+  console.log(parsedLocation);
+
   const { mainFeedDetail }: any = useAppSelector(store => store.post);
 
   const date = created_at
@@ -130,22 +164,22 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
     dispatch(__mainFeedDetail({ feedId: feed_id, userId: userId }));
   };
 
-  let modalParse: { place_group: string; place_group_name: string } = {
-    place_group: '',
-    place_group_name: '',
-  };
-  let placeName: [] = [];
+  // let modalParse: { place_group: string; place_group_name: string } = {
+  //   place_group: '',
+  //   place_group_name: '',
+  // };
+  // let placeName: [] = [];
 
-  if (mainFeedDetail.location === undefined) {
-    modalParse = { place_group: '', place_group_name: '' };
-    placeName = [];
-  } else if (mainFeedDetail.location === '{}') {
-    modalParse = { place_group: '', place_group_name: '' };
-    placeName = [];
-  } else {
-    modalParse = JSON.parse(mainFeedDetail.location);
-    placeName = JSON.parse(modalParse.place_group);
-  }
+  // if (mainFeedDetail.location === undefined) {
+  //   modalParse = { place_group: '', place_group_name: '' };
+  //   placeName = [];
+  // } else if (mainFeedDetail.location === '{}') {
+  //   modalParse = { place_group: '', place_group_name: '' };
+  //   placeName = [];
+  // } else {
+  //   modalParse = JSON.parse(mainFeedDetail.location);
+  //   placeName = JSON.parse(modalParse.place_group);
+  // }
 
   // if (mainFeedDetail.location === undefined) {
   //   // console.log('undefined');
@@ -157,9 +191,12 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
 
   const saveRoute = () => {
     const saveData = {
-      place_group: modalParse.place_group,
-      place_group_name: modalParse.place_group_name,
+      place_group: parsedLocation.place_group,
+      place_group_name: parsedLocation.place_group_name,
     };
+
+    console.log(saveData);
+    // console.log(parsedLocation);
     dispatch(__RootMaker(saveData));
     alert('저장성공');
   };
@@ -186,9 +223,11 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
               <h3>{nickname}</h3>
               <p>{mbti?.toUpperCase()}</p>
             </div>
-            <div className="post-header-route">
-              {groupName.place_group_name}
-            </div>
+            {parsedLocation.place_group_name !== '없음' ? (
+              <div className="post-header-route">
+                {parsedLocation.place_group_name}
+              </div>
+            ) : null}
           </div>
 
           <img
@@ -305,13 +344,13 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
               <div className="detail-info">
                 <div className="detail-top" style={{ display: 'flex' }}>
                   {/* <h2>{nickname}</h2> */}
-                  <h2>{mainFeedDetail.nickname}</h2>
+                  <h2>{nickname}</h2>
                   <p>{mbti?.toUpperCase()}</p>
                 </div>
 
                 <StDiv>
                   {description}
-                  {groupName.place_group_name !== '없음' ? (
+                  {parsedLocation.place_group_name !== '없음' ? (
                     !toggleRoute ? (
                       <div className="route-open">
                         <p
@@ -321,7 +360,7 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
                           루트 펼치기
                         </p>{' '}
                         <div className="route-open-count">
-                          <p>{placeName?.length || 0}</p>
+                          <p>{parsedPlace?.length || 0}</p>
                         </div>
                       </div>
                     ) : (
@@ -332,7 +371,7 @@ const MainPostCard: React.FC<Props> = ({ post }) => {
                         >
                           루트 접기
                         </p>
-                        {placeName?.map((route: any, index: number) => {
+                        {parsedPlace?.map((route: any, index: number) => {
                           return (
                             <div key={index} className="route-close-list">
                               <svg
