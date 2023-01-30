@@ -96,7 +96,7 @@ const MainPage = () => {
                   paddingLeft: '1em',
                   maxWidth: '420px',
                 }}
-                src={require(`../../src/메인이미지.png`)}
+                src={require(`../../src/components/images/mainlogo/메인이미지.png`)}
               />
             </MainImg>
           </StHeader>
