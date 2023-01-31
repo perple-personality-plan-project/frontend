@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
+import loggedIn from '../api/loggedIn';
 
 const MBTIKakao = () => {
   const [data, setData] = useState('');
@@ -24,10 +25,15 @@ const MBTIKakao = () => {
     'ISFJ',
   ];
 
+  const mbtiUpdate = async (mbti: string) => {
+    await loggedIn.patch('api/user/update-mbti', { mbti: mbti });
+  };
+
   const sendMbti = () => {
     if (mbtiList.includes(data.toUpperCase())) {
       // console.log(data.toUpperCase());
       sessionStorage.setItem('mbti', data.toUpperCase());
+      mbtiUpdate(data.toUpperCase());
       navigate('/');
     } else {
       alert('MBTI를 제대로 입력해주세요!');
