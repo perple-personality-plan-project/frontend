@@ -61,8 +61,12 @@ const FeedModal: React.FC = () => {
   };
 
   const sendData = async () => {
+    if (thumbnail === undefined || thumbnail?.length === 0) {
+      alert('이미지를 넣어 주세요');
+      return;
+    }
     const formData = new FormData();
-    for (let i = 0; i < thumbnail.length; i++) {
+    for (let i = 0; i < thumbnail?.length; i++) {
       formData.append('thumbnail', thumbnail[i]);
     }
     formData.append(
@@ -80,8 +84,10 @@ const FeedModal: React.FC = () => {
       setIsOpen(false);
       setImageSrc([]);
       setRoute('');
-
+      setThumbnail([]);
       alert('게시글 작성 완료!');
+    } else if (thumbnail === undefined || thumbnail?.length === 0) {
+      alert('이미지를 넣어 주세요');
     } else {
       alert('형식을 모두 작성해주세요');
     }
