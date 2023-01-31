@@ -228,43 +228,54 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
               >
                 루트 펼치기
               </RouteButton>
-              <RouteShowBox show={routeOpen}>
-                <RouteFoldButton
+              {placeName?.length == 0 ? (
+                <RouteButtonZero
                   show={routeOpen}
                   onClick={openRoutine}
                   style={{ marginTop: '20px' }}
                 >
-                  루트 접기
-                </RouteFoldButton>
-                <RouteShow show={routeOpen}>
-                  {placeName?.map((item: any, index: number) => {
-                    return (
-                      <div key={index}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="15"
-                          height="15"
-                          color="#644EEE"
-                          fill="currentColor"
-                          className="bi bi-geo-alt-fill"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                        </svg>
-                        <div
-                          style={{
-                            display: 'inline-block',
-                            marginTop: '10px',
-                            fontSize: '11px',
-                          }}
-                        >
-                          {item.place_name}
+                  루트 펼치기
+                </RouteButtonZero>
+              ) : (
+                <RouteShowBox show={routeOpen}>
+                  <RouteFoldButton
+                    show={routeOpen}
+                    onClick={openRoutine}
+                    style={{ marginTop: '20px' }}
+                  >
+                    루트 접기
+                  </RouteFoldButton>
+                  <RouteShow show={routeOpen}>
+                    {placeName?.map((item: any, index: number) => {
+                      return (
+                        <div key={index}>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="15"
+                            height="15"
+                            color="#644EEE"
+                            fill="currentColor"
+                            className="bi bi-geo-alt-fill"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                          </svg>
+                          <div
+                            style={{
+                              display: 'inline-block',
+                              marginTop: '10px',
+                              fontSize: '11px',
+                            }}
+                          >
+                            {item.place_name}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </RouteShow>
-              </RouteShowBox>
+                      );
+                    })}
+                  </RouteShow>
+                </RouteShowBox>
+              )}
+
               <div className="detail-bottom">
                 <p>{date}</p>
                 <div style={{ display: 'flex' }}>
@@ -525,6 +536,28 @@ const RouteButton = styled.div<IAppState>`
     bottom: 245px;
   }
 `;
+const RouteButtonZero = styled.div<IAppState>`
+  width: 60px;
+  height: 5px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 500px;
+  font-size: 12px;
+  background-color: #f6f4fd;
+  box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.25);
+  color: gray;
+  cursor: pointer;
+  display: ${props => (props.show ? '' : 'none')};
+  @media screen and (max-width: 1120px) {
+    bottom: 445px;
+  }
+  @media screen and (max-width: 412px) {
+    bottom: 245px;
+  }
+`;
 
 const RouteFoldButton = styled.div<IAppState>`
   color: gray;
@@ -538,14 +571,15 @@ const RouteShowBox = styled.div<IAppState>`
   background-color: #f6f4fd;
   box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.25);
   position: absolute;
-  bottom: 425px;
+  bottom: 405px;
+  width: fit-content;
   padding: 5px 10px;
   border-radius: 5px;
   z-index: 10;
   padding-top: 25px;
   display: ${props => (props.show ? '' : 'none')};
   @media screen and (max-width: 1120px) {
-    bottom: 370px;
+    bottom: 350px;
   }
   @media screen and (max-width: 412px) {
     bottom: 170px;
