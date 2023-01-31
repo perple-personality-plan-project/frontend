@@ -96,6 +96,14 @@
 
 <table class="type05">
   <tr>
+    <th scope="row">React.js</th>
+    <td>자바스크립트 런타임</td>
+  </tr>
+  <tr>
+    <th scope="row">Redux</th>
+    <td>상태관리 툴</td>
+  </tr>
+  <tr>
     <th scope="row">Node.js</th>
     <td>자바스크립트 런타임</td>
   </tr>
