@@ -95,6 +95,7 @@ function MyPage() {
     await dispatch(__updateProfile(patchProfile));
     await dispatch(__getMyProfile());
     setProfileEdit(false);
+    sessionStorage.setItem('mbti', MBTI.toUpperCase());
   };
 
   const navigate = useNavigate();
@@ -128,6 +129,9 @@ function MyPage() {
     e.preventDefault();
 
     setProfileEdit(true);
+    dispatch(__getMyProfile());
+    setMBTI(profileInfo[0]?.mbti);
+    setnickName(profileInfo[0]?.nickname);
   };
   const fetchMoreData = () => {
     setTimeout(() => {
