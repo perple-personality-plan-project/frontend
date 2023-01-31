@@ -20,16 +20,18 @@ import MainNav from '../components/MainNav';
 import KakaoRedirect from '../pages/subpages/KakaoRedirect';
 import Navbar from '../components/Navbar';
 import MBTIKakao from '../pages/MBTIKakao';
+import NotFound from '../pages/subpages/NotFound';
 
 const Router = () => {
   return (
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
+          <Route path="*" element={<NotFound />} />
           <Route path="/mbtikakao" element={<MBTIKakao />} />
           <Route path="/kakaocallback" element={<KakaoRedirect />} />
           <Route
-            path="/:id"
+            path="/group/:id"
             element={
               <div
                 style={{

@@ -23,7 +23,7 @@ const GroupCard: React.FC<groupCardPreset> = ({ group }): JSX.Element => {
 
   const navigateValidation = () => {
     if (accessToken) {
-      navigate(`/${group_id}`);
+      navigate(`/group/${group_id}`);
     } else {
       alert('로그인이 필요한 서비스입니다!');
       navigate('/signin');
