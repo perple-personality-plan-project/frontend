@@ -280,7 +280,7 @@ function MyPage() {
                     show={profileEdit}
                     required
                     defaultValue={item.mbti}
-                    pattern="^(intj|infj|infj|intj|istp|isfp|infp|intp|estp|esfp|enfp|entp|estj|esfj|enfj|entj|INTJ|INFJ|INTJ|ISTP|ISFP|INFP|INTP|ESTP|ESFP|ENFP|ENTP|ESTJ|ESFJ|ENFJ|ENTJ)$"
+                    pattern="^(istj|isfj|infj|intj|istp|isfp|infp|intp|estp|esfp|enfp|entp|estj|esfj|enfj|entj|ISTJ|ISFJ|INFJ|INTJ|ISTP|ISFP|INFP|INTP|ESTP|ESFP|ENFP|ENTP|ESTJ|ESFJ|ENFJ|ENTJ)$"
                     onInvalid={e =>
                       (e.target as HTMLInputElement).setCustomValidity(
                         'MBTI를 올바르게 입력해 주세요',

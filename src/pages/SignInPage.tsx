@@ -117,6 +117,7 @@ const Wrap = styled.div`
     text-align: center;
     flex-direction: column;
     align-items: center;
+    width: 400px;
   }
 `;
 
