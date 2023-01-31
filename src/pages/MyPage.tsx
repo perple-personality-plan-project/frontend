@@ -480,9 +480,14 @@ function MyPage() {
                       }}
                     />
                     {/* <TopGradation></TopGradation> */}
-                    <Address>
-                      {JSON.parse(item?.location).place_group_name}🏃
-                    </Address>
+                    {JSON.parse(item.location).place_group_name === undefined ||
+                    JSON.parse(item.location).place_group_name === '없음' ? (
+                      <div></div>
+                    ) : (
+                      <Address>
+                        {JSON.parse(item?.location).place_group_name} 🏃
+                      </Address>
+                    )}
                   </Feed>
                 );
               })}
