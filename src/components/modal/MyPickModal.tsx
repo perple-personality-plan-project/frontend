@@ -49,10 +49,6 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
   const mainFeedComment: any = useAppSelector(
     store => store.post.mainFeedDetail,
   );
-  console.log(mainFeedComment);
-  const openRoutine = () => {
-    setRouteOpen(!routeOpen);
-  };
 
   const date = mainFeedDetail?.created_at
     ?.replace('T', '. ')
@@ -175,7 +171,11 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
         }
       });
   };
-
+  const openRoutine = () => {
+    if (placeName.length !== 0) {
+      setRouteOpen(!routeOpen);
+    }
+  };
   return (
     <MyFeedDetailModal
       onClose={() => close()}
