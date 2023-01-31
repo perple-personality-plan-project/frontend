@@ -145,22 +145,46 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
   };
 
   const togglepick = async (feedId: number) => {
-    await loggedIn.put(`api/feed/${feed_id}/pick`);
-    dispatch(__mainFeedlist({ userId }));
-    dispatch(
-      __mainMbtilist({
-        userId: userId,
-        mbtiCheck: mbtiCheck,
-      }),
-    );
+    await loggedIn.put(`api/feed/${feed_id}/pick`).then(response => {
+      if (response.data.data.message === '찜목록에 추가되었습니다.') {
+        dispatch(__mainFeedlist({ userId }));
+        dispatch(
+          __mainMbtilist({
+            userId: userId,
+            mbtiCheck: mbtiCheck,
+          }),
+        );
+        alert('찜 성공!');
+      } else {
+        dispatch(__mainFeedlist({ userId }));
+        dispatch(
+          __mainMbtilist({
+            userId: userId,
+            mbtiCheck: mbtiCheck,
+          }),
+        );
+        alert('찜 취소!');
+      }
+    });
   };
+
+  // const togglepick = async (feedId: number) => {
+  //   await loggedIn.put(`api/feed/${feed_id}/pick`);
+  //   dispatch(__mainFeedlist({ userId }));
+  //   dispatch(
+  //     __mainMbtilist({
+  //       userId: userId,
+  //       mbtiCheck: mbtiCheck,
+  //     }),
+  //   );
+  // };
 
   const deleteComment = async (commentId: string | number) => {
     if (window.confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
       await loggedIn.delete(`api/comment/${feed_id}/${commentId}`);
       dispatch(__mainFeedDetail({ feedId: feed_id, userId: userId }));
     } else {
-      // alert("취소합니다.");
+      // alert('취소합니다.');
     }
   };
 
@@ -264,7 +288,7 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
               <StIcon>
                 <i
                   className="ri-heart-3-fill"
-                  style={{ color: 'red', fontSize: '25px' }}
+                  style={{ color: 'red', fontSize: '25px', cursor: 'pointer' }}
                   onClick={() => toggleHeart(feed_id)}
                 ></i>
                 <p className="heart-number">{likeCount}</p>
@@ -274,7 +298,11 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
                 <i
                   className="ri-heart-3-line"
                   onClick={() => toggleHeart(feed_id)}
-                  style={{ color: '#8E8E8E', fontSize: '25px' }}
+                  style={{
+                    color: '#8E8E8E',
+                    fontSize: '25px',
+                    cursor: 'pointer',
+                  }}
                 ></i>
                 <p className="heart-number">{likeCount}</p>
               </StIcon>
@@ -285,7 +313,11 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
               <StIcon>
                 <i
                   className="ri-pushpin-2-fill"
-                  style={{ color: '#644eee', fontSize: '24px' }}
+                  style={{
+                    color: '#644eee',
+                    fontSize: '24px',
+                    cursor: 'pointer',
+                  }}
                   onClick={() => togglepick(feed_id)}
                 ></i>
               </StIcon>
@@ -293,14 +325,21 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
               <StIcon>
                 <i
                   className="ri-pushpin-2-line"
-                  style={{ color: '#644eee', fontSize: '24px' }}
+                  style={{
+                    color: '#644eee',
+                    fontSize: '24px',
+                    cursor: 'pointer',
+                  }}
                   onClick={() => togglepick(feed_id)}
                 ></i>
               </StIcon>
             )}
           </div>
 
-          <div className="post-bottom-route" style={{ marginLeft: '5px' }}>
+          <div
+            className="post-bottom-route"
+            style={{ marginLeft: '5px', cursor: 'pointer' }}
+          >
             <div onClick={saveRoute}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -422,6 +461,7 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
                               color: 'red',
                               fontSize: '25px',
                               marginRight: '6px',
+                              cursor: 'pointer',
                             }}
                             onClick={() => toggleHeart(feed_id)}
                           ></i>
@@ -436,6 +476,7 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
                               color: '#8E8E8E',
                               fontSize: '25px',
                               marginRight: '6px',
+                              cursor: 'pointer',
                             }}
                           ></i>
                           <p className="modal-heart-number">{likeCount}</p>
@@ -451,6 +492,7 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
                               color: '#644eee',
                               fontSize: '24px',
                               marginRight: '6px',
+                              cursor: 'pointer',
                             }}
                             onClick={() => togglepick(feed_id)}
                           ></i>
@@ -463,6 +505,7 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
                               color: '#644eee',
                               fontSize: '24px',
                               marginRight: '6px',
+                              cursor: 'pointer',
                             }}
                             onClick={() => togglepick(feed_id)}
                           ></i>
@@ -475,6 +518,7 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
                         color: '#8E8E8E',
                         fontSize: '25px',
                         marginRight: '5px',
+                        cursor: 'pointer',
                       }}
                     >
                       <div onClick={saveRoute}>
@@ -556,6 +600,13 @@ const StIcon = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+
+  /* .ri-heart-3-fill {
+    cursor: pointer;
+  }
+  .ri-heart-3-line {
+    cursor: pointer;
+  } */
 
   .heart-number {
     position: absolute;
