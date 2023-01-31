@@ -149,7 +149,6 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
       .put(`api/feed/${mainFeedDetail.feed_id}/pick`)
       .then(response => {
         if (response.data.data.message === '찜하기가 취소되었습니다.') {
-          alert('찜 취소');
           dispatch(__getPicked());
           dispatch(
             __mainFeedDetail({
@@ -159,7 +158,6 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
           );
           dispatch(__getMyProfile());
         } else {
-          alert('찜!');
           dispatch(__getPicked());
           dispatch(
             __mainFeedDetail({
@@ -219,40 +217,29 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                 <div>{profileInfo[0]?.nickname}</div>
                 <p>{profileInfo[0]?.mbti}</p>
               </div>
-              <p>{mainFeedDetail.description}</p>
-              <NumberOfPlace>{placeName?.length}</NumberOfPlace>
-              <RouteButton
-                show={routeOpen}
-                onClick={openRoutine}
-                style={{ marginTop: '20px' }}
-              >
-                루트 펼치기
-              </RouteButton>
-              {placeName?.length == 0 ? (
-                <RouteButtonZero
-                  show={routeOpen}
-                  onClick={openRoutine}
-                  style={{ marginTop: '20px' }}
-                >
-                  루트 펼치기
-                </RouteButtonZero>
-              ) : (
-                <RouteShowBox show={routeOpen}>
-                  <RouteFoldButton
-                    show={routeOpen}
-                    onClick={openRoutine}
-                    style={{ marginTop: '20px' }}
-                  >
-                    루트 접기
-                  </RouteFoldButton>
-                  <RouteShow show={routeOpen}>
-                    {placeName?.map((item: any, index: number) => {
+              <StDiv>
+                {mainFeedDetail.description}
+                {!routeOpen ? (
+                  <div className="route-open">
+                    <p className="route-open-button" onClick={openRoutine}>
+                      루트 펼치기
+                    </p>{' '}
+                    <div className="route-open-count">
+                      <p>{placeName?.length || 0}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="route-close">
+                    <p className="route-close-button" onClick={openRoutine}>
+                      루트 접기
+                    </p>
+                    {placeName?.map((route: any, index: number) => {
                       return (
-                        <div key={index}>
+                        <div key={index} className="route-close-list">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            width="15"
-                            height="15"
+                            width="13"
+                            height="13"
                             color="#644EEE"
                             fill="currentColor"
                             className="bi bi-geo-alt-fill"
@@ -260,21 +247,13 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                           >
                             <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
                           </svg>
-                          <div
-                            style={{
-                              display: 'inline-block',
-                              marginTop: '10px',
-                              fontSize: '11px',
-                            }}
-                          >
-                            {item.place_name}
-                          </div>
+                          <p>{route.place_name}</p>
                         </div>
                       );
                     })}
-                  </RouteShow>
-                </RouteShowBox>
-              )}
+                  </div>
+                )}
+              </StDiv>
 
               <div className="detail-bottom">
                 <p>{date}</p>
@@ -408,6 +387,67 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
 };
 
 export default FeedDetailModal;
+
+const StDiv = styled.div`
+  position: relative;
+  font-size: 13px;
+  margin-bottom: 10px;
+
+  .route-open,
+  .route-close {
+    position: absolute;
+    background-color: #f6f4fd;
+    box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.25);
+    margin-top: 15px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    z-index: 10;
+    /* left: -4px; */
+
+    .route-open-button {
+      font-size: 10px;
+      color: gray;
+    }
+
+    .route-close-button {
+      font-size: 10px;
+      color: gray;
+    }
+
+    .route-open-count {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* text-align: center; */
+      color: white;
+      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      font-size: 8px;
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background-color: rgb(100, 78, 238);
+    }
+
+    .route-close-list {
+      display: flex;
+      align-items: center;
+      /* justify-content: center; */
+      padding-top: 5px;
+      height: 20px;
+      p {
+        font-size: 11px;
+        padding-left: 5px;
+        /* margin-top: 10px; */
+
+        /* margin-left: 5px; */
+        color: #323232;
+      }
+    }
+  }
+`;
 
 const StDetailContainer = styled.div`
   display: flex;
