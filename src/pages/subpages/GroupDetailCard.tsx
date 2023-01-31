@@ -51,6 +51,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
   const [comments, setComments] = useState<{}[]>([]);
   const [toggleRoute, setToggleRoute] = useState(false);
   const userId: number = Number(sessionStorage.getItem('userId'));
+  const sessionMbti = sessionStorage.getItem('mbti');
 
   //place group name 찾기 위해 필터링 사용
   //전체 맵 데이터와 게시글 생성시 넣은 루트 데이터를 비교하여 같은걸 필터링 함
@@ -124,6 +125,12 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
       }
     } else {
       alert('댓글을 입력해주세요!');
+    }
+  };
+
+  const handlekeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      postComment();
     }
   };
 
@@ -431,6 +438,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                   onChange={e => setComment(e.target.value)}
                   placeholder="댓글을 입력하세요"
                   max={100}
+                  onKeyDown={handlekeyDown}
                 />
                 <button onClick={postComment}>완료</button>
               </StDetailInput>

@@ -64,7 +64,7 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
   } = post;
 
   const groupName = JSON.parse(location);
-
+  const sessionMbti = sessionStorage.getItem('');
   let parsedLocation: {
     created_at: string;
     map_id: number;
@@ -181,6 +181,12 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
   //   placeName = JSON.parse(modalParse.place_group);
   // }
   // // console.log(modalParse);
+
+  const handlekeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      postComment();
+    }
+  };
 
   const saveRoute = () => {
     const saveData = {
@@ -510,6 +516,7 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
                   value={comment}
                   onChange={e => setComment(e.target.value)}
                   placeholder="댓글을 입력하세요"
+                  onKeyDown={handlekeyDown}
                 />
                 <button onClick={postComment}>완료</button>
               </StDetailInput>
