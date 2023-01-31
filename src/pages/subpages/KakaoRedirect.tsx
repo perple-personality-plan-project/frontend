@@ -13,7 +13,12 @@ const KakaoRedirect = () => {
     sessionStorage.setItem('accessToken', data.data.accessToken);
     sessionStorage.setItem('refreshToken', data.data.refreshToken);
     sessionStorage.setItem('userId', data.data.user_id);
-    navigate('/mbtikakao');
+    if (!data.data.mbti) {
+      navigate('/mbtikakao');
+    } else {
+      sessionStorage.setItem('mbti', data.data.mbti);
+      navigate('/');
+    }
   };
 
   useEffect(() => {
