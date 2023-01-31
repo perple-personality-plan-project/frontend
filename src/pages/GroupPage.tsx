@@ -52,7 +52,7 @@ const GroupPage = () => {
     }
   }, [filterGroup, tag, savedWord]);
 
-  console.log('tag:' + tag, 'word:' + word, 'savedWord:' + savedWord);
+  // console.log('tag:' + tag, 'word:' + word, 'savedWord:' + savedWord);
 
   useEffect(() => {
     setGroupByfilter(groupRank);

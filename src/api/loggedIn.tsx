@@ -18,9 +18,9 @@ loggedIn.interceptors.response.use(
     return response;
   },
   async function (error) {
-    console.log(error);
+    // console.log(error);
     if (error.response && error.response.status === 401) {
-      console.log('expired');
+      // console.log('expired');
       try {
         const originalRequest = error.config;
         const { data } = await client.get('/api/user/refresh-token');
@@ -34,7 +34,7 @@ loggedIn.interceptors.response.use(
           return await loggedIn.request(originalRequest);
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         sessionStorage.clear();
         alert('로그인이 필요한 서비스입니다!');
         window.location.href = '/signin';
