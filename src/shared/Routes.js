@@ -54,6 +54,7 @@ const Router = () => {
                   maxWidth: '1440px',
                   margin: '0 auto',
                   position: 'relative',
+                  height: '100vh',
                   // justifyContent: 'center',
                 }}
               >

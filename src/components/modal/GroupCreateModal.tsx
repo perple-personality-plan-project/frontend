@@ -17,7 +17,6 @@ interface tagPreset {
 }
 
 interface Props {
-  setGroupByfilter: React.Dispatch<any>;
   // groupByfilter: groupPreset[];
   filterGroup: string;
 }
@@ -28,10 +27,7 @@ interface infoProps {
   thumbnail?: any;
 }
 
-const GroupCreateModal: React.FC<Props> = ({
-  setGroupByfilter,
-  filterGroup,
-}) => {
+const GroupCreateModal: React.FC<Props> = ({ filterGroup }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   // const { thumbnail, handleFileAWS } = ImageServerHook();
@@ -48,26 +44,6 @@ const GroupCreateModal: React.FC<Props> = ({
   });
 
   const tagSetJSON = JSON.stringify(tagSet.map(tag => tag.tag));
-
-  const { groupRank } = useAppSelector(store => store.group);
-  const { groupDate } = useAppSelector(store => store.group);
-
-  useEffect(() => {
-    if (filterGroup === '인기순') {
-      dispatch(__groupGetRank());
-    }
-    if (filterGroup === '날짜순') {
-      dispatch(__groupGetDate());
-    }
-  }, [toggle]);
-
-  useEffect(() => {
-    setGroupByfilter(groupRank);
-  }, [groupRank]);
-
-  useEffect(() => {
-    setGroupByfilter(groupDate);
-  }, [groupDate]);
 
   const closeModal = () => {
     setIsOpen(false);

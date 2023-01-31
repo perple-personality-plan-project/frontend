@@ -30,19 +30,29 @@ const GroupPage = () => {
 
   const [toggle, setToggle] = useState(false);
   const [filterGroup, setFilterGroup] = useState('인기순');
+  const [tag, setTag] = useState('');
 
   const [groupByfilter, setGroupByfilter] = useState([]);
   const [tags, setTags] = useState<{}[]>([]);
   const [word, setWord] = useState('');
 
   useEffect(() => {
-    if (filterGroup === '인기순') {
-      dispatch(__groupGetRank());
+    if (tag !== '') {
+      sortByTag(tag);
+    } else {
+      if (filterGroup === '인기순') {
+        console.log('rank');
+        dispatch(__groupGetRank());
+      }
+      if (filterGroup === '날짜순') {
+        console.log('date');
+        dispatch(__groupGetDate());
+      }
     }
-    if (filterGroup === '날짜순') {
-      dispatch(__groupGetDate());
-    }
-  }, [filterGroup]);
+  }, [filterGroup, tag]);
+
+  console.log(tag);
+  console.log(groupByfilter);
 
   useEffect(() => {
     setGroupByfilter(groupRank);
@@ -52,6 +62,15 @@ const GroupPage = () => {
     setGroupByfilter(groupDate);
   }, [groupDate]);
 
+  // useEffect(() => {
+  //   if (filterGroupByTag === '인기순') {
+  //     sortByTag(tag);
+  //   }
+  //   if (filterGroupByTag === '날짜순') {
+  //     sortByTag(tag);
+  //   }
+  // }, [groupByfilter]);
+
   const fetchData = async () => {
     const { data } = await nonTokenClient.get(`api/group/hashtag`);
     const randomTags = data.data.sort(() => Math.random() - 0.5).splice(0, 11);
@@ -60,16 +79,44 @@ const GroupPage = () => {
 
   const handlekeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      const { data } = await nonTokenClient.get(
-        `/api/group?sort=date&search=${word}`,
-      );
-      setGroupByfilter(data.data);
+      if (word === '') {
+        setTag('');
+        if (filterGroup === '인기순') {
+          const { data } = await nonTokenClient.get(`/api/group?sort=rank`);
+          setGroupByfilter(data.data);
+        } else {
+          const { data } = await nonTokenClient.get(`/api/group?sort=date`);
+          setGroupByfilter(data.data);
+        }
+      } else {
+        const { data } = await nonTokenClient.get(
+          `/api/group?sort=date&search=${word}`,
+        );
+        setGroupByfilter(data.data);
+      }
     }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  const sortByTag = async (tag: string) => {
+    if (filterGroup === '인기순') {
+      const tagToString = tag.split('#')[1];
+      const { data } = await nonTokenClient.get(
+        `/api/group?sort=rank&search=${tagToString}`,
+      );
+      setGroupByfilter(data.data);
+    }
+    if (filterGroup === '날짜순') {
+      const tagToString = tag.split('#')[1];
+      const { data } = await nonTokenClient.get(
+        `/api/group?sort=date&search=${tagToString}`,
+      );
+      setGroupByfilter(data.data);
+    }
+  };
 
   return (
     <StContainer>
@@ -105,7 +152,9 @@ const GroupPage = () => {
       <StRecommend>검색이 어려우시다고요? 추천해 드릴게요!</StRecommend>
       <StRecommendLists>
         {tags?.map((tag: any, index) => (
-          <StRecommendList key={index}>{tag.title}</StRecommendList>
+          <StRecommendList onClick={() => setTag(tag.title)} key={index}>
+            {tag.title}
+          </StRecommendList>
         ))}
       </StRecommendLists>
 
@@ -162,40 +211,14 @@ const GroupPage = () => {
           )}
 
           {groupByfilter.map((group: groupPreset) => {
-            // const tags = group.hashtags;
-            // const groupNames = group.group_name;
-            // if (word === '') {
-            //   return <GroupCard key={group.group_id} group={group} />;
-            // }
-            // if (groupNames?.includes(word) || tags?.includes(word)) {
-            //   return <GroupCard key={group.group_id} group={group} />;
-            // } else {
-            //   return null;
-            // }
             return <GroupCard key={group.group_id} group={group} />;
           })}
-
-          {/* {groupRank.map((group: groupPreset) => {
-          if (filterGroup === '인기순') {
-            return <GroupCard key={group.group_id} group={group} />;
-          }
-        })}
-
-        {groupDate.map((group: groupPreset) => {
-          if (filterGroup === '날짜순') {
-            return <GroupCard key={group.group_id} group={group} />;
-          }
-        })} */}
         </StGroups>
       ) : (
         <GroupEmptyShow />
       )}
 
-      <GroupCreateModal
-        setGroupByfilter={setGroupByfilter}
-        // groupByfilter={groupByfilter}
-        filterGroup={filterGroup}
-      />
+      <GroupCreateModal filterGroup={filterGroup} />
     </StContainer>
   );
 };
@@ -445,6 +468,7 @@ const StRecommendList = styled.div`
   color: #7a7a7a;
   margin: 5px;
   font-size: 16.33px;
+  cursor: pointer;
 
   border-radius: 30px;
   background-color: #f5f5f5;
