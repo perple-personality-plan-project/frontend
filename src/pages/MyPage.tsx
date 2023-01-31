@@ -501,7 +501,7 @@ function MyPage() {
                 return (
                   <GroupFeed
                     key={index}
-                    onClick={() => navigate(`/${item.group_id}`)}
+                    onClick={() => navigate(`/group/${item.group_id}`)}
                   >
                     <GroupProfile
                       src={process.env.REACT_APP_IMG_SERVER + item.thumbnail}
