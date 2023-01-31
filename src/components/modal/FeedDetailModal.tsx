@@ -571,7 +571,7 @@ const RouteShowBox = styled.div<IAppState>`
   background-color: #f6f4fd;
   box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.25);
   position: absolute;
-  bottom: 405px;
+  bottom: 425px;
   width: fit-content;
   padding: 5px 10px;
   border-radius: 5px;
@@ -579,7 +579,7 @@ const RouteShowBox = styled.div<IAppState>`
   padding-top: 25px;
   display: ${props => (props.show ? '' : 'none')};
   @media screen and (max-width: 1120px) {
-    bottom: 350px;
+    bottom: 370px;
   }
   @media screen and (max-width: 412px) {
     bottom: 170px;
