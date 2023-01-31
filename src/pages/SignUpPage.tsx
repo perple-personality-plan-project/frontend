@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import { useAppDispatch } from '../components/hooks/typescripthook/hooks';
 // import { __signUp } from '../redux/modules/userSlice';
 import nonTokenClient from '../api/noClient';
+import axios from 'axios';
 
 export interface userPreset {
   loginId: string;
@@ -27,6 +28,9 @@ const SignUpPage = () => {
   const [Mbti, setMbti] = useState('');
   const [mbtiMessage, setMbtiMessage] = useState('');
 
+  const [idFlag, setIdFlag] = useState(false);
+  const [nickFlag, setNickFlag] = useState(false);
+
   const mbtiList = [
     'ENFJ',
     'ENTJ',
@@ -48,6 +52,7 @@ const SignUpPage = () => {
 
   const onLoginIdHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginId(e.currentTarget.value);
+    setIdFlag(false);
     const RegExpId = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,10}$/;
     if (!RegExpId.test(e.target.value)) {
       setIdMessage('아이디는 영문자 + 숫자를 포함하여 5-10자를 포함해주세요!');
@@ -59,6 +64,7 @@ const SignUpPage = () => {
 
   const onNickNameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickName(e.currentTarget.value);
+    setNickFlag(false);
     const RegExpNick = /^[가-힣a-zA-Z]{4,8}$/;
     if (!RegExpNick.test(e.target.value)) {
       setNickNameMessage('닉네임은 한글 또는 영어 4-8자를 포함해주세요!');
@@ -129,7 +135,11 @@ const SignUpPage = () => {
     } else if (!RegExpPw.test(Password)) {
       alert('비밀번호는 영문자 + 숫자 + 특수문자(!,@,#,$,%)를 포함해주세요!');
     } else if (Password !== ConfirmPassword) {
-      alert('비밀번호와 비밀번호 확인이 같지 않습니다.');
+      alert('비밀번호와 비밀번호 확인이 같지 않습니다!');
+    } else if (idFlag === false) {
+      alert('아이디 중복확인을 통과해주세요!');
+    } else if (nickFlag === false) {
+      alert('닉네임 중복확인을 통과해주세요!');
     } else if (mbtiList.includes(Mbti.toUpperCase())) {
       let body = {
         login_id: LoginId,
@@ -145,17 +155,88 @@ const SignUpPage = () => {
     }
   };
 
+  const checkIdFromServer = async () => {
+    try {
+      await nonTokenClient.post('api/user/check-id', {
+        login_id: LoginId,
+      });
+      setIdFlag(true);
+      alert('사용 가능한 아이디 입니다!');
+    } catch (error: any) {
+      if (error.response.status === 409) {
+        setIdFlag(false);
+        alert(error.response.data.message);
+      } else {
+        alert('아이디를 형식에 맞게 작성해주세요!');
+      }
+    }
+  };
+
+  const checkNickNameFromServer = async () => {
+    try {
+      await nonTokenClient.post('api/user/check-nick', {
+        nickname: NickName,
+      });
+      setNickFlag(true);
+      alert('사용 가능한 닉네임 입니다!');
+    } catch (error: any) {
+      if (error.response.status === 409) {
+        setNickFlag(false);
+        alert(error.response.data.message);
+      } else {
+        alert('닉네임을 형식에 맞게 작성해주세요!');
+      }
+    }
+  };
+
+  const checkId = () => {
+    checkIdFromServer();
+  };
+
+  const checkNickName = () => {
+    checkNickNameFromServer();
+  };
+
+  console.log(idFlag, nickFlag);
+
   return (
     <Wrap>
       <Title>
         <div className="title">회원 가입 중 이네요!</div>
       </Title>
       <FormWrap onSubmit={onSubmitHandler}>
-        <div className="form-input">
+        <div
+          className="form-input"
+          style={{
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <div>
+            <Label>아이디 </Label>
+            <Input
+              required
+              type="text"
+              value={LoginId}
+              onChange={onLoginIdHandler}
+              placeholder="아이디"
+              maxLength={10}
+            />
+            {LoginId ? <p className="validation-text">{IdMessage}</p> : null}
+          </div>
+          <StButton
+            style={{ width: '101.47px' }}
+            type="button"
+            onClick={checkId}
+          >
+            <div>중복확인✔</div>
+          </StButton>
+        </div>
+
+        {/* <div className="form-input">
           <Label>아이디</Label>
           <Input
-            // pattern="^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,10}$"
-            // title="5-10자 사이만 가능 ㅋ"
             required
             type="text"
             value={LoginId}
@@ -164,8 +245,40 @@ const SignUpPage = () => {
             maxLength={10}
           />
           {LoginId ? <p className="validation-text">{IdMessage}</p> : null}
+        </div> */}
+
+        <div
+          className="form-input"
+          style={{
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <div>
+            <Label>닉네임 </Label>
+            <Input
+              required
+              type="text"
+              value={NickName}
+              onChange={onNickNameHandler}
+              placeholder="닉네임"
+              maxLength={8}
+            />
+            {NickName ? (
+              <p className="validation-text">{nickNameMessage}</p>
+            ) : null}
+          </div>
+          <StButton
+            style={{ width: '101.47px' }}
+            type="button"
+            onClick={checkNickName}
+          >
+            <div>중복확인✔</div>
+          </StButton>
         </div>
-        <div className="form-input">
+
+        {/* <div className="form-input">
           <Label>닉네임</Label>
           <Input
             // pattern="^[가-힣a-zA-Z]{4,8}$"
@@ -179,7 +292,8 @@ const SignUpPage = () => {
           {NickName ? (
             <p className="validation-text">{nickNameMessage}</p>
           ) : null}
-        </div>
+        </div> */}
+
         <div className="form-input">
           <Label>비밀번호</Label>
           <Input
