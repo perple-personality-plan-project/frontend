@@ -49,7 +49,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
   const mainFeedComment: any = useAppSelector(
     store => store.post.mainFeedDetail,
   );
-
+  console.log(mainFeedComment);
   const openRoutine = () => {
     setRouteOpen(!routeOpen);
   };
@@ -354,22 +354,26 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                   <StDetailComment key={comment.comment_id}>
                     <img
                       src={
-                        profileInfo[0].profile_img === null
+                        comment.profile_img === null
                           ? require('../../마이페이지.png')
                           : process.env.REACT_APP_IMG_SERVER +
-                            profileInfo[0].profile_img
+                            comment.profile_img
                       }
                       alt="detail-img"
                     />
                     <div className="detail-info">
                       <div className="detail-top" style={{ display: 'flex' }}>
                         <h2>{comment.nickname}</h2>
-                        <div
-                          onClick={() => deleteComment(comment.comment_id)}
-                          className="detail-del"
-                        >
-                          X
-                        </div>
+                        {comment.user_id === mainFeedComment.user_id ? (
+                          <div
+                            onClick={() => deleteComment(comment.comment_id)}
+                            className="detail-del"
+                          >
+                            X
+                          </div>
+                        ) : (
+                          <div className="detail-del"></div>
+                        )}
                       </div>
                       <p>{comment.comment}</p>
                     </div>
@@ -534,22 +538,21 @@ const RouteShowBox = styled.div<IAppState>`
   background-color: #f6f4fd;
   box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.25);
   position: absolute;
-  bottom: 365px;
+  bottom: 425px;
   padding: 5px 10px;
   border-radius: 5px;
   z-index: 10;
   padding-top: 25px;
   display: ${props => (props.show ? '' : 'none')};
   @media screen and (max-width: 1120px) {
-    bottom: 325px;
+    bottom: 370px;
   }
   @media screen and (max-width: 412px) {
-    bottom: 125px;
+    bottom: 170px;
   }
 `;
 
 const RouteShow = styled.div<IAppState>`
-  bottom: 385px;
   display: ${props => (props.show ? '' : 'none')};
 `;
 
@@ -566,7 +569,7 @@ const StIcon = styled.div`
   }
 
   .heart-position {
-    top: -13px;
+    top: -50px;
     right: 9px;
   }
 `;
