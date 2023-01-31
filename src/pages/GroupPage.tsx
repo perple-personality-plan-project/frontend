@@ -35,24 +35,24 @@ const GroupPage = () => {
   const [groupByfilter, setGroupByfilter] = useState([]);
   const [tags, setTags] = useState<{}[]>([]);
   const [word, setWord] = useState('');
+  const [savedWord, setSavedWord] = useState('');
 
   useEffect(() => {
-    if (tag !== '') {
-      sortByTag(tag);
-    } else {
+    if (tag === '' && savedWord === '') {
       if (filterGroup === '인기순') {
-        console.log('rank');
         dispatch(__groupGetRank());
       }
       if (filterGroup === '날짜순') {
-        console.log('date');
         dispatch(__groupGetDate());
       }
+    } else if (tag !== '') {
+      sortByTag(tag);
+    } else if (savedWord !== '') {
+      FetchDataBySearch();
     }
-  }, [filterGroup, tag]);
+  }, [filterGroup, tag, savedWord]);
 
-  console.log(tag);
-  console.log(groupByfilter);
+  console.log('tag:' + tag, 'word:' + word, 'savedWord:' + savedWord);
 
   useEffect(() => {
     setGroupByfilter(groupRank);
@@ -61,15 +61,6 @@ const GroupPage = () => {
   useEffect(() => {
     setGroupByfilter(groupDate);
   }, [groupDate]);
-
-  // useEffect(() => {
-  //   if (filterGroupByTag === '인기순') {
-  //     sortByTag(tag);
-  //   }
-  //   if (filterGroupByTag === '날짜순') {
-  //     sortByTag(tag);
-  //   }
-  // }, [groupByfilter]);
 
   const fetchData = async () => {
     const { data } = await nonTokenClient.get(`api/group/hashtag`);
@@ -89,11 +80,34 @@ const GroupPage = () => {
           setGroupByfilter(data.data);
         }
       } else {
-        const { data } = await nonTokenClient.get(
-          `/api/group?sort=date&search=${word}`,
-        );
-        setGroupByfilter(data.data);
+        setTag('');
+        setSavedWord(word);
+        if (filterGroup === '인기순') {
+          const { data } = await nonTokenClient.get(
+            `/api/group?sort=date&search=${word}`,
+          );
+          setGroupByfilter(data.data);
+        } else {
+          const { data } = await nonTokenClient.get(
+            `/api/group?sort=date&search=${word}`,
+          );
+          setGroupByfilter(data.data);
+        }
       }
+    }
+  };
+
+  const FetchDataBySearch = async () => {
+    if (filterGroup === '인기순') {
+      const { data } = await nonTokenClient.get(
+        `/api/group?sort=rank&search=${savedWord}`,
+      );
+      setGroupByfilter(data.data);
+    } else {
+      const { data } = await nonTokenClient.get(
+        `/api/group?sort=date&search=${savedWord}`,
+      );
+      setGroupByfilter(data.data);
     }
   };
 
@@ -102,6 +116,7 @@ const GroupPage = () => {
   }, []);
 
   const sortByTag = async (tag: string) => {
+    setSavedWord('');
     if (filterGroup === '인기순') {
       const tagToString = tag.split('#')[1];
       const { data } = await nonTokenClient.get(
