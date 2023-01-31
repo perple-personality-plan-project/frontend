@@ -201,8 +201,6 @@ const StTagHeader = styled.div`
 const MainImg = styled.div`
   @media screen and (max-width: 412px) {
     position: absolute;
-    /* width: 80px;
-    height: 40px; */
     margin-top: 20%;
   }
 `;
@@ -263,21 +261,7 @@ const TitleWrap = styled.div`
     color: white;
     margin: 10px 0 0 130px;
   }
-  /* @media screen and (max-width: 800px) {
-    text-align: center;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    font-size: 23px;
-    gap: 70px;
-    .gathered {
-      flex-direction: row;
-      margin: auto;
 
-      .div {
-      }
-    }
-  } */
   @media screen and (max-width: 1024px) {
     flex-direction: column;
     align-items: center;
