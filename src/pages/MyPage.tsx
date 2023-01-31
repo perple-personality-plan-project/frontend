@@ -690,8 +690,8 @@ const MbtiInput = styled.input<IAppState>`
   margin-left: 174px;
   margin-top: 110px;
   font-size: 20px;
-  width: 80px;
-  height: 25px;
+  width: 76px;
+  height: 28px;
   background-color: #f3f3f3;
   border: solid #e6e6e6 1px;
   border-radius: 15px;
@@ -713,9 +713,9 @@ const Name = styled.div<IAppState>`
 const NameInput = styled.input<IAppState>`
   text-align: center;
   width: 200px;
-  margin-top: 10px;
+  margin-top: 24px;
   font-size: 30px;
-  margin-left: 115px;
+  margin-left: 110px;
   display: ${props => (props.show ? 'flex' : 'none')};
   @media (max-width: 390px) {
     margin-left: 75px;
@@ -747,11 +747,12 @@ const Editsend = styled.button<IAppState>`
   margin-top: 20px;
   margin-left: auto;
   margin-right: auto;
-  width: 350px;
-  height: 35px;
-  background-color: #f2f2f2;
-  border: solid #e6e6e6 1px;
-  border-radius: 15px;
+  width: 360px;
+  height: 50px;
+  background-color: #f2f2f8;
+  border: solid #f6f6fa 1px;
+  border-radius: 25px;
+  font-family: 'Nanum_R';
   font-size: 20px;
   &:hover {
     background-color: #e6e6e6;
@@ -1110,6 +1111,9 @@ const Title = styled.div`
   margin-top: 60px;
   font-size: 25px;
   font-weight: bold;
+  @media (max-width: 1120px) {
+    font-size: 20px;
+  }
   @media (max-width: 412px) {
     font-size: 15px;
     margin-top: 40px;
@@ -1122,6 +1126,7 @@ const Description = styled.div`
   position: absolute;
   margin-top: 110px;
   font-size: 15px;
+
   @media (max-width: 412px) {
     font-size: 10px;
     margin-top: 70px;
