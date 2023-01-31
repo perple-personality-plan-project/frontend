@@ -29,7 +29,7 @@ interface IAppState {
   show: boolean;
 }
 
-const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
+const MyPickModal: React.FC<Props> = ({ state, close }) => {
   const dispatch = useAppDispatch();
 
   // const [isOpen, setIsOpen] = useState(false);
@@ -364,7 +364,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                     <div className="detail-info">
                       <div className="detail-top" style={{ display: 'flex' }}>
                         <h2>{comment.nickname}</h2>
-                        {comment.user_id === mainFeedComment.user_id ? (
+                        {comment.user_id == userId ? (
                           <div
                             onClick={() => deleteComment(comment.comment_id)}
                             className="detail-del"
@@ -372,7 +372,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                             X
                           </div>
                         ) : (
-                          <div className="detail-del"></div>
+                          <div className="detail-Nodel"></div>
                         )}
                       </div>
                       <p>{comment.comment}</p>
@@ -396,7 +396,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
   );
 };
 
-export default FeedDetailModal;
+export default MyPickModal;
 
 const StDetailContainer = styled.div`
   display: flex;
@@ -795,6 +795,16 @@ const StDetailComment = styled.div`
           color: white !important;
         }
       }
+    }
+
+    .detail-Nodel {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 `;
