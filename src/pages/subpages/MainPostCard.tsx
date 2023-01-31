@@ -139,8 +139,9 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
   };
 
   const togglepick = async (feedId: number) => {
-    const x = await loggedIn.put(`api/feed/${feed_id}/pick`);
+    await loggedIn.put(`api/feed/${feed_id}/pick`);
     dispatch(__mainFeedlist({ userId }));
+    dispatch(__mainMbtilist({ userId: userId, mbtiCheck: mbtiCheck }));
   };
 
   const deleteComment = async (commentId: string | number) => {
