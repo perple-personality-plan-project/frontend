@@ -109,11 +109,12 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
   const [pintoggle, setPinToggle] = useState(false);
   const [toggleRoute, setToggleRoute] = useState(false);
   const accessToken = sessionStorage.getItem('accessToken');
+
   const [routeOpen, setRouteOpen] = useState(false);
   const thumbnailArray = thumbnail.split(',');
   const imgLink = process.env.REACT_APP_IMG_SERVER;
 
-  const userId = sessionStorage.getItem('userId');
+  const userId: number = Number(sessionStorage.getItem('userId'));
 
   const postComment = async () => {
     if (comment) {
@@ -499,12 +500,18 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
                       <div className="detail-info">
                         <div className="detail-top" style={{ display: 'flex' }}>
                           <h2>{comment.nickname}</h2>
-                          <div
-                            onClick={() => deleteComment(comment.comment_id)}
-                            className="detail-del"
-                          >
-                            X
-                          </div>
+
+                          {userId === comment.user_id  ? (
+                            <div
+                              onClick={() => deleteComment(comment.comment_id)}
+                              className="detail-del"
+                            >
+                              <i
+                                style={{ color: '#5B5B5B', fontSize: '15px' }}
+                                className="ri-close-line hover-color"
+                              ></i>
+                            </div>
+                          ) : null}
                         </div>
                         <p>{comment.comment}</p>
                       </div>
