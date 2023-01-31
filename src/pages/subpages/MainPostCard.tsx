@@ -57,6 +57,7 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
     isPick,
     location,
     mbti,
+    profile_img,
     nickname,
     thumbnail,
     updated_at,
@@ -113,7 +114,6 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
   const [routeOpen, setRouteOpen] = useState(false);
   const thumbnailArray = thumbnail.split(',');
   const imgLink = process.env.REACT_APP_IMG_SERVER;
-
   const userId: number = Number(sessionStorage.getItem('userId'));
 
   const postComment = async () => {
@@ -136,13 +136,23 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
   const toggleHeart = async (feedId: number) => {
     await loggedIn.put(`/api/feed/${feed_id}/like`);
     dispatch(__mainFeedlist({ userId }));
-    dispatch(__mainMbtilist({ userId: userId, mbtiCheck: mbtiCheck }));
+    dispatch(
+      __mainMbtilist({
+        userId: userId,
+        mbtiCheck: mbtiCheck,
+      }),
+    );
   };
 
   const togglepick = async (feedId: number) => {
     await loggedIn.put(`api/feed/${feed_id}/pick`);
     dispatch(__mainFeedlist({ userId }));
-    dispatch(__mainMbtilist({ userId: userId, mbtiCheck: mbtiCheck }));
+    dispatch(
+      __mainMbtilist({
+        userId: userId,
+        mbtiCheck: mbtiCheck,
+      }),
+    );
   };
 
   const deleteComment = async (commentId: string | number) => {
@@ -223,7 +233,7 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
               ) : (
                 <img
                   style={{ width: '40px', height: '40px' }}
-                  src={`${process.env.REACT_APP_IMG_SERVER}/${post.profile_img}`}
+                  src={process.env.REACT_APP_IMG_SERVER + post.profile_img}
                   alt="group-img"
                 />
               )}
@@ -344,7 +354,7 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
               ) : (
                 <img
                   style={{ width: '40px', height: '40px' }}
-                  src={`${process.env.REACT_APP_IMG_SERVER}/${post.profile_img}`}
+                  src={process.env.REACT_APP_IMG_SERVER + post.profile_img}
                   alt="group-img"
                 />
               )}
@@ -905,13 +915,15 @@ const StXIcon = styled.div`
   font-weight: bold;
   width: 30px;
   height: 30px;
-  background-color: white;
+  background-color: #e1e2e8;
   border-radius: 50%;
 
   position: absolute;
-  top: -30px;
-  right: -30px;
+  top: 25px;
+  right: 20px;
   cursor: pointer;
+
+  z-index: 1000;
 
   @media screen and (max-width: 800px) {
     top: 10px;

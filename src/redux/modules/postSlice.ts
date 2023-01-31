@@ -33,6 +33,7 @@ export const __mainFeedlist = createAsyncThunk<
       const { data } = await nonTokenClient.get(
         `api/feed?user_id=${payload.userId}`,
       );
+
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
       thunkAPI.rejectWithValue(e);
@@ -47,11 +48,11 @@ export const __mainMbtilist = createAsyncThunk<
   'main/feedlist/mbti',
 
   async (payload, thunkAPI) => {
-  
     try {
       const { data } = await nonTokenClient.get(
         `api/feed/search?mbti=${payload.mbtiCheck}&user_id=${payload.userId}`,
       );
+      console.log(data);
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
       thunkAPI.rejectWithValue(e);
@@ -70,7 +71,7 @@ export const __mainFeedDetail = createAsyncThunk<
       const { data } = await nonTokenClient.get(
         `/api/feed/${payload.feedId}?user_id=${payload.userId}`,
       );
-     
+      console.log(data);
       return thunkAPI.fulfillWithValue(data.data);
     } catch (e) {
       thunkAPI.rejectWithValue(e);
