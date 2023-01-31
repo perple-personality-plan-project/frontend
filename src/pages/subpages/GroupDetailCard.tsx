@@ -135,10 +135,15 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
   };
 
   const deleteComment = async (commentId: string | number) => {
-    await loggedIn.delete(
-      `api/group-comment/group/${groupId}/feed/${feed_id}/${commentId}`,
-    );
-    fetchData();
+    if (window.confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+      await loggedIn.delete(
+        `api/group-comment/group/${groupId}/feed/${feed_id}/${commentId}`,
+      );
+      fetchData();
+      // alert('삭제되었습니다.');
+    } else {
+      // alert("취소합니다.");
+    }
   };
 
   const fetchData = async () => {

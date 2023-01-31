@@ -146,8 +146,12 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
   };
 
   const deleteComment = async (commentId: string | number) => {
-    await loggedIn.delete(`api/comment/${feed_id}/${commentId}`);
-    dispatch(__mainFeedDetail({ feedId: feed_id, userId: userId }));
+    if (window.confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+      await loggedIn.delete(`api/comment/${feed_id}/${commentId}`);
+      dispatch(__mainFeedDetail({ feedId: feed_id, userId: userId }));
+    } else {
+      // alert("취소합니다.");
+    }
   };
 
   const openRoutine = () => {
@@ -501,7 +505,7 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
                         <div className="detail-top" style={{ display: 'flex' }}>
                           <h2>{comment.nickname}</h2>
 
-                          {userId === comment.user_id  ? (
+                          {userId === comment.user_id ? (
                             <div
                               onClick={() => deleteComment(comment.comment_id)}
                               className="detail-del"
