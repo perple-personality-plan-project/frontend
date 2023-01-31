@@ -109,7 +109,6 @@ const SignUpPage = () => {
       navigate('/signin');
     } catch (error: any) {
       if (error.response.status === 409) {
-        console.log(error);
         return alert(error.response.data.message);
       }
     }
