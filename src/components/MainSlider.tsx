@@ -1,7 +1,13 @@
 import React, { useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import styled from 'styled-components';
-import { EffectCards, EffectCoverflow, Navigation, Pagination } from 'swiper';
+import {
+  EffectCards,
+  EffectCoverflow,
+  Keyboard,
+  Navigation,
+  Pagination,
+} from 'swiper';
 import 'swiper/css/bundle';
 
 interface props {
@@ -40,12 +46,13 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
     <StSwiper>
       <Swiper
         effect={'cards'}
-        // slidesPerView={1}
+        slidesPerView={1}
         grabCursor={true}
         navigation={true}
         pagination={true}
         mousewheel={true}
-        keyboard={true}
+        keyboard={{ enabled: true }}
+        // onKeyPress={}
         cardsEffect={{
           perSlideOffset: 16,
           rotate: false,
@@ -57,7 +64,7 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
             swiperCore;
           setMbtiCheck(mbtiCategory[activeIndex]);
         }}
-        modules={[EffectCards, Navigation, Pagination]}
+        modules={[Keyboard, EffectCards, Navigation, Pagination]}
         className="mySwiper"
       >
         {mbtiCategory.map((mbti: any, index) => {

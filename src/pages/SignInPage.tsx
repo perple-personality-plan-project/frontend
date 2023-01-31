@@ -50,8 +50,10 @@ const SignInPage = () => {
       <Title>
         {/* <span>Platter</span> */}
         <img
+          style={{ cursor: 'pointer' }}
           src={require('../components/images/login/loginimg.png')}
           alt="login-img"
+          onClick={() => navigate('/')}
         />
         <div className="title">서비스 이용을 위한 로그인을 해주세요!</div>
       </Title>
