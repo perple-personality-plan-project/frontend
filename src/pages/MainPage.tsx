@@ -194,14 +194,17 @@ const StTagHeader = styled.div`
   width: 100%;
 
   @media screen and (max-width: 1024px) {
+    /* justify-content: center; */
+  }
+  @media screen and (max-width: 900px) {
     justify-content: center;
   }
 `;
 
 const MainImg = styled.div`
-  @media screen and (max-width: 412px) {
+  @media screen and (max-width: 900px) {
     position: absolute;
-    margin-top: 20%;
+    margin-top: 40%;
   }
 `;
 
@@ -319,6 +322,6 @@ const PostListContainer = styled.div`
   }
 
   @media screen and (max-width: 500px) {
-    margin-top: 20vh;
+    margin-top: 35vh;
   }
 `;
