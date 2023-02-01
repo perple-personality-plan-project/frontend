@@ -276,7 +276,7 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
             alt="group-img"
           />
           <div className="post-desc">
-            <p>{description}</p>
+            <p className="desc-title">{description}</p>
             <div className="post-bottom">
               <p className="post-date">{date}</p>
             </div>
@@ -1090,11 +1090,21 @@ const StGroupPost = styled.div`
     }
 
     .post-desc {
-      margin: 15px;
+      word-break: break-all;
+      margin: 15px 22px;
       p {
-        max-width: 25ch;
+        max-width: 60%;
+        white-space: nowrap;
+        overflow: hidden;
+        display: inline-block;
+        text-overflow: ellipsis;
         margin: 0 0 40px 0;
-        overflow: auto;
+        /* overflow: auto; */
+      }
+
+      .desc-title {
+        font-family: 'Nanum_B';
+        font-size: 18px;
       }
 
       .post-date {
