@@ -116,8 +116,8 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
     modalParse = { place_group: '', place_group_name: '' };
     placeName = [];
   } else {
-    modalParse = JSON.parse(mainFeedDetail.location);
-    placeName = JSON.parse(modalParse.place_group);
+    modalParse = JSON.parse(mainFeedDetail?.location);
+    placeName = JSON.parse(modalParse?.place_group);
   }
 
   const saveRoute = async () => {
@@ -232,66 +232,71 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                 <p>{profileInfo[0]?.mbti}</p>
               </div>
               <StDiv>
-                {mainFeedDetail.description}
-                {!routeOpen ? (
-                  <div className="route-open">
-                    <p className="route-open-button" onClick={openRoutine}>
-                      루트 펼치기
-                    </p>{' '}
-                    <div className="route-open-count">
-                      <p>{placeName?.length || 0}</p>
+                <p style={{ whiteSpace: 'pre-wrap' }}>
+                  {mainFeedDetail.description}
+                </p>
+                {mainFeedDetail.location !==
+                '{"place_group_name":"없음","place_group":"없음"}' ? (
+                  !routeOpen ? (
+                    <div className="route-open">
+                      <p className="route-open-button" onClick={openRoutine}>
+                        루트 펼치기
+                      </p>
+                      <div className="route-open-count">
+                        <p>{placeName?.length || 0}</p>
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div onClick={openRoutine} className="route-close">
-                    <p className="route-close-button" onClick={openRoutine}>
-                      루트 접기
-                    </p>
-                    {placeName?.map((route: any, index: number) => {
-                      return (
-                        <div key={index} className="route-close-list">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="13"
-                            height="13"
-                            color="#644EEE"
-                            fill="currentColor"
-                            className="bi bi-geo-alt-fill"
-                            viewBox="0 0 16 16"
+                  ) : (
+                    <div className="route-close">
+                      <p className="route-close-button" onClick={openRoutine}>
+                        루트 접기
+                      </p>
+                      {placeName?.map((route: any, index: number) => {
+                        return (
+                          <div
+                            onClick={openRoutine}
+                            key={index}
+                            className="route-close-list"
                           >
-                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                          </svg>
-                          <p>{route.place_name}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="13"
+                              height="13"
+                              color="#644EEE"
+                              fill="currentColor"
+                              className="bi bi-geo-alt-fill"
+                              viewBox="0 0 16 16"
+                            >
+                              <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                            </svg>
+                            <p>{route.place_name}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )
+                ) : null}
               </StDiv>
               <div className="detail-bottom">
                 <p>{date}</p>
                 <div style={{ display: 'flex' }}>
                   {mainFeedDetail.isLike === 1 ? (
                     <StIcon>
+                      <p>{mainFeedDetail.likeCount}</p>
                       <i
-                        className="ri-heart-3-fill"
-                        style={{ color: 'red', fontSize: '25px' }}
+                        style={{ color: 'blue', fontSize: '25px' }}
+                        className="ri-thumb-up-fill"
                         onClick={() => toggleHeart()}
                       ></i>
-                      <p className="heart-number heart-position">
-                        {mainFeedDetail.likeCount}
-                      </p>
                     </StIcon>
                   ) : (
                     <StIcon>
+                      <p>{mainFeedDetail.likeCount}</p>
                       <i
-                        className="ri-heart-3-line"
-                        style={{ color: 'red', fontSize: '25px' }}
+                        style={{ color: 'blue', fontSize: '25px' }}
+                        className="ri-thumb-up-line"
                         onClick={() => toggleHeart()}
                       ></i>
-                      <p className="heart-number heart-position">
-                        {mainFeedDetail.like_count}
-                      </p>
                     </StIcon>
                   )}
                   {/* <div onClick={pick} className="detail-btn">
@@ -407,6 +412,7 @@ const StDiv = styled.div`
   font-size: 13px;
   margin-bottom: 10px;
   word-break: break-all;
+  white-space: pre-wrap;
 
   .route-open,
   .route-close {
@@ -647,19 +653,16 @@ const RouteShow = styled.div<IAppState>`
 
 const StIcon = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   position: relative;
+  margin-top: -50px;
 
-  .heart-number {
-    position: absolute;
-    top: -35px;
-    right: 9px;
-    /* font-size: 20px; */
-  }
+  margin-left: 5px;
+  cursor: pointer;
 
-  .heart-position {
-    top: -50px;
-    right: 9px;
+  p {
+    margin: 0;
   }
 `;
 

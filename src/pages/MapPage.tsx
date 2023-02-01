@@ -142,6 +142,7 @@ const MapPage = () => {
         await dispatch(__RootMaker(Roots));
         await alert('루트가 생성되었습니다.');
         await dispatch(__RemoveAllItem([]));
+        await setRootTitle([]);
       }
     }
   };
@@ -380,7 +381,6 @@ const MapPage = () => {
                 return (
                   <CheckBoxForm key={index}>
                     <CheckBox
-                      required
                       type="checkbox"
                       name="checkbox"
                       value={index + 1}
@@ -424,6 +424,7 @@ const MapPage = () => {
               <RootName
                 placeholder="이름을 입력해 주세요"
                 onChange={e => onChangeRootTitle(e.target.value)}
+                value={RootTitle}
                 required
               ></RootName>
               <RootBtn>루트 만들기</RootBtn>

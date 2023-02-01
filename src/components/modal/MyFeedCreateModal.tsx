@@ -13,6 +13,7 @@ import {
 } from '../../redux/modules/mySlice';
 import GroupModalTemplate from './GroupModalTemplate';
 import ImagePreviewMultiHook from '../hooks/ImagePreviewMultiHook';
+import { group } from 'console';
 
 interface detailCreatePreset {
   location: string;
@@ -45,9 +46,29 @@ const FeedModal: React.FC = () => {
     setImageSrc([]);
   };
 
+  console.log(groupInfos);
+
+  const limitLines = (e: any) => {
+    let rows = e.target.value.split('\n')?.length; //줄바꿈 개수
+    let maxRows = 4;
+    if (rows > maxRows) {
+      const { name, value } = e.target;
+      setgroupInfos({
+        ...groupInfos,
+        [name]: value.split('\n').slice(0, maxRows).join('\n'),
+      });
+    } else {
+      const { name, value } = e.target;
+      setgroupInfos({ ...groupInfos, [name]: value });
+    }
+  };
+
   const handleGroupInfo = (e: any) => {
     const { name, value } = e.target;
-    setgroupInfos({ ...groupInfos, [name]: value });
+
+    const BrValue = value.replaceAll('<br>', '\n');
+
+    setgroupInfos({ ...groupInfos, [name]: BrValue });
   };
 
   const handleSetThumbnail = (e: any) => {
@@ -82,8 +103,9 @@ const FeedModal: React.FC = () => {
     );
 
     formData.append('description', groupInfos.description);
-
-    if (groupInfos.description && route !== '') {
+    if (groupInfos.description.length > 100) {
+      alert('100자 이내로 작성해주세요');
+    } else if (groupInfos.description && route !== '') {
       await fetchData(formData);
       await setIsOpen(false);
       await setImageSrc([]);
@@ -157,39 +179,45 @@ const FeedModal: React.FC = () => {
             <StGroupInfo>
               <StGroupInput>
                 <p>루트 추가</p>
+
                 {toggle ? (
                   <div style={{ display: 'flex' }}>
                     <StCategoryGroup>
                       <StCategory
                         onClick={() => {
-                          setRoute('없음');
-                          setRouteName('없음');
                           setToggle(prev => !prev);
+                          setRoute('');
                         }}
-                      >
-                        없음
-                      </StCategory>
-                      {mapList.map((map: any, index: any) => {
+                      ></StCategory>
+                      {mapList.map((map: any, index: number) => {
                         return (
                           <StCategory
                             key={index}
                             onClick={() => {
-                              setRoute(map.place_group);
-                              setRouteName(map.place_group_name);
                               setToggle(prev => !prev);
+                              setRoute(map.place_group_name);
                             }}
                           >
                             {map.place_group_name}
                           </StCategory>
                         );
                       })}
+                      <StCategory
+                        onClick={() => {
+                          setToggle(prev => !prev);
+                          setRoute('없음');
+                          setRouteName('없음');
+                        }}
+                      >
+                        없음
+                      </StCategory>
                     </StCategoryGroup>
-                    <div
+                    {/* <div
                       onClick={() => setToggle(prev => !prev)}
                       className="tag-btn"
                     >
                       -
-                    </div>
+                    </div> */}
                   </div>
                 ) : (
                   <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -201,23 +229,29 @@ const FeedModal: React.FC = () => {
                           setToggle(prev => !prev);
                         }}
                       >
-                        {routeName}
+                        {route}
                       </StCategory>
                     </StCategoryGroup>
-                    <div
+                    {/* <div
                       onClick={() => setToggle(prev => !prev)}
                       className="tag-btn"
                     >
                       +
-                    </div>
+                    </div> */}
                   </div>
                 )}
               </StGroupInput>
+
               <StGroupTextArea>
                 <p>내용 작성</p>
                 <textarea
                   name="description"
-                  onChange={e => handleGroupInfo(e)}
+                  onChange={e => {
+                    // handleGroupInfo(e);
+                    limitLines(e);
+                  }}
+                  maxLength={100}
+                  value={groupInfos.description}
                 ></textarea>
               </StGroupTextArea>
               <StGroupBtn onClick={sendData}>모두 작성했어요!</StGroupBtn>
