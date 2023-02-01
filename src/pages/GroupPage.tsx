@@ -46,7 +46,16 @@ const GroupPage = () => {
         dispatch(__groupGetDate());
       }
     } else if (tag !== '') {
-      sortByTag(tag);
+      if (tag === 'ALL') {
+        if (filterGroup === '인기순') {
+          dispatch(__groupGetRank());
+        }
+        if (filterGroup === '날짜순') {
+          dispatch(__groupGetDate());
+        }
+      } else {
+        sortByTag(tag);
+      }
     } else if (savedWord !== '') {
       FetchDataBySearch();
     }
@@ -166,11 +175,29 @@ const GroupPage = () => {
       </StInputContainer>
       <StRecommend>검색이 어려우시다고요? 추천해 드릴게요!</StRecommend>
       <StRecommendLists>
-        {tags?.map((tag: any, index) => (
-          <StRecommendList onClick={() => setTag(tag.title)} key={index}>
-            {tag.title}
-          </StRecommendList>
-        ))}
+        {tags?.map((tag: any, index) => {
+          return index === 0 ? (
+            <StTagsContainer>
+              <div
+                className="tag tag-ml tag-all"
+                onClick={() => setTag('ALL')}
+                key={index}
+              >
+                {`ALL`}
+              </div>
+            </StTagsContainer>
+          ) : (
+            <StTagsContainer>
+              <div
+                className="tag"
+                onClick={() => setTag(tag.title)}
+                key={index}
+              >
+                {tag.title}
+              </div>
+            </StTagsContainer>
+          );
+        })}
       </StRecommendLists>
 
       <StLine></StLine>
@@ -468,12 +495,52 @@ const StRecommendLists = styled.div`
   padding-bottom: 49px;
   div {
     &:first-of-type {
-      margin-left: 61px;
+      /* margin-left: 61px; */
     }
   }
 `;
 
 //해시태그
+
+const StTagsContainer = styled.div`
+  margin: 0;
+  .tag {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 114.34px;
+    height: 38.38px;
+    color: #7a7a7a;
+    margin: 5px;
+    font-size: 16.33px;
+    cursor: pointer;
+
+    border-radius: 30px;
+    background-color: #f5f5f5;
+
+    &:hover {
+      background-color: #d8d5d5;
+    }
+
+    @media screen and (max-width: 500px) {
+      width: 125px;
+      height: 35px;
+    }
+  }
+
+  .tag-ml {
+    margin-left: 61px;
+  }
+
+  .tag-all {
+    background-color: #cfc9f3;
+    color: white;
+
+    &:hover {
+      background-color: #9384f7;
+    }
+  }
+`;
 const StRecommendList = styled.div`
   display: flex;
   justify-content: center;
