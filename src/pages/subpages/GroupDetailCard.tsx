@@ -929,8 +929,12 @@ const StGroupPost = styled.div`
       margin: 15px 22px;
       p {
         max-width: 60%;
+        white-space: nowrap;
+        overflow: hidden;
+        display: inline-block;
+        text-overflow: ellipsis;
         margin: 0 0 40px 0;
-        overflow: auto;
+        /* overflow: auto; */
       }
 
       .desc-title {
