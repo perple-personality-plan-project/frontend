@@ -158,7 +158,9 @@ const GroupDetail = () => {
 
             <div className="group-intro">
               <h2>그룹 소개</h2>
-              <p>{filteredByPage[0]?.description}</p>
+              <p style={{ whiteSpace: 'pre-wrap' }}>
+                {filteredByPage[0]?.description}
+              </p>
             </div>
             {groupSubscribe ? (
               groupSubscribe.admin_flag ? (
