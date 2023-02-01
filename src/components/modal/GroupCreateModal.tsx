@@ -113,6 +113,7 @@ const GroupCreateModal: React.FC<Props> = ({ filterGroup }) => {
       setTagSet([]);
       setThumbnail('');
       setgroupInfos({ ...groupInfos, description: '' });
+      window.scrollTo(0, 0);
     }
     // else {
     //   alert('형식을 모두 작성해주세요');

@@ -8,7 +8,10 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 import { useAppDispatch, useAppSelector } from '../hooks/typescripthook/hooks';
-import { __groupFeedList } from '../../redux/modules/groupSlice';
+import {
+  __groupFeedList,
+  __groupGetRank,
+} from '../../redux/modules/groupSlice';
 import loggedIn from '../../api/loggedIn';
 import { __getMap } from '../../redux/modules/mySlice';
 
@@ -77,7 +80,9 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
       `api/group/${paramId.id}/feed?user_id=${userId}`,
       formData,
     );
-    await dispatch(__groupFeedList({ id: paramId.id, userId: userId }));
+    await dispatch(__groupFeedList({ id: paramId.id, userId: userId })); //그룹 게시글 업데이트
+    await dispatch(__groupGetRank()); //그룹 정보 업데이트
+    //두개 다 해줘야함 ㅋ
   };
 
   const sendData = async () => {
@@ -102,6 +107,7 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
       setThumbnail([]);
       setgroupInfos({ ...groupInfos, description: '' });
       alert('게시글 작성 완료!');
+      window.scrollTo(0, 0);
     }
   };
 

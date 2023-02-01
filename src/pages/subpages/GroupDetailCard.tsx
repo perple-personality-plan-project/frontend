@@ -12,7 +12,10 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../components/hooks/typescripthook/hooks';
-import { __groupFeedList } from '../../redux/modules/groupSlice';
+import {
+  __groupFeedList,
+  __groupGetRank,
+} from '../../redux/modules/groupSlice';
 import loggedIn from '../../api/loggedIn';
 import nonTokenClient from '../../api/noClient';
 
@@ -165,9 +168,11 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
 
   const deletePost = async () => {
     if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
-      await loggedIn.delete(`/api/group/${groupId}/feed/${feed_id}`); //좋아요 / 좋아요 취소 api
-      dispatch(__groupFeedList({ id: groupId, userId: userId }));
+      await loggedIn.delete(`/api/group/${groupId}/feed/${feed_id}`);
+      dispatch(__groupFeedList({ id: groupId, userId: userId })); //삭제 후 그룹 상세 리스트 업데이트
+      dispatch(__groupGetRank()); //그룹 정보 업데이트
       alert('게시글이 삭제되었습니다!');
+      window.scrollTo(0, 0);
     } else {
       // alert('취소합니다.');
     }
