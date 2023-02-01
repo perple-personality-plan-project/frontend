@@ -157,6 +157,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
             }),
           );
           dispatch(__getMyProfile());
+          alert('찜하기가 취소되었습니다.');
         } else {
           dispatch(__getPicked());
           dispatch(
@@ -166,6 +167,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
             }),
           );
           dispatch(__getMyProfile());
+          alert('찜하기가 완료되었습니다.');
         }
       });
   };
