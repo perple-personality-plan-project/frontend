@@ -551,10 +551,20 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
                 {mainFeedDetail?.comment?.map((comment: any) => {
                   return (
                     <StDetailComment key={comment.comment_id}>
-                      <img
-                        src={require('../../마이페이지.png')}
-                        alt="detail-img"
-                      />
+                      {comment.profile_img === null ? (
+                        <img
+                          src={require('../../마이페이지.png')}
+                          alt="detail-img"
+                        />
+                      ) : (
+                        <img
+                          src={
+                            process.env.REACT_APP_IMG_SERVER +
+                            comment.profile_img
+                          }
+                          alt="detail-img"
+                        />
+                      )}
                       <div className="detail-info">
                         <div className="detail-top" style={{ display: 'flex' }}>
                           <h2>{comment.nickname}</h2>
@@ -610,10 +620,10 @@ const StIcon = styled.div`
 
   .heart-number {
     position: absolute;
-    top: -30px;
+    top: -26px;
     right: 8px;
     color: #9e9e9e;
-    /* font-size: 20px; */
+    font-size: 13px;
   }
   .modal-heart-number {
     position: absolute;
