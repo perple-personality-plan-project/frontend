@@ -45,6 +45,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
   const imgLink = process.env.REACT_APP_IMG_SERVER;
   const profileInfo = useAppSelector((store: any) => store.mypage.profileInfo);
   const myPick = useAppSelector((store: any) => store.mypage.myPick);
+  const mapList = useAppSelector((store: any) => store.mypage.maplist);
 
   const mainFeedComment: any = useAppSelector(
     store => store.post.mainFeedDetail,
@@ -78,10 +79,20 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
   };
 
   const deleteComment = async (commentId: string | number) => {
-    await loggedIn.delete(`api/comment/${mainFeedDetail.feed_id}/${commentId}`);
-    dispatch(
-      __mainFeedDetail({ feedId: mainFeedDetail.feed_id, userId: userId }),
-    );
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      await loggedIn.delete(
+        `api/comment/${mainFeedDetail.feed_id}/${commentId}`,
+      );
+      dispatch(
+        __mainFeedDetail({ feedId: mainFeedDetail.feed_id, userId: userId }),
+      );
+    }
+  };
+
+  const handlekeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      postComment();
+    }
   };
 
   // const openModal = () => {
@@ -123,10 +134,20 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
     };
     if (saveData.place_group_name === '') {
       alert('해당 게시물에 루트가 없습니다');
+    } else if (
+      mapList.find(
+        (el: any) => el.place_group_name === saveData.place_group_name,
+      )
+    ) {
+      alert('이미 저장한 루트입니다');
+    } else if (
+      mapList.find((el: any) => el.place_group === saveData.place_group)
+    ) {
+      alert('이미 저장한 루트입니다');
     } else {
       await dispatch(__RootMaker(saveData));
       await dispatch(__getMap());
-      alert('저장성공');
+      alert('저장한 루트는 마이페이지>to-go-list에서 확인할 수 있습니다');
     }
   };
   const deletePost = async () => {
@@ -158,6 +179,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
           );
           dispatch(__getMyProfile());
           alert('찜하기가 취소되었습니다.');
+          close();
         } else {
           dispatch(__getPicked());
           dispatch(
@@ -257,64 +279,6 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                   </div>
                 )}
               </StDiv>
-
-              {/* <p>{mainFeedDetail.description}</p>
-              <NumberOfPlace>{placeName?.length}</NumberOfPlace>
-              <RouteButton
-                show={routeOpen}
-                onClick={openRoutine}
-                style={{ marginTop: '20px' }}
-              >
-                루트 펼치기
-              </RouteButton>
-              {placeName?.length == 0 ? (
-                <RouteButtonZero
-                  show={routeOpen}
-                  onClick={openRoutine}
-                  style={{ marginTop: '20px' }}
-                >
-                  루트 펼치기
-                </RouteButtonZero>
-              ) : (
-                <RouteShowBox show={routeOpen}>
-                  <RouteFoldButton
-                    show={routeOpen}
-                    onClick={openRoutine}
-                    style={{ marginTop: '20px' }}
-                  >
-                    루트 접기
-                  </RouteFoldButton>
-                  <RouteShow show={routeOpen}>
-                    {placeName?.map((item: any, index: number) => {
-                      return (
-                        <div key={index}>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="15"
-                            height="15"
-                            color="#644EEE"
-                            fill="currentColor"
-                            className="bi bi-geo-alt-fill"
-                            viewBox="0 0 16 16"
-                          >
-                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                          </svg>
-                          <div
-                            style={{
-                              display: 'inline-block',
-                              marginTop: '10px',
-                              fontSize: '11px',
-                            }}
-                          >
-                            {item.place_name}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </RouteShow>
-                </RouteShowBox>
-              )} */}
-
               <div className="detail-bottom">
                 <p>{date}</p>
                 <div style={{ display: 'flex' }}>
@@ -381,7 +345,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                       <path d="M13 10h5l-6 6-6-6h5V3h2v7zm-9 9h16v-7h2v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8h2v7z" />
                     </svg>
                   </div>
-                  <PostDelete onClick={deletePost}>
+                  {/* <PostDelete onClick={deletePost}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -391,7 +355,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                       <path fill="none" d="M0 0h24v24H0z" />
                       <path d="M17 6h5v2h-2v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8H2V6h5V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3zm1 2H6v12h12V8zm-9 3h2v6H9v-6zm4 0h2v6h-2v-6zM9 4v2h6V4H9z" />
                     </svg>
-                  </PostDelete>
+                  </PostDelete> */}
                 </div>
               </div>
             </div>
@@ -436,6 +400,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                 value={comment}
                 onChange={e => setComment(e.target.value)}
                 placeholder="댓글을 입력하세요"
+                onKeyDown={handlekeyDown}
               />
               <button onClick={postComment}>완료</button>
             </StDetailInput>

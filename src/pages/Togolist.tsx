@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useAppSelector } from '../components/hooks/typescripthook/hooks';
 
-import NaviBar from '../components/NaviBar';
+import Navbar from '../components/Navbar';
 
 declare global {
   interface Window {
@@ -81,7 +81,7 @@ const TogoUserlist = () => {
 
   return (
     <div>
-      <NaviBar></NaviBar>
+      <Navbar></Navbar>
       <div id="map" style={{ width: '100vw', height: '92.5vh' }}></div>
     </div>
   );

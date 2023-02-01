@@ -78,10 +78,14 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
   };
 
   const deleteComment = async (commentId: string | number) => {
-    await loggedIn.delete(`api/comment/${mainFeedDetail.feed_id}/${commentId}`);
-    dispatch(
-      __mainFeedDetail({ feedId: mainFeedDetail.feed_id, userId: userId }),
-    );
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      await loggedIn.delete(
+        `api/comment/${mainFeedDetail.feed_id}/${commentId}`,
+      );
+      dispatch(
+        __mainFeedDetail({ feedId: mainFeedDetail.feed_id, userId: userId }),
+      );
+    }
   };
 
   // const openModal = () => {
@@ -134,6 +138,8 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
       await loggedIn.delete(`api/feed/${mainFeedDetail.feed_id}`);
       await dispatch(__myFeed());
       await close();
+      await dispatch(__getMyProfile());
+      window.scrollTo(0, 0);
     } else {
     }
   };
@@ -174,6 +180,12 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
   const openRoutine = () => {
     if (placeName.length !== 0) {
       setRouteOpen(!routeOpen);
+    }
+  };
+
+  const handlekeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      postComment();
     }
   };
   return (
@@ -231,7 +243,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                     </div>
                   </div>
                 ) : (
-                  <div className="route-close">
+                  <div onClick={openRoutine} className="route-close">
                     <p className="route-close-button" onClick={openRoutine}>
                       루트 접기
                     </p>
@@ -256,7 +268,6 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                   </div>
                 )}
               </StDiv>
-
               <div className="detail-bottom">
                 <p>{date}</p>
                 <div style={{ display: 'flex' }}>
@@ -283,7 +294,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                       </p>
                     </StIcon>
                   )}
-                  <div onClick={pick} className="detail-btn">
+                  {/* <div onClick={pick} className="detail-btn">
                     {mainFeedDetail.isPick === 1 ? (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -311,8 +322,8 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                         />
                       </svg>
                     )}
-                  </div>
-                  <div onClick={saveRoute} className="detail-btn">
+                  </div> */}
+                  {/* <div onClick={saveRoute} className="detail-btn">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -322,7 +333,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                       <path fill="none" d="M0 0h24v24H0z" />
                       <path d="M13 10h5l-6 6-6-6h5V3h2v7zm-9 9h16v-7h2v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8h2v7z" />
                     </svg>
-                  </div>
+                  </div> */}
                   <PostDelete onClick={deletePost}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -378,6 +389,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                 value={comment}
                 onChange={e => setComment(e.target.value)}
                 placeholder="댓글을 입력하세요"
+                onKeyDown={handlekeyDown}
               />
               <button onClick={postComment}>완료</button>
             </StDetailInput>
@@ -394,6 +406,7 @@ const StDiv = styled.div`
   position: relative;
   font-size: 13px;
   margin-bottom: 10px;
+  word-break: break-all;
 
   .route-open,
   .route-close {

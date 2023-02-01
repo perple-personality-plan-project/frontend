@@ -187,6 +187,7 @@ function MyPage() {
     await dispatch(__getMap());
     await dispatch(__getMyProfile());
   };
+  //regular expression for mbti
 
   if (token === null) {
     return (
@@ -280,7 +281,7 @@ function MyPage() {
                     show={profileEdit}
                     required
                     defaultValue={item.mbti}
-                    pattern="^(istj|isfj|infj|intj|istp|isfp|infp|intp|estp|esfp|enfp|entp|estj|esfj|enfj|entj|ISTJ|ISFJ|INFJ|INTJ|ISTP|ISFP|INFP|INTP|ESTP|ESFP|ENFP|ENTP|ESTJ|ESFJ|ENFJ|ENTJ)$"
+                    pattern="^[EIei][SNsn][TFtf][JPjp]$"
                     onInvalid={e =>
                       (e.target as HTMLInputElement).setCustomValidity(
                         'MBTI를 올바르게 입력해 주세요',
@@ -319,10 +320,10 @@ function MyPage() {
                     show={profileEdit}
                     required
                     defaultValue={item.nickname}
-                    pattern="^[\w\Wㄱ-ㅎㅏ-ㅣ가-힣]{2,8}$"
+                    pattern="^[ㄱ-ㅎ|가-힣|a-z|A-Z|]{3,8}$"
                     onInvalid={e =>
                       (e.target as HTMLInputElement).setCustomValidity(
-                        '2글자 이상 8글자 이하',
+                        '닉네임은 한글 또는 영어 4-8자를 포함해주세요!',
                       )
                     }
                     onInput={e =>
@@ -695,6 +696,7 @@ const MbtiInput = styled.input<IAppState>`
   background-color: #f3f3f3;
   border: solid #e6e6e6 1px;
   border-radius: 15px;
+  border: solid #644eee;
   display: ${props => (props.show ? 'flex' : 'none')};
   @media (max-width: 390px) {
     margin-left: 130px;
@@ -716,6 +718,7 @@ const NameInput = styled.input<IAppState>`
   margin-top: 24px;
   font-size: 30px;
   margin-left: 110px;
+  border: solid #644eee;
   display: ${props => (props.show ? 'flex' : 'none')};
   @media (max-width: 390px) {
     margin-left: 75px;
