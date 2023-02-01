@@ -64,8 +64,11 @@ const MbtiQuestionsPage = () => {
                 value="E"
                 type="radio"
                 onChange={getMbti}
+                id="firstMBTIYes"
               />
-              <label className="yes-label">그렇다</label>
+              <label htmlFor="firstMBTIYes" className="yes-label">
+                그렇다
+              </label>
             </StInput>
             <StInput>
               <input
@@ -73,8 +76,11 @@ const MbtiQuestionsPage = () => {
                 value="I"
                 type="radio"
                 onChange={getMbti}
+                id="firstMBTINo"
               />
-              <label className="no-label">그렇지 않다</label>
+              <label htmlFor="firstMBTINo" className="no-label">
+                그렇지 않다
+              </label>
             </StInput>
           </StInputContainer>
         </StQuestion>
@@ -87,8 +93,11 @@ const MbtiQuestionsPage = () => {
                 value="S"
                 type="radio"
                 onChange={getMbti}
+                id="secondMBTIYes"
               />
-              <label className="yes-label">그렇다</label>
+              <label htmlFor="secondMBTIYes" className="yes-label">
+                그렇다
+              </label>
             </StInput>
             <StInput>
               <input
@@ -96,8 +105,11 @@ const MbtiQuestionsPage = () => {
                 value="N"
                 type="radio"
                 onChange={getMbti}
+                id="secondMBTINo"
               />
-              <label className="no-label">그렇지 않다</label>
+              <label htmlFor="secondMBTINo" className="no-label">
+                그렇지 않다
+              </label>
             </StInput>
           </StInputContainer>
         </StQuestion>
@@ -110,8 +122,11 @@ const MbtiQuestionsPage = () => {
                 value="F"
                 type="radio"
                 onChange={getMbti}
+                id="thirdMBTIYes"
               />
-              <label className="yes-label">그렇다</label>
+              <label htmlFor="thirdMBTIYes" className="yes-label">
+                그렇다
+              </label>
             </StInput>
             <StInput>
               <input
@@ -119,8 +134,11 @@ const MbtiQuestionsPage = () => {
                 value="T"
                 type="radio"
                 onChange={getMbti}
+                id="thirdMBTINo"
               />
-              <label className="no-label">그렇지 않다</label>
+              <label htmlFor="thirdMBTINo" className="no-label">
+                그렇지 않다
+              </label>
             </StInput>
           </StInputContainer>
         </StQuestion>
@@ -133,8 +151,11 @@ const MbtiQuestionsPage = () => {
                 value="J"
                 type="radio"
                 onChange={getMbti}
+                id="fourthMBTIYes"
               />
-              <label className="yes-label">그렇다</label>
+              <label htmlFor="fourthMBTIYes" className="yes-label">
+                그렇다
+              </label>
             </StInput>
             <StInput>
               <input
@@ -142,8 +163,11 @@ const MbtiQuestionsPage = () => {
                 value="P"
                 type="radio"
                 onChange={getMbti}
+                id="fourthMBTINo"
               />
-              <label className="no-label">그렇지 않다</label>
+              <label htmlFor="fourthMBTINo" className="no-label">
+                그렇지 않다
+              </label>
             </StInput>
           </StInputContainer>
         </StQuestion>
