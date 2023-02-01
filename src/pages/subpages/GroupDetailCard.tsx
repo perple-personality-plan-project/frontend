@@ -219,21 +219,21 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
           <div className="post-bottom-icon">
             {isLike === 1 ? (
               <StIcon>
+                <p>{likeCount}</p>
                 <i
                   className="ri-heart-3-fill"
                   style={{ color: 'red', fontSize: '25px' }}
                   onClick={() => toggleHeart(feed_id)}
                 ></i>
-                <p className="heart-number">{likeCount}</p>
               </StIcon>
             ) : (
               <StIcon>
+                <p>{likeCount}</p>
                 <i
                   className="ri-heart-3-line"
                   onClick={() => toggleHeart(feed_id)}
                   style={{ color: 'red', fontSize: '25px' }}
                 ></i>
-                <p className="heart-number">{likeCount}</p>
               </StIcon>
             )}
           </div>
@@ -242,6 +242,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
           {userId === user_id ? (
             <div className="post-bottom-icon">
               <StIcon>
+                <p style={{ visibility: 'hidden' }}>0</p>
                 <i
                   onClick={() => deletePost()}
                   className="ri-delete-bin-line"
@@ -343,35 +344,32 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                 </StDiv>
 
                 <div className="detail-bottom">
-                  <p>{date}</p>
+                  <p style={{ paddingTop: '14px' }}>{date}</p>
                   <div style={{ display: 'flex' }}>
                     {isLike === 1 ? (
                       <StIcon>
+                        <p>{likeCount}</p>
                         <i
                           className="ri-heart-3-fill"
                           style={{ color: 'red', fontSize: '25px' }}
                           onClick={() => toggleHeart(feed_id)}
                         ></i>
-                        <p className="heart-number heart-position">
-                          {likeCount}
-                        </p>
                       </StIcon>
                     ) : (
                       <StIcon>
+                        <p>{likeCount}</p>
                         <i
                           className="ri-heart-3-line"
                           style={{ color: 'red', fontSize: '25px' }}
                           onClick={() => toggleHeart(feed_id)}
                         ></i>
-                        <p className="heart-number heart-position">
-                          {likeCount}
-                        </p>
                       </StIcon>
                     )}
                     {/* <div className="detail-btn">댓</div> */}
                     {userId === user_id ? (
                       <div className="post-bottom-icon">
                         <StIcon>
+                          <p style={{ visibility: 'hidden' }}>0</p>
                           <i
                             onClick={() => deletePost()}
                             className="ri-delete-bin-line"
@@ -520,21 +518,15 @@ const StDiv = styled.div`
 
 const StIcon = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   position: relative;
+
   margin-left: 5px;
   cursor: pointer;
 
-  .heart-number {
-    position: absolute;
-    top: -35px;
-    right: 9px;
-    /* font-size: 20px; */
-  }
-
-  .heart-position {
-    top: -13px;
-    right: 9px;
+  p {
+    margin: 0;
   }
 `;
 
@@ -825,7 +817,7 @@ const StXIcon = styled.div`
 
   z-index: 1000;
 
-  @media screen and (max-width: 800px) {
+  @media screen and (max-width: 860px) {
     top: 10px;
     right: 10px;
 
@@ -972,7 +964,7 @@ const StGroupPost = styled.div`
   .post-bottom-right {
     display: flex;
     position: absolute;
-    bottom: 10px;
+    bottom: 14px;
     right: 10px;
 
     .post-bottom-icon {
