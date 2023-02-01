@@ -50,6 +50,7 @@ const GroupCreateModal: React.FC<Props> = ({ filterGroup }) => {
     setImageSrc('');
     setTagSet([]);
     setThumbnail('');
+    setgroupInfos({ ...groupInfos, description: '' });
   };
 
   const addTag = () => {
@@ -111,6 +112,7 @@ const GroupCreateModal: React.FC<Props> = ({ filterGroup }) => {
       setImageSrc('');
       setTagSet([]);
       setThumbnail('');
+      setgroupInfos({ ...groupInfos, description: '' });
     }
     // else {
     //   alert('형식을 모두 작성해주세요');
@@ -118,6 +120,27 @@ const GroupCreateModal: React.FC<Props> = ({ filterGroup }) => {
   };
 
   const accessToken = sessionStorage.getItem('accessToken');
+
+  const limitLines = (e: any) => {
+    let rows = e.target.value.split('\n')?.length; //줄바꿈 개수
+    let maxRows = 4;
+    if (rows > maxRows) {
+      const { name, value } = e.target;
+      setgroupInfos({
+        ...groupInfos,
+        [name]: value.split('\n').slice(0, maxRows).join('\n'),
+      });
+    } else {
+      const { name, value } = e.target;
+      setgroupInfos({ ...groupInfos, [name]: value });
+    }
+  };
+
+  const handlekeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      addTag();
+    }
+  };
 
   return (
     <div>
@@ -177,8 +200,9 @@ const GroupCreateModal: React.FC<Props> = ({ filterGroup }) => {
                   <input
                     onChange={e => setTag(e.target.value)}
                     value={tag}
-                    placeholder="태그를 추가해주세요. (최대 3개)"
+                    placeholder="태그를 추가해주세요. (최대 5개)"
                     maxLength={8}
+                    onKeyDown={handlekeyDown}
                   />
                   <div onClick={addTag} className="tag-plus">
                     +
@@ -204,8 +228,12 @@ const GroupCreateModal: React.FC<Props> = ({ filterGroup }) => {
                 <p>그룹 소개</p>
                 <textarea
                   name="description"
-                  onChange={e => handleGroupInfo(e)}
+                  onChange={e => {
+                    handleGroupInfo(e);
+                    limitLines(e);
+                  }}
                   maxLength={100}
+                  value={groupInfos.description}
                 ></textarea>
               </StGroupTextArea>
               <StGroupBtn

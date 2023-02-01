@@ -158,7 +158,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
     fetchData();
   };
 
-  const toggleHeart = async (feedId: number) => {
+  const toggleThumb = async (feedId: number) => {
     await loggedIn.put(`/api/group/${groupId}/feed/${feedId}/like`); //좋아요 / 좋아요 취소 api
     dispatch(__groupFeedList({ id: groupId, userId: userId }));
   };
@@ -221,24 +221,22 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
               <StIcon>
                 <p>{likeCount}</p>
                 <i
-                  className="ri-heart-3-fill"
-                  style={{ color: 'red', fontSize: '25px' }}
-                  onClick={() => toggleHeart(feed_id)}
+                  onClick={() => toggleThumb(feed_id)}
+                  style={{ color: 'blue', fontSize: '25px' }}
+                  className="ri-thumb-up-fill"
                 ></i>
               </StIcon>
             ) : (
               <StIcon>
                 <p>{likeCount}</p>
                 <i
-                  className="ri-heart-3-line"
-                  onClick={() => toggleHeart(feed_id)}
-                  style={{ color: 'red', fontSize: '25px' }}
+                  onClick={() => toggleThumb(feed_id)}
+                  style={{ color: 'blue', fontSize: '25px' }}
+                  className="ri-thumb-up-line"
                 ></i>
               </StIcon>
             )}
           </div>
-          {/* <div className="post-bottom-icon">B</div>
-          <div className="post-bottom-icon">C</div> */}
           {userId === user_id ? (
             <div className="post-bottom-icon">
               <StIcon>
@@ -298,7 +296,7 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                   <p>{mbti.toUpperCase()}</p>
                 </div>
                 <StDiv>
-                  {description}
+                  <p style={{ whiteSpace: 'pre-wrap' }}>{description}</p>
                   {parsedLocation.place_group_name !== '없음' ? (
                     !toggleRoute ? (
                       <div className="route-open">
@@ -322,7 +320,11 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                         </p>
                         {parsedPlace?.map((route: any, index: number) => {
                           return (
-                            <div key={index} className="route-close-list">
+                            <div
+                              onClick={() => setToggleRoute(false)}
+                              key={index}
+                              className="route-close-list"
+                            >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="13"
@@ -350,18 +352,18 @@ const GroupDetailCard: React.FC<feedCardPreset> = ({
                       <StIcon>
                         <p>{likeCount}</p>
                         <i
-                          className="ri-heart-3-fill"
-                          style={{ color: 'red', fontSize: '25px' }}
-                          onClick={() => toggleHeart(feed_id)}
+                          onClick={() => toggleThumb(feed_id)}
+                          style={{ color: 'blue', fontSize: '25px' }}
+                          className="ri-thumb-up-fill"
                         ></i>
                       </StIcon>
                     ) : (
                       <StIcon>
                         <p>{likeCount}</p>
                         <i
-                          className="ri-heart-3-line"
-                          style={{ color: 'red', fontSize: '25px' }}
-                          onClick={() => toggleHeart(feed_id)}
+                          onClick={() => toggleThumb(feed_id)}
+                          style={{ color: 'blue', fontSize: '25px' }}
+                          className="ri-thumb-up-line"
                         ></i>
                       </StIcon>
                     )}
@@ -466,18 +468,22 @@ const StDiv = styled.div`
     background-color: #f6f4fd;
     box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.25);
     margin-top: 10px;
-    cursor: pointer;
-    padding: 5px 10px;
+    /* cursor: pointer; */
+    /* padding: 5px 10px; */
     border-radius: 5px;
     z-index: 10;
     /* left: -4px; */
 
     .route-open-button {
+      cursor: pointer;
+      padding: 5px 10px;
       font-size: 10px;
       color: gray;
     }
 
     .route-close-button {
+      cursor: pointer;
+      padding: 5px 10px;
       font-size: 10px;
       color: gray;
     }
@@ -502,7 +508,7 @@ const StDiv = styled.div`
       display: flex;
       align-items: center;
       /* justify-content: center; */
-      padding-top: 5px;
+      padding: 2px 5px;
       height: 20px;
       p {
         font-size: 11px;
@@ -631,6 +637,7 @@ const StDetailDesc = styled.div`
     border-radius: 50%;
   }
   .detail-info {
+    /* word-break: break-all; */
     position: relative;
     display: flex;
     flex-direction: column;

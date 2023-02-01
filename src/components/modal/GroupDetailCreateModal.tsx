@@ -61,11 +61,7 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
     setImageSrc([]);
     setRoute('');
     setThumbnail([]);
-  };
-
-  const handleGroupInfo = (e: any) => {
-    const { name, value } = e.target;
-    setgroupInfos({ ...groupInfos, [name]: value });
+    setgroupInfos({ ...groupInfos, description: '' });
   };
 
   const handleSetThumbnail = (e: any) => {
@@ -104,6 +100,7 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
       setImageSrc([]);
       setRoute('');
       setThumbnail([]);
+      setgroupInfos({ ...groupInfos, description: '' });
       alert('게시글 작성 완료!');
     }
   };
@@ -111,6 +108,26 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
   useEffect(() => {
     dispatch(__getMap());
   }, []);
+
+  // const handleGroupInfo = (e: any) => {
+  //   const { name, value } = e.target;
+  //   setgroupInfos({ ...groupInfos, [name]: value });
+  // };
+
+  const limitLines = (e: any) => {
+    let rows = e.target.value.split('\n')?.length; //줄바꿈 개수
+    let maxRows = 4;
+    if (rows > maxRows) {
+      const { name, value } = e.target;
+      setgroupInfos({
+        ...groupInfos,
+        [name]: value.split('\n').slice(0, maxRows).join('\n'),
+      });
+    } else {
+      const { name, value } = e.target;
+      setgroupInfos({ ...groupInfos, [name]: value });
+    }
+  };
 
   return (
     <div>
@@ -245,8 +262,12 @@ const GroupDetailCreateModal: React.FC<Props> = ({ paramId }) => {
                 <p>내용 작성</p>
                 <textarea
                   name="description"
-                  onChange={e => handleGroupInfo(e)}
+                  onChange={e => {
+                    // handleGroupInfo(e);
+                    limitLines(e);
+                  }}
                   maxLength={100}
+                  value={groupInfos.description}
                 ></textarea>
               </StGroupTextArea>
               <StGroupBtn onClick={sendData}>모두 작성했어요!</StGroupBtn>
@@ -584,6 +605,7 @@ const StGroupTextArea = styled.div`
   * {
     box-sizing: border-box;
   }
+
   p {
     color: gray;
     font-size: 13px;
@@ -599,6 +621,7 @@ const StGroupTextArea = styled.div`
     height: 100%;
     text-indent: 5px;
     resize: none;
+    /* white-space: pre-wrap; */
   }
 `;
 

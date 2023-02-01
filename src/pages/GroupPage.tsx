@@ -177,22 +177,14 @@ const GroupPage = () => {
       <StRecommendLists>
         {tags?.map((tag: any, index) => {
           return index === 0 ? (
-            <StTagsContainer>
-              <div
-                className="tag tag-ml tag-all"
-                onClick={() => setTag('ALL')}
-                key={index}
-              >
+            <StTagsContainer key={index}>
+              <div className="tag tag-ml tag-all" onClick={() => setTag('ALL')}>
                 {`ALL`}
               </div>
             </StTagsContainer>
           ) : (
-            <StTagsContainer>
-              <div
-                className="tag"
-                onClick={() => setTag(tag.title)}
-                key={index}
-              >
+            <StTagsContainer key={index}>
+              <div className="tag" onClick={() => setTag(tag.title)}>
                 {tag.title}
               </div>
             </StTagsContainer>
