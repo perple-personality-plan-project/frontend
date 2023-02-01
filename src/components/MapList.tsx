@@ -101,7 +101,11 @@ const MapList = ({ places, pagination }: MapListProps) => {
                 </span>
                 <strong className="place-name">{kakaoPlace.place_name}</strong>
                 <span className="place-address">{kakaoPlace.address_name}</span>
-                <Detail href={kakaoPlace.place_url} className="place-address">
+                <Detail
+                  href={kakaoPlace.place_url}
+                  target="_blank"
+                  className="place-address"
+                >
                   자세히보기
                 </Detail>
                 <Cartbtn
