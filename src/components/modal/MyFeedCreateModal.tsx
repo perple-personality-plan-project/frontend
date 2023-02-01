@@ -6,7 +6,11 @@ import { Navigation } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { useAppDispatch, useAppSelector } from '../hooks/typescripthook/hooks';
-import { __FeedPost, __myFeed } from '../../redux/modules/mySlice';
+import {
+  __FeedPost,
+  __getMyProfile,
+  __myFeed,
+} from '../../redux/modules/mySlice';
 import GroupModalTemplate from './GroupModalTemplate';
 import ImagePreviewMultiHook from '../hooks/ImagePreviewMultiHook';
 
@@ -80,12 +84,13 @@ const FeedModal: React.FC = () => {
     formData.append('description', groupInfos.description);
 
     if (groupInfos.description && route !== '') {
-      fetchData(formData);
-      setIsOpen(false);
-      setImageSrc([]);
-      setRoute('');
-      setThumbnail([]);
-      alert('게시글 작성 완료!');
+      await fetchData(formData);
+      await setIsOpen(false);
+      await setImageSrc([]);
+      await setRoute('');
+      await setThumbnail([]);
+      await alert('게시글 작성 완료!');
+      await dispatch(__getMyProfile());
     } else if (thumbnail === undefined || thumbnail?.length === 0) {
       alert('이미지를 넣어 주세요');
     } else {
