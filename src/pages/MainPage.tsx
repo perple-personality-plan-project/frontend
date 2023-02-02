@@ -35,6 +35,7 @@ const MainPage = () => {
   const { mainFeedList } = useAppSelector(store => store.post);
   const { mainMbtiList } = useAppSelector(store => store.post);
   const [mainPosts, setMainPosts] = useState<mainPostPreset[]>([]);
+  const [savedRoutes, setsavedRoutes] = useState<{}[]>([]);
 
   const userId = sessionStorage.getItem('userId');
 
@@ -49,6 +50,8 @@ const MainPage = () => {
       dispatch(__mainMbtilist({ mbtiCheck, userId }));
     }
   }, [mbtiCheck]);
+
+  // console.log(savedRoutes);
 
   return (
     <Wrap>
@@ -111,6 +114,8 @@ const MainPage = () => {
                 key={post.feed_id}
                 post={post}
                 mbtiCheck={mbtiCheck}
+                setsavedRoutes={setsavedRoutes}
+                savedRoutes={savedRoutes}
               />
             ))
           : mainMbtiList?.map((post: any) => (
@@ -118,6 +123,8 @@ const MainPage = () => {
                 key={post.feed_id}
                 post={post}
                 mbtiCheck={mbtiCheck}
+                setsavedRoutes={setsavedRoutes}
+                savedRoutes={savedRoutes}
               />
             ))}
       </PostListContainer>
