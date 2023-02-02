@@ -35,6 +35,7 @@ const MainPage = () => {
   const { mainFeedList } = useAppSelector(store => store.post);
   const { mainMbtiList } = useAppSelector(store => store.post);
   const [mainPosts, setMainPosts] = useState<mainPostPreset[]>([]);
+  const [savedRoutes, setsavedRoutes] = useState<{}[]>([]);
 
   const userId = sessionStorage.getItem('userId');
 
@@ -49,6 +50,8 @@ const MainPage = () => {
       dispatch(__mainMbtilist({ mbtiCheck, userId }));
     }
   }, [mbtiCheck]);
+
+  // console.log(savedRoutes);
 
   return (
     <Wrap>
@@ -82,6 +85,7 @@ const MainPage = () => {
                 padding: '25px',
                 marginTop: '20px',
                 marginLeft: '53%',
+                cursor: 'pointer',
               }}
               onClick={() =>
                 window.open('https://16platter.site/mbti', '_blank')
@@ -111,6 +115,8 @@ const MainPage = () => {
                 key={post.feed_id}
                 post={post}
                 mbtiCheck={mbtiCheck}
+                setsavedRoutes={setsavedRoutes}
+                savedRoutes={savedRoutes}
               />
             ))
           : mainMbtiList?.map((post: any) => (
@@ -118,6 +124,8 @@ const MainPage = () => {
                 key={post.feed_id}
                 post={post}
                 mbtiCheck={mbtiCheck}
+                setsavedRoutes={setsavedRoutes}
+                savedRoutes={savedRoutes}
               />
             ))}
       </PostListContainer>
@@ -308,8 +316,10 @@ const MbtiTitle = styled.div`
 const PostListContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
+  justify-content: left;
+  flex-direction: row;
   margin-top: 15vh;
-  justify-content: center;
+  padding: 40px;
   gap: 25px;
   border: 5px soild red;
 
