@@ -17,9 +17,11 @@ import {
   __modalOpen,
   __myFeed,
   __getMyProfile,
+  __Togo,
 } from '../../redux/modules/mySlice';
 import { __RootMaker } from '../../redux/modules/mapSlice';
 import { __getPicked, __getMap } from '../../redux/modules/mySlice';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   state: React.ReactNode;
@@ -103,6 +105,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
   // };
 
   const modalOpen = useAppSelector((store: any) => store.mypage.modalOpen);
+  const navigate = useNavigate();
 
   let modalParse: { place_group: string; place_group_name: string } = {
     place_group: '',
@@ -198,6 +201,10 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
       setRouteOpen(!routeOpen);
     }
   };
+  const NavigaeToGo = async (e: []) => {
+    await dispatch(__Togo(e));
+    await navigate('/togolist');
+  };
   return (
     <MyFeedDetailModal
       onClose={() => {
@@ -274,7 +281,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                       {placeName?.map((route: any, index: number) => {
                         return (
                           <div
-                            onClick={openRoutine}
+                            onClick={() => NavigaeToGo(placeName)}
                             key={index}
                             className="route-close-list"
                           >
