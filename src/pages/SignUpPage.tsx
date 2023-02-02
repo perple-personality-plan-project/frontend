@@ -50,26 +50,44 @@ const SignUpPage = () => {
     'INTJ',
   ];
 
+  const [validationId, setValidationId] = useState(false);
+  const [validationNick, setValidationNick] = useState(false);
+  const [validationPW, setValidationPW] = useState(false);
+  const [validationPW2, setValidationPW2] = useState(false);
+  const [validationMBTI, setValidationMBTI] = useState(false);
+
+  const [idConfirm, setIdConfirm] = useState(false);
+  const [nickConfirm, setNickConfirm] = useState(false);
+
   const onLoginIdHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIdConfirm(false);
     setLoginId(e.currentTarget.value);
     setIdFlag(false);
     const RegExpId = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{5,10}$/;
     if (!RegExpId.test(e.target.value)) {
+      setValidationId(false);
       setIdMessage('아이디는 영문자 + 숫자를 포함하여 5-10자를 포함해주세요!');
     } else {
-      setIdMessage('성공!');
+      setIdMessage('아이디 중복확인을 해주세요!');
+      setValidationId(true);
+
       // setIdMessage('✔');
     }
   };
 
+  // console.log(idConfirm, IdMessage);
+
   const onNickNameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNickConfirm(false);
     setNickName(e.currentTarget.value);
     setNickFlag(false);
     const RegExpNick = /^[가-힣a-zA-Z]{4,8}$/;
     if (!RegExpNick.test(e.target.value)) {
+      setValidationNick(false);
       setNickNameMessage('닉네임은 한글 또는 영어 4-8자를 포함해주세요!');
     } else {
-      setNickNameMessage('성공!');
+      setValidationNick(true);
+      setNickNameMessage('닉네임 중복확인을 해주세요!');
       // setIdMessage('✔');
     }
   };
@@ -79,21 +97,25 @@ const SignUpPage = () => {
     const RegExpPw =
       /(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%])[0-9a-zA-Z!@#$%]{4,10}$/;
     if (!RegExpPw.test(e.target.value)) {
+      setValidationPW(false);
       setPwMessage(
         '비밀번호는 영문자 + 숫자 + 특수문자(!,@,#,$,%)를 포함해주세요!',
       );
     } else {
-      setPwMessage('성공!');
+      setValidationPW(true);
+      setPwMessage('이 비밀번호를 사용 할 수 있습니다!');
       // setIdMessage('✔');
     }
   };
 
   useEffect(() => {
     if (Password !== ConfirmPassword) {
+      setValidationPW2(false);
       // setPwMessage()
-      setPwConfirmMessage('실패');
+      setPwConfirmMessage('위 비밀번호와 동일하지 않습니다!');
     } else {
-      setPwConfirmMessage('성공');
+      setValidationPW2(true);
+      setPwConfirmMessage('위 비밀번호와 동일합니다!');
     }
   }, [ConfirmPassword, Password]);
 
@@ -101,8 +123,10 @@ const SignUpPage = () => {
     setMbti(e.currentTarget.value);
 
     if (!mbtiList.includes(e.target.value.toUpperCase())) {
-      setMbtiMessage('mbti 제대로 입력해쥬세용');
+      setValidationMBTI(false);
+      setMbtiMessage('mbti를 제대로 입력해주세요!');
     } else {
+      setValidationMBTI(true);
       setMbtiMessage('성공!');
       // setIdMessage('✔');
     }
@@ -160,9 +184,11 @@ const SignUpPage = () => {
       await nonTokenClient.post('api/user/check-id', {
         login_id: LoginId,
       });
+      setIdConfirm(true);
       setIdFlag(true);
       alert('사용 가능한 아이디 입니다!');
     } catch (error: any) {
+      setIdConfirm(false);
       if (error.response.status === 409) {
         setIdFlag(false);
         alert(error.response.data.message);
@@ -177,6 +203,7 @@ const SignUpPage = () => {
       await nonTokenClient.post('api/user/check-nick', {
         nickname: NickName,
       });
+      setNickConfirm(true);
       setNickFlag(true);
       alert('사용 가능한 닉네임 입니다!');
     } catch (error: any) {
@@ -188,16 +215,16 @@ const SignUpPage = () => {
       }
     }
   };
+  console.log(idConfirm);
 
   const checkId = () => {
     checkIdFromServer();
+    console.log(idConfirm);
   };
 
   const checkNickName = () => {
     checkNickNameFromServer();
   };
-
-  console.log(idFlag, nickFlag);
 
   return (
     <Wrap>
@@ -223,7 +250,19 @@ const SignUpPage = () => {
               placeholder="아이디"
               maxLength={10}
             />
-            {LoginId ? <p className="validation-text">{IdMessage}</p> : null}
+            {LoginId ? (
+              !idConfirm ? (
+                <p className="validation-fail">{IdMessage}</p>
+              ) : (
+                <p
+                  className={
+                    validationId ? 'validation-complete' : 'validation-fail'
+                  }
+                >
+                  {'아이디 중복확인이 완료되었습니다!'}
+                </p>
+              )
+            ) : null}
           </div>
           <StButton
             style={{ width: '101.47px' }}
@@ -266,7 +305,17 @@ const SignUpPage = () => {
               maxLength={8}
             />
             {NickName ? (
-              <p className="validation-text">{nickNameMessage}</p>
+              !nickConfirm ? (
+                <p className="validation-fail">{nickNameMessage}</p>
+              ) : (
+                <p
+                  className={
+                    validationNick ? 'validation-complete' : 'validation-fail'
+                  }
+                >
+                  {'닉네임 중복확인이 완료되었습니다!'}
+                </p>
+              )
             ) : null}
           </div>
           <StButton
@@ -305,7 +354,15 @@ const SignUpPage = () => {
             placeholder="비밀번호"
             maxLength={50}
           />
-          {Password ? <p className="validation-text">{PwMessage}</p> : null}
+          {Password ? (
+            <p
+              className={
+                validationPW ? 'validation-complete' : 'validation-fail'
+              }
+            >
+              {PwMessage}
+            </p>
+          ) : null}
         </div>
         <div className="form-input">
           <Label>비밀번호 확인</Label>
@@ -319,7 +376,13 @@ const SignUpPage = () => {
             maxLength={50}
           />
           {ConfirmPassword ? (
-            <p className="validation-text">{PwConfirmMessage}</p>
+            <p
+              className={
+                validationPW2 ? 'validation-complete' : 'validation-fail'
+              }
+            >
+              {PwConfirmMessage}
+            </p>
           ) : null}
         </div>
         <div
@@ -340,7 +403,15 @@ const SignUpPage = () => {
               placeholder="MBTI를 적어주세요"
               maxLength={4}
             />
-            {Mbti ? <p className="validation-text">{mbtiMessage}</p> : null}
+            {Mbti ? (
+              <p
+                className={
+                  validationMBTI ? 'validation-complete' : 'validation-fail'
+                }
+              >
+                {mbtiMessage}
+              </p>
+            ) : null}
           </div>
           <StButton
             type="button"
@@ -400,9 +471,15 @@ const FormWrap = styled.form`
     margin-bottom: 15px;
   }
 
-  .validation-text {
+  .validation-complete {
     font-size: 12px;
     color: #644eee;
+    margin: 5px 0 0 5px;
+  }
+
+  .validation-fail {
+    font-size: 12px;
+    color: red;
     margin: 5px 0 0 5px;
   }
 
@@ -471,6 +548,11 @@ const StButton = styled.button`
     /* opacity: 0.75; */
   }
 
+  :focus {
+    outline: 0;
+    box-shadow: 0 0 5px 1px #644eee;
+  }
+
   @media screen and (max-width: 700px) {
     position: initial;
     margin-top: 10px;
@@ -487,6 +569,11 @@ const Button = styled.button`
   height: 40px;
   margin-top: 20px;
   width: 100%;
+
+  :focus {
+    outline: 0;
+    box-shadow: 0 0 5px 1px #644eee;
+  }
 
   @media screen and (max-width: 700px) {
     margin-top: 10px;
