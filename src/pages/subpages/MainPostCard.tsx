@@ -140,7 +140,7 @@ const MainPostCard: React.FC<Props> = ({
     }
   };
 
-  const toggleHeart = async (feedId: number) => {
+  const toggleThumb = async (feedId: number) => {
     await loggedIn.put(`/api/feed/${feed_id}/like`);
     dispatch(__mainFeedlist({ userId }));
     dispatch(
@@ -161,7 +161,7 @@ const MainPostCard: React.FC<Props> = ({
             mbtiCheck: mbtiCheck,
           }),
         );
-        alert('찜 성공!');
+        alert('마이페이지 찜 목록에 저장되었습니다.');
       } else {
         dispatch(__mainFeedlist({ userId }));
         dispatch(
@@ -170,7 +170,7 @@ const MainPostCard: React.FC<Props> = ({
             mbtiCheck: mbtiCheck,
           }),
         );
-        alert('찜 취소!');
+        alert('찜하기 취소되었습니다.');
       }
     });
   };
@@ -242,7 +242,7 @@ const MainPostCard: React.FC<Props> = ({
     };
 
     if (saveData.place_group_name === '없음') {
-      return alert('저장할 루트가 없습니다');
+      return alert('저장할 루트가 없습니다.');
     } else {
       if (
         savedRoutes.find(
@@ -255,7 +255,7 @@ const MainPostCard: React.FC<Props> = ({
       } else {
         setsavedRoutes([...savedRoutes, saveData]);
         dispatch(__RootMaker(saveData));
-        alert('저장성공');
+        alert('마이페이지 to-go-list 목록에 저장되었습니다.');
       }
     }
   };
@@ -301,28 +301,28 @@ const MainPostCard: React.FC<Props> = ({
           </div>
         </div>
         <div className="post-bottom-right">
-          <div className="post-bottom-heart">
+          <div className="post-bottom-thumb">
             {isLike === 1 ? (
               <StIcon>
                 <i
-                  className="ri-heart-3-fill"
-                  style={{ color: 'red', fontSize: '25px', cursor: 'pointer' }}
-                  onClick={() => toggleHeart(feed_id)}
+                  className="ri-thumb-up-fill"
+                  style={{ color: 'blue', fontSize: '25px', cursor: 'pointer' }}
+                  onClick={() => toggleThumb(feed_id)}
                 ></i>
-                <p className="heart-number">{likeCount}</p>
+                <p className="thumb-number">{likeCount}</p>
               </StIcon>
             ) : (
               <StIcon>
                 <i
-                  className="ri-heart-3-line"
-                  onClick={() => toggleHeart(feed_id)}
+                  className="ri-thumb-up-line"
+                  onClick={() => toggleThumb(feed_id)}
                   style={{
-                    color: '#8E8E8E',
+                    color: 'blue',
                     fontSize: '25px',
                     cursor: 'pointer',
                   }}
                 ></i>
-                <p className="heart-number">{likeCount}</p>
+                <p className="thumb-number">{likeCount}</p>
               </StIcon>
             )}
           </div>
@@ -474,30 +474,28 @@ const MainPostCard: React.FC<Props> = ({
                       {isLike === 1 ? (
                         <StIcon>
                           <i
-                            className="ri-heart-3-fill"
+                            className="ri-thumb-up-fill"
                             style={{
-                              color: 'red',
+                              color: 'blue',
                               fontSize: '25px',
-                              marginRight: '6px',
                               cursor: 'pointer',
                             }}
-                            onClick={() => toggleHeart(feed_id)}
+                            onClick={() => toggleThumb(feed_id)}
                           ></i>
-                          <p className="modal-heart-number">{likeCount}</p>
+                          <p className="modal-thumb-number">{likeCount}</p>
                         </StIcon>
                       ) : (
                         <StIcon>
                           <i
-                            className="ri-heart-3-line"
-                            onClick={() => toggleHeart(feed_id)}
+                            className="ri-thumb-up-line"
+                            onClick={() => toggleThumb(feed_id)}
                             style={{
-                              color: '#8E8E8E',
+                              color: 'blue',
                               fontSize: '25px',
-                              marginRight: '6px',
                               cursor: 'pointer',
                             }}
                           ></i>
-                          <p className="modal-heart-number">{likeCount}</p>
+                          <p className="modal-thumb-number">{likeCount}</p>
                         </StIcon>
                       )}
                     </div>
@@ -636,17 +634,17 @@ const StIcon = styled.div`
     cursor: pointer;
   } */
 
-  .heart-number {
+  .thumb-number {
     position: absolute;
     top: -26px;
     right: 8px;
     color: #9e9e9e;
     font-size: 13px;
   }
-  .modal-heart-number {
+  .modal-thumb-number {
     position: absolute;
     top: -13px;
-    right: 14px;
+    right: 9px;
     font-size: 13px;
     color: #9e9e9e;
   }
@@ -836,18 +834,22 @@ const StDiv = styled.div`
     background-color: #f6f4fd;
     box-shadow: 0 0px 4px 0 rgba(0, 0, 0, 0.25);
     margin-top: 10px;
-    cursor: pointer;
-    padding: 5px 10px;
+    /* cursor: pointer;
+    padding: 5px 10px; */
     border-radius: 5px;
     z-index: 10;
     /* left: -4px; */
 
     .route-open-button {
+      cursor: pointer;
+      padding: 5px 10px;
       font-size: 10px;
       color: gray;
     }
 
     .route-close-button {
+      cursor: pointer;
+      padding: 5px 10px;
       font-size: 10px;
       color: gray;
     }
@@ -872,7 +874,7 @@ const StDiv = styled.div`
       display: flex;
       align-items: center;
       /* justify-content: center; */
-      padding-top: 5px;
+      padding: 2px 5px;
       height: 20px;
       p {
         font-size: 11px;
@@ -1152,7 +1154,7 @@ const StGroupPost = styled.div`
     bottom: 10px;
     right: 10px;
 
-    .post-bottom-heart {
+    .post-bottom-thumb {
       width: 30px;
       height: 30px;
       display: flex;

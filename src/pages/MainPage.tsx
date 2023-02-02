@@ -85,6 +85,7 @@ const MainPage = () => {
                 padding: '25px',
                 marginTop: '20px',
                 marginLeft: '53%',
+                cursor: 'pointer',
               }}
               onClick={() =>
                 window.open('https://16platter.site/mbti', '_blank')
@@ -315,8 +316,10 @@ const MbtiTitle = styled.div`
 const PostListContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
+  justify-content: left;
+  flex-direction: row;
   margin-top: 15vh;
-  justify-content: center;
+  padding: 40px;
   gap: 25px;
   border: 5px soild red;
 
