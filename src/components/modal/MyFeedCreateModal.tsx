@@ -578,15 +578,16 @@ const StCloseIcon = styled.button`
   justify-content: center;
   align-items: center;
   font-size: 14px;
-
+  color: white;
   position: absolute;
   border-radius: 50%;
   border: 0;
   width: 24px;
   height: 24px;
-
-  top: -25px;
-  right: -25px;
+  font-weight: bold;
+  top: 5px;
+  right: 5px;
+  background-color: #abaebe;
 
   cursor: pointer;
 `;
