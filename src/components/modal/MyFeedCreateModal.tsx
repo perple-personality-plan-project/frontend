@@ -179,23 +179,24 @@ const FeedModal: React.FC = () => {
             <StGroupInfo>
               <StGroupInput>
                 <p>루트 추가</p>
-
                 {toggle ? (
                   <div style={{ display: 'flex' }}>
                     <StCategoryGroup>
                       <StCategory
                         onClick={() => {
+                          setRoute('없음');
+                          setRouteName('없음');
                           setToggle(prev => !prev);
-                          setRoute('');
                         }}
                       ></StCategory>
-                      {mapList.map((map: any, index: number) => {
+                      {mapList.map((map: any, index: any) => {
                         return (
                           <StCategory
                             key={index}
                             onClick={() => {
+                              setRoute(map.place_group);
+                              setRouteName(map.place_group_name);
                               setToggle(prev => !prev);
-                              setRoute(map.place_group_name);
                             }}
                           >
                             {map.place_group_name}
@@ -204,20 +205,20 @@ const FeedModal: React.FC = () => {
                       })}
                       <StCategory
                         onClick={() => {
-                          setToggle(prev => !prev);
                           setRoute('없음');
                           setRouteName('없음');
+                          setToggle(prev => !prev);
                         }}
                       >
                         없음
                       </StCategory>
                     </StCategoryGroup>
-                    {/* <div
+                    <div
                       onClick={() => setToggle(prev => !prev)}
                       className="tag-btn"
                     >
                       -
-                    </div> */}
+                    </div>
                   </div>
                 ) : (
                   <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -229,19 +230,18 @@ const FeedModal: React.FC = () => {
                           setToggle(prev => !prev);
                         }}
                       >
-                        {route}
+                        {routeName}
                       </StCategory>
                     </StCategoryGroup>
-                    {/* <div
+                    <div
                       onClick={() => setToggle(prev => !prev)}
                       className="tag-btn"
                     >
                       +
-                    </div> */}
+                    </div>
                   </div>
                 )}
               </StGroupInput>
-
               <StGroupTextArea>
                 <p>내용 작성</p>
                 <textarea
@@ -578,15 +578,16 @@ const StCloseIcon = styled.button`
   justify-content: center;
   align-items: center;
   font-size: 14px;
-
+  color: white;
   position: absolute;
   border-radius: 50%;
   border: 0;
   width: 24px;
   height: 24px;
-
-  top: -25px;
-  right: -25px;
+  font-weight: bold;
+  top: 5px;
+  right: 5px;
+  background-color: #abaebe;
 
   cursor: pointer;
 `;
