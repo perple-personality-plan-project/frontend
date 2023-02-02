@@ -9,6 +9,7 @@ import {
   Pagination,
 } from 'swiper';
 import 'swiper/css/bundle';
+import 'swiper/css/pagination';
 
 interface props {
   setMbtiCheck: any;
@@ -49,7 +50,10 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
         slidesPerView={1}
         grabCursor={true}
         navigation={true}
-        pagination={true}
+        // pagination={true}
+        pagination={{
+          clickable: true,
+        }}
         mousewheel={true}
         keyboard={{ enabled: true }}
         // onKeyPress={}
