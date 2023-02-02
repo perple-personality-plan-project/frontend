@@ -45,6 +45,8 @@ const StContainer = styled.div`
     width: 95%;
     max-width: 394px;
     aspect-ratio: 394 / 525.89;
+    margin: 74px 0 39px 0;
+    background-color: pink;
   }
 `;
 
