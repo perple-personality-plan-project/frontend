@@ -3,13 +3,56 @@ import { useNavigate, useParams } from 'react-router';
 import styled from 'styled-components';
 
 const MbtiInfo = () => {
-  const { mbti } = useParams();
+  const param = useParams();
   const navigate = useNavigate();
+
+  const mbtiCategory = [
+    'ISTJ',
+    'ISTP',
+    'ISFJ',
+    'ISFP',
+    'INTJ',
+    'INTP',
+    'INFJ',
+    'INFP',
+    'ESTJ',
+    'ESTP',
+    'ESFJ',
+    'ESFP',
+    'ENTJ',
+    'ENTP',
+    'ENFJ',
+    'ENFP',
+  ];
+
+  const mbtiMeaning = [
+    '현실주의자',
+    '장인',
+    '수호자',
+    '모험가',
+    '전략가',
+    '논리술사',
+    '옹호자',
+    '중재자',
+    '경영자',
+    '사업가',
+    '집정관',
+    '연예인',
+    '통솔자',
+    '변론가',
+    '선도자',
+    '활동가',
+  ];
+
   return (
     <StContainer>
-      <h1>
-        당신은 <span>{`${mbti}`}</span> 입니다.
-      </h1>
+      {mbtiCategory.map((mbti, index) => {
+        return mbti === param.mbti ? (
+          <h1>
+            당신은 <span>{`${mbtiMeaning[index]} ${mbti}`}</span> 입니다.
+          </h1>
+        ) : null;
+      })}
       <img src={require('../../src/빡빡이1.png')} alt="mbti-detail-img" />
       <StBtnGroups>
         <button onClick={() => navigate('/mbtiquestion')}>다시하기</button>
