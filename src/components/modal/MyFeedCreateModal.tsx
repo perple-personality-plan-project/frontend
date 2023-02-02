@@ -113,6 +113,8 @@ const FeedModal: React.FC = () => {
       await setThumbnail([]);
       await alert('게시글 작성 완료!');
       await dispatch(__getMyProfile());
+      await setRoute('없음');
+      await setRouteName('없음');
     } else if (thumbnail === undefined || thumbnail?.length === 0) {
       alert('이미지를 넣어 주세요');
     } else {
@@ -251,7 +253,6 @@ const FeedModal: React.FC = () => {
                     limitLines(e);
                   }}
                   maxLength={100}
-                  value={groupInfos.description}
                 ></textarea>
               </StGroupTextArea>
               <StGroupBtn onClick={sendData}>모두 작성했어요!</StGroupBtn>
