@@ -200,11 +200,21 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
   };
   return (
     <MyFeedDetailModal
-      onClose={() => close()}
+      onClose={() => {
+        close();
+        setRouteOpen(false);
+      }}
       open={state}
       id={mainFeedDetail?.feed_id}
     >
-      <StXIcon onClick={() => close()}>X</StXIcon>
+      <StXIcon
+        onClick={() => {
+          close();
+          setRouteOpen(false);
+        }}
+      >
+        X
+      </StXIcon>
       <StDetailContainer>
         <Swiper
           navigation={true}
