@@ -423,7 +423,7 @@ const MainPostCard: React.FC<Props> = ({
                 </div>
 
                 <StDiv>
-                  {description}
+                  <p className="modal-desc">{description}</p>
                   {parsedLocation.place_group_name !== '없음' ? (
                     !toggleRoute ? (
                       <div className="route-open">
@@ -827,6 +827,11 @@ const StDiv = styled.div`
   position: relative;
   font-size: 13px;
   margin-bottom: 10px;
+
+  .modal-desc {
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
 
   .route-open,
   .route-close {
