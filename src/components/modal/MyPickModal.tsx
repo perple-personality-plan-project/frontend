@@ -48,11 +48,12 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
   const profileInfo = useAppSelector((store: any) => store.mypage.profileInfo);
   const myPick = useAppSelector((store: any) => store.mypage.myPick);
   const mapList = useAppSelector((store: any) => store.mypage.maplist);
+  const pickData = useAppSelector((store: any) => store.mypage.myData);
 
   const mainFeedComment: any = useAppSelector(
     store => store.post.mainFeedDetail,
   );
-
+  console.log(pickData);
   const date = mainFeedDetail?.created_at
     ?.replace('T', '. ')
     .split(' ')[0]
@@ -246,7 +247,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                   src={
                     profile?.profile_img !== null
                       ? process.env.REACT_APP_IMG_SERVER +
-                        profileInfo[0].profile_img
+                        mainFeedDetail.profile_img
                       : require('../../마이페이지.png')
                   }
                   alt="detail-img"
@@ -255,8 +256,8 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
             })}
             <div className="detail-info">
               <div className="detail-top" style={{ display: 'flex' }}>
-                <div>{profileInfo[0]?.nickname}</div>
-                <p>{profileInfo[0]?.mbti}</p>
+                <div>{mainFeedDetail?.nickname}</div>
+                <p>{pickData?.mbti}</p>
               </div>
               <StDiv>
                 <p style={{ whiteSpace: 'pre-wrap' }}>
@@ -281,7 +282,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                       {placeName?.map((route: any, index: number) => {
                         return (
                           <div
-                            onClick={() => NavigaeToGo(placeName)}
+                            onClick={openRoutine}
                             key={index}
                             className="route-close-list"
                           >

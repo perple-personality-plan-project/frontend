@@ -271,7 +271,7 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                       {placeName?.map((route: any, index: number) => {
                         return (
                           <div
-                            onClick={() => NavigaeToGo(placeName)}
+                            onClick={openRoutine}
                             key={index}
                             className="route-close-list"
                           >
