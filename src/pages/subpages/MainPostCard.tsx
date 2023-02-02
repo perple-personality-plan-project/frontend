@@ -39,13 +39,20 @@ interface Props {
     profile_img: string;
   };
   mbtiCheck: string;
+  setsavedRoutes: any;
+  savedRoutes: {}[];
 }
 
 interface IAppState {
   show: boolean;
 }
 
-const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
+const MainPostCard: React.FC<Props> = ({
+  post,
+  mbtiCheck,
+  setsavedRoutes,
+  savedRoutes,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useAppDispatch();
   const {
@@ -237,8 +244,19 @@ const MainPostCard: React.FC<Props> = ({ post, mbtiCheck }) => {
     if (saveData.place_group_name === '없음') {
       return alert('저장할 루트가 없습니다.');
     } else {
-      dispatch(__RootMaker(saveData));
-      alert('마이페이지 to-go-list 목록에 저장되었습니다.');
+      if (
+        savedRoutes.find(
+          (route: any) =>
+            route.place_group === saveData.place_group &&
+            route.place_group_name === saveData.place_group_name,
+        )
+      ) {
+        alert('이미 등록된 루트입니다!');
+      } else {
+        setsavedRoutes([...savedRoutes, saveData]);
+        dispatch(__RootMaker(saveData));
+        alert('마이페이지 to-go-list 목록에 저장되었습니다.');
+      }
     }
   };
 
