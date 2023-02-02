@@ -10,6 +10,11 @@ import {
 import { __mainFeedlist, __mainMbtilist } from '../redux/modules/postSlice';
 import { tSImportEqualsDeclaration } from '@babel/types';
 import { useNavigate } from 'react-router';
+import { TutorialModal } from '../components/modal/TutorialModal';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper';
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 export interface mainPostPreset {
   feed_id: number;
@@ -52,6 +57,7 @@ const MainPage = () => {
   }, [mbtiCheck]);
 
   // console.log(savedRoutes);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Wrap>
@@ -64,7 +70,53 @@ const MainPage = () => {
                 {/* {mbtiCheck === '사람들' ? '은' : '는'} */}
               </div>
               <StTagText>는 뭐하고 놀까?</StTagText>
+              <button className="tutorial" onClick={() => setIsOpen(true)}>
+                튜토리얼
+              </button>
             </StTagHeader>
+
+            <TutorialModal onClose={() => setIsOpen(false)} open={isOpen}>
+              <Swiper
+                navigation={true}
+                modules={[Navigation]}
+                className="mySwiper"
+                style={{
+                  width: '100%',
+                  aspectRatio: '1/1',
+                  borderRadius: '20px',
+                }}
+              >
+                <StXIcon onClick={() => setIsOpen(false)}>
+                  <i
+                    style={{ color: '#5B5B5B', fontSize: '20px' }}
+                    className="ri-close-line"
+                  ></i>
+                </StXIcon>
+                <SwiperSlide>
+                  <img
+                    src={require('../../src/빡빡이1.png')}
+                    alt="swiper-img"
+                    style={{ width: '100%', backgroundColor: 'pink' }}
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <img
+                    src={require('../../src/빡빡이1.png')}
+                    alt="swiper-img"
+                    style={{ width: '100%', backgroundColor: 'green' }}
+                  />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <img
+                    src={require('../../src/빡빡이1.png')}
+                    alt="swiper-img"
+                    style={{ width: '100%', backgroundColor: 'dodgerblue' }}
+                  />
+                </SwiperSlide>
+
+                {/* <img src={thumbnail} alt="swiper-img" /> */}
+              </Swiper>
+            </TutorialModal>
 
             <StHeaderText>
               MBTI 검사하고 나에게 맞는 HOT PLACE 찾자!
@@ -196,6 +248,32 @@ const StHeader = styled.div`
   }
 `;
 
+const StXIcon = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-weight: bold;
+  width: 30px;
+  height: 30px;
+  background-color: #e1e2e8;
+  border-radius: 50%;
+
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+
+  z-index: 1000;
+
+  @media screen and (max-width: 800px) {
+    top: 10px;
+    right: 10px;
+
+    z-index: 3;
+  }
+`;
+
 const StTagHeader = styled.div`
   color: white;
   display: flex;
@@ -233,6 +311,11 @@ const Wrap = styled.div`
   /* padding-top: 10vh; */
   /* width: 1440px;
   /* margin-top: 12vh; */
+  .tutorial {
+    position: absolute;
+    top: 10px;
+    left: 30px;
+  }
 `;
 
 const Backgr = styled.div`
