@@ -21,12 +21,28 @@ import KakaoRedirect from '../pages/subpages/KakaoRedirect';
 import Navbar from '../components/Navbar';
 import MBTIKakao from '../pages/MBTIKakao';
 import NotFound from '../pages/subpages/NotFound';
+import MbtiInfo from '../pages/MbtiInfo';
 
 const Router = () => {
   return (
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
+          <Route
+            path="/mbtiquestion/:mbti"
+            element={
+              <div
+                style={{
+                  maxWidth: '1440px',
+                  margin: '0 auto',
+                  position: 'relative',
+                }}
+              >
+                <Navbar />
+                <MbtiInfo />
+              </div>
+            }
+          />
           <Route path="*" element={<NotFound />} />
           <Route path="/mbtikakao" element={<MBTIKakao />} />
           <Route path="/kakaocallback" element={<KakaoRedirect />} />

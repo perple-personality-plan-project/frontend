@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import mbtiData from '../assets/mbti/data.json';
 
@@ -11,6 +12,7 @@ const MbtiQuestionsPage = () => {
   });
 
   const [result, setResult] = useState('');
+  const navigate = useNavigate();
 
   const getMbti = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,6 +33,12 @@ const MbtiQuestionsPage = () => {
       );
     }
   };
+
+  useEffect(() => {
+    if (result) {
+      navigate(`/mbtiquestion/${result}`);
+    }
+  }, [result]);
 
   const rerollMbti = () => {
     window.location.reload();
@@ -173,7 +181,7 @@ const MbtiQuestionsPage = () => {
         </StQuestion>
         {result && <StMbtiResult>{result}</StMbtiResult>}
         <StBtns>
-          <StBtn
+          {/* <StBtn
             style={{
               backgroundColor: '#F5F3FE',
               color: '#644EEE',
@@ -182,7 +190,7 @@ const MbtiQuestionsPage = () => {
             onClick={rerollMbti}
           >
             다시하기
-          </StBtn>
+          </StBtn> */}
           <StBtn onClick={showMbti}>결과 보기</StBtn>
         </StBtns>
       </StQuestions>
@@ -353,13 +361,13 @@ const StBtn = styled.button`
     color: #644eee;
   }
 
-  @media screen and (max-width: 1100px) {
+  /* @media screen and (max-width: 1100px) {
     width: 230px;
     height: 40px;
     font-size: 18px;
-  }
+  } */
 
-  @media screen and (max-width: 600px) {
+  /* @media screen and (max-width: 600px) {
     margin-top: 10px;
-  }
+  } */
 `;
