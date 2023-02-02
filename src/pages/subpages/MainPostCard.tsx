@@ -21,6 +21,7 @@ import {
 } from '../../redux/modules/postSlice';
 import client from '../../api/client';
 import { __RootMaker } from '../../redux/modules/mapSlice';
+import GroupDetailEmptyShow from './GroupDetailEmptyShow';
 
 interface Props {
   post: {
@@ -306,7 +307,11 @@ const MainPostCard: React.FC<Props> = ({
               <StIcon>
                 <i
                   className="ri-thumb-up-fill"
-                  style={{ color: 'blue', fontSize: '25px', cursor: 'pointer' }}
+                  style={{
+                    color: 'blue',
+                    fontSize: '25px',
+                    cursor: 'pointer',
+                  }}
                   onClick={() => toggleThumb(feed_id)}
                 ></i>
                 <p className="thumb-number">{likeCount}</p>
@@ -743,6 +748,7 @@ const StDetailInfo = styled.div`
 `;
 
 const StDetailDesc = styled.div`
+  word-break: break-all;
   box-sizing: border-box;
   padding: 20px 20px 10px 20px;
   display: flex;
@@ -1005,7 +1011,7 @@ const StXIcon = styled.div`
   border-radius: 50%;
 
   position: absolute;
-  top: 25px;
+  top: 20px;
   right: 20px;
   cursor: pointer;
 
@@ -1133,7 +1139,9 @@ const StGroupPost = styled.div`
       }
 
       .post-date {
-        font-size: 14px;
+        position: absolute;
+        bottom: 11px;
+        font-size: 13.61px;
         color: #9e9e9e;
         margin: 0;
       }

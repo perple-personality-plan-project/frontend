@@ -15,6 +15,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
+// import MainEmptyShow from './subpages/MainEmptyShow';
 
 export interface mainPostPreset {
   feed_id: number;
@@ -67,9 +68,9 @@ const MainPage = () => {
             <StTagHeader>
               <StMbti>{mbtiCheck === 'All' ? '사람들' : mbtiCheck}</StMbti>
               <div style={{ margin: '10px 0 0 10px' }}>
-                {/* {mbtiCheck === '사람들' ? '은' : '는'} */}
+                {mbtiCheck === '사람들' || mbtiCheck === 'All' ? '은' : '는'}
               </div>
-              <StTagText>는 뭐하고 놀까?</StTagText>
+              <StTagText> 뭐하고 놀까?</StTagText>
               <button className="tutorial" onClick={() => setIsOpen(true)}>
                 튜토리얼
               </button>
@@ -160,6 +161,7 @@ const MainPage = () => {
           <MainSlider setMbtiCheck={setMbtiCheck} />
         </TitleWrap>
       </Backgr>
+      {/* {mainMbtiList.length !== 0 || mainFeedList.length !== 0 ? ( */}
       <PostListContainer>
         {mbtiCheck === '사람들' || mbtiCheck === 'All'
           ? mainFeedList?.map((post: any) => (
@@ -181,6 +183,9 @@ const MainPage = () => {
               />
             ))}
       </PostListContainer>
+      {/* // ) : (
+      //   <MainEmptyShow />
+      // )} */}
     </Wrap>
   );
 };
@@ -288,8 +293,14 @@ const StTagHeader = styled.div`
 `;
 
 const MainImg = styled.div`
+  .img {
+    margin-top: '20px';
+    padding-left: '1em';
+    max-width: '420px';
+  }
   @media screen and (max-width: 900px) {
-    position: absolute;
+    /* position: absolute; */
+    display: none;
     margin-top: 40%;
   }
 `;
@@ -297,12 +308,13 @@ const MainImg = styled.div`
 const StTagText = styled.div`
   color: white;
   margin-top: 10px;
+  padding-left: 10px;
 
   /* margin: 20px 0 0 33%; */
 
-  @media screen and (max-width: 1024px) {
+  /* @media screen and (max-width: 1024px) {
     margin: 10px 0 0 0;
-  }
+  } */
 `;
 
 const Wrap = styled.div`
