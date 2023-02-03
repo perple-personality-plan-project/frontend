@@ -15,7 +15,6 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
-// import MainEmptyShow from './subpages/MainEmptyShow';
 
 export interface mainPostPreset {
   feed_id: number;
@@ -148,11 +147,6 @@ const MainPage = () => {
             </button>
             <MainImg>
               <img
-                style={{
-                  marginTop: '20px',
-                  paddingLeft: '1em',
-                  maxWidth: '420px',
-                }}
                 src={require(`../../src/components/images/mainlogo/메인이미지.png`)}
               />
             </MainImg>
@@ -161,7 +155,6 @@ const MainPage = () => {
           <MainSlider setMbtiCheck={setMbtiCheck} />
         </TitleWrap>
       </Backgr>
-      {/* {mainMbtiList.length !== 0 || mainFeedList.length !== 0 ? ( */}
       <PostListContainer>
         {mbtiCheck === '사람들' || mbtiCheck === 'All'
           ? mainFeedList?.map((post: any) => (
@@ -183,9 +176,6 @@ const MainPage = () => {
               />
             ))}
       </PostListContainer>
-      {/* // ) : (
-      //   <MainEmptyShow />
-      // )} */}
     </Wrap>
   );
 };
@@ -293,15 +283,17 @@ const StTagHeader = styled.div`
 `;
 
 const MainImg = styled.div`
-  .img {
-    margin-top: '20px';
-    padding-left: '1em';
-    max-width: '420px';
-  }
-  @media screen and (max-width: 900px) {
-    /* position: absolute; */
+  img {
+    margin-top: 20px;
+    padding-left: 1em;
+    max-width: 420px;
     display: none;
-    margin-top: 40%;
+  }
+  @media screen and (min-width: 1440px) {
+    img {
+      display: block;
+      /* margin-top: 40%; */
+    }
   }
 `;
 
