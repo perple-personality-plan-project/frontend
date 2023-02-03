@@ -53,7 +53,14 @@ const MbtiInfo = () => {
           </h1>
         ) : null;
       })}
-      <img src={require('../../src/빡빡이1.png')} alt="mbti-detail-img" />
+      {mbtiCategory.map((mbti, index) => {
+        return mbti === param.mbti ? (
+          <img
+            src={require(`../components/images/${index + 1}.jpg`)}
+            alt="mbti-detail-img"
+          />
+        ) : null;
+      })}
       <StBtnGroups>
         <button onClick={() => navigate('/mbtiquestion')}>다시하기</button>
         {/* <button>결과보기</button> */}
@@ -90,6 +97,8 @@ const StContainer = styled.div`
     aspect-ratio: 394 / 525.89;
     margin: 74px 0 39px 0;
     background-color: pink;
+    border-radius: 20px;
+    box-shadow: 0 0 15px 4px rgba(0, 0, 0, 0.1);
   }
 `;
 
