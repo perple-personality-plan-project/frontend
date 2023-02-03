@@ -137,6 +137,18 @@ export const __myGroupList = createAsyncThunk(
     }
   },
 );
+
+export const __withdrawal = createAsyncThunk(
+  'withdrawal',
+  async (payload, thunkAPI) => {
+    try {
+      const { data } = await loggedIn.delete(`api/user/delete`);
+      return thunkAPI.fulfillWithValue(data.data);
+    } catch (e) {
+      thunkAPI.rejectWithValue(e);
+    }
+  },
+);
 export const __myFeedDetail = createAsyncThunk(
   'myFeedDetail',
   async (payload, thunkAPI) => {
