@@ -84,7 +84,7 @@ const MainPage = () => {
                 className="mySwiper"
                 style={{
                   width: '100%',
-                  aspectRatio: '1/1',
+                  aspectRatio: '1/0.8',
                   borderRadius: '20px',
                 }}
               >
@@ -94,29 +94,24 @@ const MainPage = () => {
                     className="ri-close-line"
                   ></i>
                 </StXIcon>
-                <SwiperSlide>
-                  <img
-                    src={require('../../src/빡빡이1.png')}
-                    alt="swiper-img"
-                    style={{ width: '100%', backgroundColor: 'pink' }}
-                  />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img
-                    src={require('../../src/빡빡이1.png')}
-                    alt="swiper-img"
-                    style={{ width: '100%', backgroundColor: 'green' }}
-                  />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img
-                    src={require('../../src/빡빡이1.png')}
-                    alt="swiper-img"
-                    style={{ width: '100%', backgroundColor: 'dodgerblue' }}
-                  />
-                </SwiperSlide>
 
-                {/* <img src={thumbnail} alt="swiper-img" /> */}
+                {[0, 1, 2, 3, 4].map((num, index) => {
+                  return (
+                    <SwiperSlide>
+                      <img
+                        src={require(`../components/images/tutorial/tutorial_${
+                          num + 1
+                        }.jpg`)}
+                        alt="swiper-img"
+                        style={{
+                          width: '100%',
+                          backgroundColor: 'pink',
+                          aspectRatio: '1/0.8',
+                        }}
+                      />
+                    </SwiperSlide>
+                  );
+                })}
               </Swiper>
             </TutorialModal>
 
