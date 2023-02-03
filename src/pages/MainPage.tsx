@@ -65,9 +65,11 @@ const MainPage = () => {
         <TitleWrap>
           <StHeader>
             <StTagHeader>
-              <StMbti>{mbtiCheck === 'All' ? '사람들' : mbtiCheck}</StMbti>
-              <div style={{ margin: '10px 0 0 10px' }}>
-                {mbtiCheck === '사람들' || mbtiCheck === 'All' ? '은' : '는'}
+              <div style={{ display: 'flex' }}>
+                <StMbti>{mbtiCheck === 'All' ? '사람들' : mbtiCheck}</StMbti>
+                <div style={{ margin: '10px 0 0 10px' }}>
+                  {mbtiCheck === '사람들' || mbtiCheck === 'All' ? '은' : '는'}
+                </div>
               </div>
               <StTagText> 뭐하고 놀까?</StTagText>
               <button className="tutorial" onClick={() => setIsOpen(true)}>
@@ -208,6 +210,10 @@ const StMbti = styled.div`
   } */
 
   @media screen and (max-width: 1024px) {
+    width: 190px;
+    height: 70px;
+  }
+  @media screen and (max-width: 800px) {
     width: 120px;
     height: 50px;
   }
@@ -232,6 +238,14 @@ const StHeader = styled.div`
     font-size: 13px;
     border: '1px solid white';
     background-color: #644eee;
+  }
+
+  @media screen and (max-width: 1024px) {
+    /* font-size: 25px; */
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   @media screen and (max-width: 800px) {
@@ -274,8 +288,14 @@ const StTagHeader = styled.div`
   display: flex;
   width: 100%;
 
+  @media screen and (max-width: 1440px) {
+    /* justify-content: center; */
+    flex-direction: column;
+  }
+
   @media screen and (max-width: 1024px) {
     /* justify-content: center; */
+    align-items: center;
   }
   @media screen and (max-width: 900px) {
     justify-content: center;
@@ -304,9 +324,17 @@ const StTagText = styled.div`
 
   /* margin: 20px 0 0 33%; */
 
-  /* @media screen and (max-width: 1024px) {
-    margin: 10px 0 0 0;
-  } */
+  @media screen and (max-width: 1440px) {
+    margin-left: 100px;
+    /* margin-right: 10px; */
+    min-width: 250px;
+  }
+
+  @media screen and (max-width: 1024px) {
+    /* margin-left: 250px; */
+    /* margin-right: 10px; */
+    min-width: 250px;
+  }
 `;
 
 const Wrap = styled.div`
@@ -352,7 +380,7 @@ const TitleWrap = styled.div`
   /* justify-content: space-between; */
   margin: auto;
   /* margin: auto; */
-  gap: 150px;
+  gap: 170px;
 
   .gathered {
     /* margin-top: 10px; */
@@ -419,6 +447,6 @@ const PostListContainer = styled.div`
   }
 
   @media screen and (max-width: 500px) {
-    margin-top: 35vh;
+    margin-top: 20vh;
   }
 `;
