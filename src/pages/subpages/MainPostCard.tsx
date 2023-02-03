@@ -152,7 +152,7 @@ const MainPostCard: React.FC<Props> = ({
     );
   };
 
-  const togglepick = async (feedId: number) => {
+  const toggleheart = async (feedId: number) => {
     await loggedIn.put(`api/feed/${feed_id}/pick`).then(response => {
       if (response.data.data.message === '찜목록에 추가되었습니다.') {
         dispatch(__mainFeedlist({ userId }));
@@ -335,25 +335,25 @@ const MainPostCard: React.FC<Props> = ({
             {isPick === 1 ? (
               <StIcon>
                 <i
-                  className="ri-pushpin-2-fill"
+                  className="ri-heart-3-fill"
                   style={{
-                    color: '#644eee',
+                    color: 'red',
                     fontSize: '24px',
                     cursor: 'pointer',
                   }}
-                  onClick={() => togglepick(feed_id)}
+                  onClick={() => toggleheart(feed_id)}
                 ></i>
               </StIcon>
             ) : (
               <StIcon>
                 <i
-                  className="ri-pushpin-2-line"
+                  className="ri-heart-3-line"
                   style={{
-                    color: '#644eee',
+                    color: 'red',
                     fontSize: '24px',
                     cursor: 'pointer',
                   }}
-                  onClick={() => togglepick(feed_id)}
+                  onClick={() => toggleheart(feed_id)}
                 ></i>
               </StIcon>
             )}
@@ -483,6 +483,7 @@ const MainPostCard: React.FC<Props> = ({
                             style={{
                               color: 'blue',
                               fontSize: '25px',
+                              marginRight: '6px',
                               cursor: 'pointer',
                             }}
                             onClick={() => toggleThumb(feed_id)}
@@ -498,6 +499,7 @@ const MainPostCard: React.FC<Props> = ({
                               color: 'blue',
                               fontSize: '25px',
                               cursor: 'pointer',
+                              marginRight: '6px',
                             }}
                           ></i>
                           <p className="modal-thumb-number">{likeCount}</p>
@@ -508,27 +510,27 @@ const MainPostCard: React.FC<Props> = ({
                       {isPick === 1 ? (
                         <StIcon>
                           <i
-                            className="ri-pushpin-2-fill"
+                            className="ri-heart-3-fill"
                             style={{
-                              color: '#644eee',
+                              color: 'red',
                               fontSize: '24px',
                               marginRight: '6px',
                               cursor: 'pointer',
                             }}
-                            onClick={() => togglepick(feed_id)}
+                            onClick={() => toggleheart(feed_id)}
                           ></i>
                         </StIcon>
                       ) : (
                         <StIcon>
                           <i
-                            className="ri-pushpin-2-line"
+                            className="ri-heart-3-line"
                             style={{
-                              color: '#644eee',
+                              color: 'red',
                               fontSize: '24px',
                               marginRight: '6px',
                               cursor: 'pointer',
                             }}
-                            onClick={() => togglepick(feed_id)}
+                            onClick={() => toggleheart(feed_id)}
                           ></i>
                         </StIcon>
                       )}
@@ -649,7 +651,7 @@ const StIcon = styled.div`
   .modal-thumb-number {
     position: absolute;
     top: -13px;
-    right: 9px;
+    right: 11px;
     font-size: 13px;
     color: #9e9e9e;
   }
