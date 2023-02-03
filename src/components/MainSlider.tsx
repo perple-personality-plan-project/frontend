@@ -107,7 +107,7 @@ const StSwiper = styled.div`
 
   @media screen and (max-width: 500px) {
     max-width: 380px;
-    margin-top: 25%;
+    margin-top: 10%;
     width: 90%;
 
     /* height: -10%; */
@@ -155,7 +155,7 @@ const StSwiper = styled.div`
 
     @media screen and (max-width: 1024px) {
       max-width: 350px;
-      margin: 50px auto;
+      margin: 30px auto;
       width: 100%;
     }
 
