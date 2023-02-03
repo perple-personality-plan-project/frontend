@@ -5,6 +5,7 @@ import SidebarCompelete from '../pages/subpages/SidebarCompelete';
 import 'remixicon/fonts/remixicon.css';
 import { useNavigate } from 'react-router-dom';
 import client from '../api/client';
+import loggedIn from '../api/loggedIn';
 
 interface linkProps {
   to: any;
@@ -32,7 +33,7 @@ const Navbar = () => {
 
   const logout = async () => {
     if (window.confirm('로그아웃 하시겠습니까?')) {
-      await client.post('api/user/logout');
+      await loggedIn.post('api/user/logout');
       sessionStorage.clear();
       navigate('/');
     }
