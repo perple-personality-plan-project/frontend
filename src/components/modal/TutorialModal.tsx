@@ -41,8 +41,8 @@ const StModalStyle = styled.div`
   z-index: 1000;
   width: 80%;
   max-width: 800px;
-
+  /* 
   @media screen and (max-width: 800px) {
     width: 400px;
-  }
+  } */
 `;
