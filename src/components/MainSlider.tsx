@@ -55,7 +55,7 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
           clickable: true,
         }}
         mousewheel={true}
-        keyboard={{ enabled: true }}
+        keyboard={{ enabled: false }}
         // onKeyPress={}
         cardsEffect={{
           perSlideOffset: 16,

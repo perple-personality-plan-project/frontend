@@ -12,7 +12,7 @@ import { tSImportEqualsDeclaration } from '@babel/types';
 import { useNavigate } from 'react-router';
 import { TutorialModal } from '../components/modal/TutorialModal';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper';
+import { Navigation, Keyboard } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
@@ -80,7 +80,8 @@ const MainPage = () => {
             <TutorialModal onClose={() => setIsOpen(false)} open={isOpen}>
               <Swiper
                 navigation={true}
-                modules={[Navigation]}
+                keyboard={{ enabled: true }}
+                modules={[Navigation, Keyboard]}
                 className="mySwiper"
                 style={{
                   width: '100%',
