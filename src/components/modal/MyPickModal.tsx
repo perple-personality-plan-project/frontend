@@ -335,10 +335,10 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                         width="24"
                         height="24"
                       >
-                        <path fill="none" d="M0 0h24v24H0z" />
+                        <path fill="none" d="M0 0H24V24H0z" />
                         <path
-                          d="M18 3v2h-1v6l2 3v2h-6v7h-2v-7H5v-2l2-3V5H6V3z"
-                          fill="rgba(100,78,255,1)"
+                          d="M16.5 3C19.538 3 22 5.5 22 9c0 7-7.5 11-10 12.5C9.5 20 2 16 2 9c0-3.5 2.5-6 5.5-6C9.36 3 11 4 12 5c1-1 2.64-2 4.5-2z"
+                          fill="rgba(231,76,60,1)"
                         />
                       </svg>
                     ) : (
@@ -348,10 +348,10 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
                         width="24"
                         height="24"
                       >
-                        <path fill="none" d="M0 0h24v24H0z" />
+                        <path fill="none" d="M0 0H24V24H0z" />
                         <path
-                          d="M18 3v2h-1v6l2 3v2h-6v7h-2v-7H5v-2l2-3V5H6V3h12zM9 5v6.606L7.404 14h9.192L15 11.606V5H9z"
-                          fill="rgba(100,78,238,1)"
+                          d="M16.5 3C19.538 3 22 5.5 22 9c0 7-7.5 11-10 12.5C9.5 20 2 16 2 9c0-3.5 2.5-6 5.5-6C9.36 3 11 4 12 5c1-1 2.64-2 4.5-2z"
+                          fill="rgba(231,76,60,1)"
                         />
                       </svg>
                     )}

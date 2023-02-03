@@ -44,6 +44,8 @@ function MyPage() {
   const myPick = useAppSelector((store: any) => store.mypage.myPick);
   const userId = sessionStorage.getItem('userId');
 
+  console.log('myfeed', mapList);
+
   const [myFeed, setMyFeed] = useState(true);
   const [toGoList, setToGoList] = useState(false);
   const [dibs, setDibs] = useState(false);
@@ -386,159 +388,202 @@ function MyPage() {
           </BtnComp>
           <FeedBox>
             <MyFeed show={myFeed}>
-              {myfeed?.map((item: any, index: number) => {
-                return (
-                  <Feed key={index}>
-                    <PostImage
-                      src={
-                        process.env.REACT_APP_IMG_SERVER +
-                        item.thumbnail.split(',')[0]
-                      }
-                      onClick={() => {
-                        modalOpen(item);
-                      }}
-                    />
-                    {JSON.parse(item.location).place_group_name === undefined ||
-                    JSON.parse(item.location).place_group_name === '없음' ? (
-                      <div></div>
-                    ) : (
-                      <Address>
-                        {JSON.parse(item?.location).place_group_name} 🏃
-                      </Address>
-                    )}
-                  </Feed>
-                );
-              })}
+              {myfeed.length === 0 ? (
+                <Nofeed>
+                  오른쪽 하단 버튼을 통해 포스트 작성이 가능합니다
+                </Nofeed>
+              ) : (
+                <div>
+                  {myfeed?.map((item: any, index: number) => {
+                    return (
+                      <Feed key={index}>
+                        <PostImage
+                          src={
+                            process.env.REACT_APP_IMG_SERVER +
+                            item.thumbnail.split(',')[0]
+                          }
+                          onClick={() => {
+                            modalOpen(item);
+                          }}
+                        />
+                        {JSON.parse(item.location).place_group_name ===
+                          undefined ||
+                        JSON.parse(item.location).place_group_name ===
+                          '없음' ? (
+                          <div></div>
+                        ) : (
+                          <Address>
+                            {JSON.parse(item?.location).place_group_name} 🏃
+                          </Address>
+                        )}
+                      </Feed>
+                    );
+                  })}
+                </div>
+              )}
+
               <FeedDetailModal
                 state={isOpen}
                 close={modalClose}
               ></FeedDetailModal>
             </MyFeed>
             <ToGoList show={toGoList}>
-              {mapList.map((item: any, index: number) => {
-                return (
-                  <ToGoFeed key={index}>
-                    <ToGoAddress>
-                      <TogoTitle
-                        onClick={() => letsGo(JSON.parse(item.place_group))}
-                      >
-                        {item.place_group_name}
-                      </TogoTitle>
-                      <Icon
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="30"
-                        height="30"
-                        color="#8979f5"
-                        fill="currentColor"
-                        className="bi bi-geo-alt-fill"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                      </Icon>
-                      <PlaceNum>{JSON.parse(item.place_group).length}</PlaceNum>
-                      <DeleteTogo onClick={() => deleteTogo(item.map_id)}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          width="24"
-                          height="24"
-                        >
-                          <path fill="none" d="M0 0h24v24H0z" />
-                          <path
-                            d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-11.414L9.172 7.757 7.757 9.172 10.586 12l-2.829 2.828 1.415 1.415L12 13.414l2.828 2.829 1.415-1.415L13.414 12l2.829-2.828-1.415-1.415L12 10.586z"
-                            fill="rgba(225,226,232,1)"
-                          />
-                        </svg>
-                      </DeleteTogo>
-                    </ToGoAddress>
-                    <TogoIcons>
-                      <TogoShow>
-                        {JSON.parse(item.place_group).map(
-                          (item: any, index: number) => {
-                            return (
-                              <TogoContainer key={index}>
-                                <SideIcon
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="20"
-                                  height="20"
-                                  color="#644EEE"
-                                  fill="currentColor"
-                                  className="bi bi-geo-alt-fill"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                                </SideIcon>
-                                <TogoText>{item.place_name}</TogoText>
-                              </TogoContainer>
-                            );
-                          },
-                        )}
-                      </TogoShow>
-                    </TogoIcons>
-                  </ToGoFeed>
-                );
-              })}
+              {mapList.length === 0 ? (
+                <NoTogo>
+                  맵-장바구니 혹은 게시물의 저장버튼을 통해 to-go-list를 생성할
+                  수 있습니다
+                </NoTogo>
+              ) : (
+                <div>
+                  {mapList.map((item: any, index: number) => {
+                    return (
+                      <ToGoFeed key={index}>
+                        <ToGoAddress>
+                          <TogoTitle
+                            onClick={() => letsGo(JSON.parse(item.place_group))}
+                          >
+                            {item.place_group_name}
+                          </TogoTitle>
+                          <Icon
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="30"
+                            height="30"
+                            color="#8979f5"
+                            fill="currentColor"
+                            className="bi bi-geo-alt-fill"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                          </Icon>
+                          <PlaceNum>
+                            {JSON.parse(item.place_group).length}
+                          </PlaceNum>
+                          <DeleteTogo onClick={() => deleteTogo(item.map_id)}>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              width="24"
+                              height="24"
+                            >
+                              <path fill="none" d="M0 0h24v24H0z" />
+                              <path
+                                d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-11.414L9.172 7.757 7.757 9.172 10.586 12l-2.829 2.828 1.415 1.415L12 13.414l2.828 2.829 1.415-1.415L13.414 12l2.829-2.828-1.415-1.415L12 10.586z"
+                                fill="rgba(225,226,232,1)"
+                              />
+                            </svg>
+                          </DeleteTogo>
+                        </ToGoAddress>
+                        <TogoIcons>
+                          <TogoShow>
+                            {JSON.parse(item.place_group).map(
+                              (item: any, index: number) => {
+                                return (
+                                  <TogoContainer key={index}>
+                                    <SideIcon
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="20"
+                                      height="20"
+                                      color="#644EEE"
+                                      fill="currentColor"
+                                      className="bi bi-geo-alt-fill"
+                                      viewBox="0 0 16 16"
+                                    >
+                                      <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+                                    </SideIcon>
+                                    <TogoText>{item.place_name}</TogoText>
+                                  </TogoContainer>
+                                );
+                              },
+                            )}
+                          </TogoShow>
+                        </TogoIcons>
+                      </ToGoFeed>
+                    );
+                  })}
+                </div>
+              )}
             </ToGoList>
             <DibsList show={dibs}>
-              {myPick?.map((item: any, index: number) => {
-                return (
-                  <Feed key={index}>
-                    <PostImage
-                      src={
-                        process.env.REACT_APP_IMG_SERVER +
-                        item.thumbnail.split(',')[0]
-                      }
-                      onClick={() => {
-                        modalPickOpen(item);
-                      }}
-                    />
-                    {/* <TopGradation></TopGradation> */}
-                    {JSON.parse(item.location).place_group_name === undefined ||
-                    JSON.parse(item.location).place_group_name === '없음' ? (
-                      <div></div>
-                    ) : (
-                      <Address>
-                        {JSON.parse(item?.location).place_group_name} 🏃
-                      </Address>
-                    )}
-                  </Feed>
-                );
-              })}
+              {myPick?.length === 0 ? (
+                <NoDibs>게시물의 하트버튼을 누르면 찜이 가능합니다</NoDibs>
+              ) : (
+                <div>
+                  {' '}
+                  {myPick?.map((item: any, index: number) => {
+                    return (
+                      <Feed key={index}>
+                        <PostImage
+                          src={
+                            process.env.REACT_APP_IMG_SERVER +
+                            item.thumbnail.split(',')[0]
+                          }
+                          onClick={() => {
+                            modalPickOpen(item);
+                          }}
+                        />
+                        {/* <TopGradation></TopGradation> */}
+                        {JSON.parse(item.location).place_group_name ===
+                          undefined ||
+                        JSON.parse(item.location).place_group_name ===
+                          '없음' ? (
+                          <div></div>
+                        ) : (
+                          <Address>
+                            {JSON.parse(item?.location).place_group_name} 🏃
+                          </Address>
+                        )}
+                      </Feed>
+                    );
+                  })}
+                </div>
+              )}
+
               <MyPickModal
                 state={isPickModalOpen}
                 close={pickModal}
               ></MyPickModal>
             </DibsList>
             <MyGroupList show={myGroup}>
-              {myGroupList?.map((item: any, index: any) => {
-                return (
-                  <GroupFeed
-                    key={index}
-                    onClick={() => navigate(`/group/${item.group_id}`)}
-                  >
-                    <GroupProfile
-                      src={process.env.REACT_APP_IMG_SERVER + item.thumbnail}
-                      alt="group-img"
-                    />
-                    <Title>{item.group_name}</Title>
-                    <Description>
-                      게시글{item.feedCount}개/{item.group_user_count}명이
-                      소통중이에요
-                    </Description>
-                    <HashBox>
-                      {item.hashtags === null ? (
-                        <NoTag>태그가 없습니다</NoTag>
-                      ) : (
-                        item.hashtags
-                          .split(',')
-                          .map((item: any, index: any) => {
-                            return <HashTag key={index}>{item}</HashTag>;
-                          })
-                      )}
-                    </HashBox>
-                  </GroupFeed>
-                );
-              })}
+              {myGroupList?.length === 0 ? (
+                <NoGroup>
+                  그룹 페이지에서 그룹구독을 통해 리스트를 생성 가능합니다
+                </NoGroup>
+              ) : (
+                <div>
+                  {' '}
+                  {myGroupList?.map((item: any, index: any) => {
+                    return (
+                      <GroupFeed
+                        key={index}
+                        onClick={() => navigate(`/group/${item.group_id}`)}
+                      >
+                        <GroupProfile
+                          src={
+                            process.env.REACT_APP_IMG_SERVER + item.thumbnail
+                          }
+                          alt="group-img"
+                        />
+                        <Title>{item.group_name}</Title>
+                        <Description>
+                          게시글{item.feedCount}개/{item.group_user_count}명이
+                          소통중이에요
+                        </Description>
+                        <HashBox>
+                          {item.hashtags === null ? (
+                            <NoTag>태그가 없습니다</NoTag>
+                          ) : (
+                            item.hashtags
+                              .split(',')
+                              .map((item: any, index: any) => {
+                                return <HashTag key={index}>{item}</HashTag>;
+                              })
+                          )}
+                        </HashBox>
+                      </GroupFeed>
+                    );
+                  })}
+                </div>
+              )}
             </MyGroupList>
           </FeedBox>
           <FeedModal />
@@ -605,6 +650,11 @@ const Withdrawal = styled.div`
   left: 100px;
   top: 350px;
   cursor: pointer;
+  @media (max-width: 412px) {
+    margin-top: 400px;
+    margin-left: -15%;
+    width: 90%;
+  }
 `;
 const Profile = styled.div`
   width: 429px;
@@ -845,7 +895,7 @@ const BtnComp = styled.div`
     margin-left: 30px;
   }
   @media (max-width: 412px) {
-    margin-top: 650px;
+    margin-top: 700px;
     margin-left: 15px;
     min-width: 380px;
   }
@@ -884,6 +934,47 @@ const FeedBox = styled.div`
   height: 1200px;
   @media (max-width: 1120px) {
     margin-left: 0px;
+  }
+`;
+const Nofeed = styled.div`
+  //css center of page
+  display: block;
+  margin-top: 150px;
+  margin-left: 150px;
+  @media (max-width: 412px) {
+    margin-top: 50px;
+    margin-left: 100px;
+  }
+`;
+const NoTogo = styled.div`
+  //css center of page
+  display: block;
+  margin-top: 150px;
+  margin-left: 150px;
+  @media (max-width: 412px) {
+    margin-top: 50px;
+    margin-left: 100px;
+  }
+`;
+const NoDibs = styled.div`
+  //css center of page
+  display: block;
+  margin-top: 150px;
+  margin-left: 150px;
+  @media (max-width: 412px) {
+    margin-top: 50px;
+    margin-left: 100px;
+  }
+`;
+
+const NoGroup = styled.div`
+  //css center of page
+  display: block;
+  margin-top: 150px;
+  margin-left: 150px;
+  @media (max-width: 412px) {
+    margin-top: 50px;
+    margin-left: 100px;
   }
 `;
 
