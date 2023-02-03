@@ -17,6 +17,7 @@ import {
   __Togo,
   __modalOpen,
   __togoDelete,
+  __withdrawal,
 } from '../redux/modules/mySlice';
 import FeedModal from '../components/modal/MyFeedCreateModal';
 import FeedDetailModal from '../components/modal/FeedDetailModal';
@@ -27,6 +28,8 @@ import {
 } from '../components/hooks/typescripthook/hooks';
 import { __mainFeedDetail } from '../redux/modules/postSlice';
 import MyPickModal from '../components/modal/MyPickModal';
+import loggedIn from '../api/loggedIn';
+
 interface IAppState {
   show: boolean;
 }
@@ -188,6 +191,14 @@ function MyPage() {
     await dispatch(__getMyProfile());
   };
   //regular expression for mbti
+
+  const withdrawal = async () => {
+    if (window.confirm('정말 탈퇴하시겠습니까?')) {
+      await dispatch(__withdrawal());
+      await sessionStorage.clear();
+      await navigate('/');
+    }
+  };
 
   if (token === null) {
     return (
@@ -357,6 +368,7 @@ function MyPage() {
             );
           })}
         </Profile>
+        <Withdrawal onClick={withdrawal}>회원탈퇴</Withdrawal>
         <FeedContainer>
           <BtnComp>
             <MyFeedBtn show={myFeed} onClick={feedShow}>
@@ -583,6 +595,16 @@ const Banner = styled.div`
     clip: rect(0, 0, 0, 0);
     border: 0;
   }
+`;
+
+const Withdrawal = styled.div`
+  text-decoration: underline;
+  margin-top: 300px;
+  position: absolute;
+  color: #ababab;
+  left: 100px;
+  top: 350px;
+  cursor: pointer;
 `;
 const Profile = styled.div`
   width: 429px;
@@ -819,7 +841,7 @@ const BtnComp = styled.div`
   width: 60%;
   min-width: 440px;
   @media (max-width: 1120px) {
-    margin-top: 570px;
+    margin-top: 600px;
     margin-left: 30px;
   }
   @media (max-width: 412px) {
