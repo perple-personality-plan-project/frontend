@@ -15,6 +15,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Keyboard } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import MainEmptyShow from './subpages/MainEmptyShow';
 
 export interface mainPostPreset {
   feed_id: number;
@@ -153,27 +154,33 @@ const MainPage = () => {
           <MainSlider setMbtiCheck={setMbtiCheck} />
         </TitleWrap>
       </Backgr>
-      <PostListContainer>
-        {mbtiCheck === '사람들' || mbtiCheck === 'All'
-          ? mainFeedList?.map((post: any) => (
-              <MainPostCard
-                key={post.feed_id}
-                post={post}
-                mbtiCheck={mbtiCheck}
-                setsavedRoutes={setsavedRoutes}
-                savedRoutes={savedRoutes}
-              />
-            ))
-          : mainMbtiList?.map((post: any) => (
-              <MainPostCard
-                key={post.feed_id}
-                post={post}
-                mbtiCheck={mbtiCheck}
-                setsavedRoutes={setsavedRoutes}
-                savedRoutes={savedRoutes}
-              />
-            ))}
-      </PostListContainer>
+      {mainMbtiList.length !== 0 ||
+      (mainFeedList.length !== 0 &&
+        (mbtiCheck === '사람들' || mbtiCheck === 'All')) ? (
+        <PostListContainer>
+          {mbtiCheck === '사람들' || mbtiCheck === 'All'
+            ? mainFeedList?.map((post: any) => (
+                <MainPostCard
+                  key={post.feed_id}
+                  post={post}
+                  mbtiCheck={mbtiCheck}
+                  setsavedRoutes={setsavedRoutes}
+                  savedRoutes={savedRoutes}
+                />
+              ))
+            : mainMbtiList?.map((post: any) => (
+                <MainPostCard
+                  key={post.feed_id}
+                  post={post}
+                  mbtiCheck={mbtiCheck}
+                  setsavedRoutes={setsavedRoutes}
+                  savedRoutes={savedRoutes}
+                />
+              ))}
+        </PostListContainer>
+      ) : (
+        <MainEmptyShow />
+      )}
     </Wrap>
   );
 };
