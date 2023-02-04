@@ -215,11 +215,11 @@ const SignUpPage = () => {
       }
     }
   };
-  console.log(idConfirm);
+  // console.log(idConfirm);
 
   const checkId = () => {
     checkIdFromServer();
-    console.log(idConfirm);
+    // console.log(idConfirm);
   };
 
   const checkNickName = () => {

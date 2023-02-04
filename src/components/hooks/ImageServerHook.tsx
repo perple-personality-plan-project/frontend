@@ -17,7 +17,7 @@ const ImageServerHook = () => {
     if (!e.target.files) return;
 
     const file = e.target.files[0];
-    console.log(e.target.files);
+    // console.log(e.target.files);
     setThumbnail(
       `https://sblawsimage.s3.ap-northeast-2.amazonaws.com/${file.name}`,
     );
