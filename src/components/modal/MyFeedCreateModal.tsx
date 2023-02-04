@@ -46,8 +46,6 @@ const FeedModal: React.FC = () => {
     setImageSrc([]);
   };
 
-  console.log(groupInfos);
-
   const limitLines = (e: any) => {
     let rows = e.target.value.split('\n')?.length; //줄바꿈 개수
     let maxRows = 4;
