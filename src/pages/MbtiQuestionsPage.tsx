@@ -342,7 +342,7 @@ const StBtns = styled.div`
 
 const StBtn = styled.button`
   font-family: 'Nanum_R';
-  margin-top: 30px;
+  margin: 30px 0;
   padding: 10px;
   width: 269px;
   height: 50px;

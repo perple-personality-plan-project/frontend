@@ -44,7 +44,10 @@ const Navbar = () => {
       <nav className="nav">
         <SidebarCompelete />
         <Link to="/" className="site-title">
-          <p>Platter</p>
+          <img
+            style={{ width: '100px' }}
+            src={require('../components/images/navigation/logo.png')}
+          />
         </Link>
         <div className="link-container">
           <ul className="link-delete">
