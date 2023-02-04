@@ -17,7 +17,7 @@ const MbtiCheckPage = () => {
             onClick={() => navigate('/mbtiquestion')}
           >
             <img
-              src={require('../components/images/mbtiTest/simple.png')}
+              src={require('../components/images/mbtiTest/simple.webp')}
               alt="group-img"
             />
             <div className="post-desc">
@@ -32,7 +32,7 @@ const MbtiCheckPage = () => {
             }}
           >
             <img
-              src={require('../components/images/mbtiTest/hard.png')}
+              src={require('../components/images/mbtiTest/hard.webp')}
               alt="group-img"
             />
             <div className="post-desc">

@@ -103,7 +103,7 @@ const MainPage = () => {
                       <img
                         src={require(`../components/images/tutorial/tutorial_${
                           num + 1
-                        }.jpg`)}
+                        }.webp`)}
                         alt="swiper-img"
                         style={{
                           width: '100%',
@@ -146,7 +146,7 @@ const MainPage = () => {
             </button>
             <MainImg>
               <img
-                src={require(`../../src/components/images/mainlogo/메인이미지.png`)}
+                src={require(`../../src/components/images/mainlogo/메인이미지.webp`)}
               />
             </MainImg>
           </StHeader>

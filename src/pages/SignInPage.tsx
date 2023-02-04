@@ -51,7 +51,7 @@ const SignInPage = () => {
         {/* <span>Platter</span> */}
         <img
           style={{ cursor: 'pointer' }}
-          src={require('../components/images/login/loginimg.png')}
+          src={require('../components/images/login/loginimg.webp')}
           alt="login-img"
           onClick={() => navigate('/')}
         />

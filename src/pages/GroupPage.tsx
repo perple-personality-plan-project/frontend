@@ -169,7 +169,7 @@ const GroupPage = () => {
           </div>
         </StInput>
         <img
-          src={require('../components/images/groupImages/groupimg2.png')}
+          src={require('../components/images/groupImages/groupimg2.webp')}
           alt="group-banner"
         />
       </StInputContainer>
@@ -344,7 +344,7 @@ const StContainer = styled.div`
   }
   background-color: #f9f9ff;
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   margin: 0 auto;
 `;
 

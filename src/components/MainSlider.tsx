@@ -85,7 +85,7 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
                     paddingLeft: '70px',
                     maxWidth: '450px',
                   }}
-                  src={require(`../../src/components/images/${index}.jpg`)}
+                  src={require(`../../src/components/images/sliderImages/${index}.webp`)}
                 />
               </div>
               {mbti}

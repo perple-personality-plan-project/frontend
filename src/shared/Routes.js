@@ -3,7 +3,6 @@ import GroupPage from '../pages/GroupPage';
 import GroupDetail from '../pages/GroupDetail';
 import MbtiQuestionsPage from '../pages/MbtiQuestionsPage';
 import MbtiCheckPage from '../pages/MbtiCheckPage';
-import NaviBar from '../components/NaviBar';
 
 import MainPage from '../pages/MainPage';
 import Layout from '../components/Layout';
@@ -22,6 +21,7 @@ import Navbar from '../components/Navbar';
 import MBTIKakao from '../pages/MBTIKakao';
 import NotFound from '../pages/subpages/NotFound';
 import MbtiInfo from '../pages/MbtiInfo';
+import Footer from '../components/Footer';
 
 const Router = () => {
   return (
@@ -40,6 +40,7 @@ const Router = () => {
               >
                 <Navbar />
                 <MbtiInfo />
+                <Footer />
               </div>
             }
           />
@@ -59,6 +60,7 @@ const Router = () => {
               >
                 <Navbar />
                 <GroupDetail />
+                <Footer />
               </div>
             }
           />
@@ -76,6 +78,7 @@ const Router = () => {
               >
                 <Navbar />
                 <GroupPage />
+                <Footer />
               </div>
             }
           />
@@ -86,6 +89,7 @@ const Router = () => {
               <div style={{ maxWidth: '1440px', margin: 'auto' }}>
                 <Navbar />
                 <MainPage />
+                <Footer />
               </div>
             }
           />
@@ -112,6 +116,7 @@ const Router = () => {
               <div style={{ maxWidth: '1440px', margin: 'auto' }}>
                 <Navbar />
                 <MbtiCheckPage />
+                <Footer />
               </div>
             }
           />
@@ -121,6 +126,7 @@ const Router = () => {
               <div style={{ maxWidth: '1440px', margin: 'auto' }}>
                 <Navbar />
                 <MbtiQuestionsPage />
+                <Footer />
               </div>
             }
           />
