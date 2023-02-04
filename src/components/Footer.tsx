@@ -4,14 +4,24 @@ const Footer = () => {
   return (
     <StContainer>
       <img src={require('../components/images/footer/footerimg.PNG')} />
+      <img
+        className="github"
+        src={require('../components/images/footer/github.PNG')}
+        onClick={() =>
+          window.open(
+            'https://github.com/orgs/perple-personality-plan-project/repositories',
+            '_blank',
+          )
+        }
+      />
 
-      <p>GitHub Link :</p>
+      {/* <p>GitHub Link :</p>
       <a
         href="https://github.com/orgs/perple-personality-plan-project/repositories"
         target="_blank"
       >
         https://github.com/orgs/perple-personality-plan-project/repositories
-      </a>
+      </a> */}
 
       <p className="copy-font">Copyright 2023. E반 3조. All rights reserved.</p>
     </StContainer>
@@ -28,10 +38,6 @@ const StContainer = styled.div`
   align-items: center;
   border-top: 1px solid #ebecf3;
 
-  .copy-font {
-    font-size: 10px;
-  }
-
   a {
     font-size: 15px;
     color: #393939;
@@ -44,16 +50,21 @@ const StContainer = styled.div`
   p {
     color: #393939;
     font-size: 15px;
-    cursor: pointer;
-
-    &:first-of-type {
-      margin-top: 0;
-    }
   }
 
   img {
     width: 150px;
     height: 50px;
+  }
+
+  .github {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+  }
+
+  .copy-font {
+    font-size: 10px;
   }
 
   @media screen and (max-width: 600px) {

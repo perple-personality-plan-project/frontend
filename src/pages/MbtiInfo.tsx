@@ -56,7 +56,7 @@ const MbtiInfo = () => {
       {mbtiCategory.map((mbti, index) => {
         return mbti === param.mbti ? (
           <img
-            src={require(`../components/images/${index + 1}.jpg`)}
+            src={require(`../components/images/sliderImages/${index + 1}.webp`)}
             alt="mbti-detail-img"
           />
         ) : null;

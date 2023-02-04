@@ -119,7 +119,10 @@ const GroupDetail = () => {
   return (
     <div>
       <StBgImages>
-        <img src={require('../그룹배경이미지.jpg')} alt="bg-img" />
+        <img
+          src={require('../components/images/banner/groupbanner.png')}
+          alt="bg-img"
+        />
       </StBgImages>
       <StContainer>
         <StMainContainer>
