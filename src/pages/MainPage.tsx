@@ -347,9 +347,21 @@ const Wrap = styled.div`
   /* width: 1440px;
   /* margin-top: 12vh; */
   .tutorial {
+    font-family: 'Nanum_L';
     position: absolute;
-    top: 10px;
-    left: 30px;
+    top: 30px;
+    left: 157px;
+    border-radius: 4.19px;
+    border: 0;
+    width: 67px;
+    height: 34.34px;
+    background-color: rgb(156, 144, 236);
+    color: white;
+    cursor: pointer;
+
+    @media screen and (max-width: 800px) {
+      display: none;
+    }
   }
 `;
 
