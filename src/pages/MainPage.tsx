@@ -350,7 +350,7 @@ const Wrap = styled.div`
     font-family: 'Nanum_L';
     position: absolute;
     top: 30px;
-    left: 157px;
+    left: 175px;
     border-radius: 4.19px;
     border: 0;
     width: 67px;
@@ -360,7 +360,8 @@ const Wrap = styled.div`
     cursor: pointer;
 
     @media screen and (max-width: 800px) {
-      display: none;
+      top: 0;
+      left: 20px;
     }
   }
 `;
