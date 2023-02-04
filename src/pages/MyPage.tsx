@@ -44,8 +44,6 @@ function MyPage() {
   const myPick = useAppSelector((store: any) => store.mypage.myPick);
   const userId = sessionStorage.getItem('userId');
 
-  console.log('myfeed', mapList);
-
   const [myFeed, setMyFeed] = useState(true);
   const [toGoList, setToGoList] = useState(false);
   const [dibs, setDibs] = useState(false);

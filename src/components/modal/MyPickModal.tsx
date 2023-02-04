@@ -53,7 +53,6 @@ const FeedDetailModal: React.FC<Props> = ({ state, close }) => {
   const mainFeedComment: any = useAppSelector(
     store => store.post.mainFeedDetail,
   );
-  console.log(pickData);
   const date = mainFeedDetail?.created_at
     ?.replace('T', '. ')
     .split(' ')[0]
