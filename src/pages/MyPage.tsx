@@ -97,10 +97,16 @@ function MyPage() {
       mbti: MBTI,
     };
 
-    await dispatch(__updateProfile(patchProfile));
-    await dispatch(__getMyProfile());
-    setProfileEdit(false);
-    sessionStorage.setItem('mbti', MBTI.toUpperCase());
+    await dispatch(__updateProfile(patchProfile)).then((response: any) => {
+      if (response?.payload?.message === '프로필 수정 성공') {
+        alert('프로필 수정이 완료되었습니다.');
+        dispatch(__getMyProfile());
+        setProfileEdit(false);
+        sessionStorage.setItem('mbti', MBTI.toUpperCase());
+      } else if (response.payload === undefined) {
+        alert('중복되는 닉네임 입니다.');
+      }
+    });
   };
 
   const navigate = useNavigate();
@@ -346,7 +352,7 @@ function MyPage() {
                   <Edit show={profileEdit} onClick={profileEditShow}>
                     내 프로필 편집하기
                   </Edit>
-                  <Editsend show={profileEdit}>편집하기</Editsend>
+                  <Editsend show={profileEdit}>편집완료</Editsend>
                 </form>
                 <Box>
                   <ProfileBox>
