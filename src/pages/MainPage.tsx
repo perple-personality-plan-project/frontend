@@ -86,7 +86,7 @@ const MainPage = () => {
                 className="mySwiper"
                 style={{
                   width: '100%',
-                  aspectRatio: '1/0.8',
+                  aspectRatio: '1.2/0.8',
                   borderRadius: '20px',
                 }}
               >
@@ -108,7 +108,7 @@ const MainPage = () => {
                         style={{
                           width: '100%',
                           backgroundColor: 'pink',
-                          aspectRatio: '1/0.8',
+                          aspectRatio: '1.2/0.8',
                         }}
                       />
                     </SwiperSlide>

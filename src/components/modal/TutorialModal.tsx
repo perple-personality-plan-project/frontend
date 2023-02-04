@@ -40,7 +40,7 @@ const StModalStyle = styled.div`
   transform: translate(-50%, -50%);
   z-index: 1000;
   width: 80%;
-  max-width: 800px;
+  max-width: 1000px;
   /* 
   @media screen and (max-width: 800px) {
     width: 400px;
