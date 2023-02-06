@@ -80,7 +80,7 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
             >
               <div>
                 <img
-                  src={require(`../../src/components/images/sliderImages/${index}.webp`)}
+                  src={require(`../../src/components/images/sliderImages2/${index}.webp`)}
                   alt="slider-img"
                 />
               </div>
