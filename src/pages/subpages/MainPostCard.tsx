@@ -35,13 +35,14 @@ interface Props {
     thumbnail: string;
     updated_at: string;
     user_id: number;
-    isLike: number | string;
-    isPick: number | string;
+    isLike: number | string | boolean;
+    isPick: number | string | boolean;
     profile_img: string;
   };
   mbtiCheck: string;
   setsavedRoutes: any;
   savedRoutes: {}[];
+  setFeeds: any;
 }
 
 interface IAppState {
@@ -53,6 +54,7 @@ const MainPostCard: React.FC<Props> = ({
   mbtiCheck,
   setsavedRoutes,
   savedRoutes,
+  setFeeds,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useAppDispatch();
@@ -142,8 +144,34 @@ const MainPostCard: React.FC<Props> = ({
   };
 
   const toggleThumb = async (feedId: number) => {
-    await loggedIn.put(`/api/feed/${feed_id}/like`);
-    dispatch(__mainFeedlist({ userId }));
+    const res = await loggedIn.put(`/api/feed/${feed_id}/like`);
+    if (res.data.data === '좋아요를 취소했습니다.') {
+      setFeeds((prev: any) =>
+        prev.map((feed: any) =>
+          feed.feed_id === feedId
+            ? {
+                ...feed,
+                isLike: !feed.isLike,
+                likeCount: feed.likeCount - 1,
+              }
+            : { ...feed },
+        ),
+      );
+    }
+    if (res.data.data === '좋아요 했습니다.') {
+      setFeeds((prev: any) =>
+        prev.map((feed: any) =>
+          feed.feed_id === feedId
+            ? {
+                ...feed,
+                isLike: !feed.isLike,
+                likeCount: feed.likeCount + 1,
+              }
+            : { ...feed },
+        ),
+      );
+    }
+    // dispatch(__mainFeedlist({ userId }));
     dispatch(
       __mainMbtilist({
         userId: userId,
@@ -155,7 +183,18 @@ const MainPostCard: React.FC<Props> = ({
   const toggleheart = async (feedId: number) => {
     await loggedIn.put(`api/feed/${feed_id}/pick`).then(response => {
       if (response.data.data.message === '찜목록에 추가되었습니다.') {
-        dispatch(__mainFeedlist({ userId }));
+        // dispatch(__mainFeedlist({ userId }));
+        setFeeds((prev: any) =>
+          prev.map((feed: any) =>
+            feed.feed_id === feedId
+              ? {
+                  ...feed,
+                  isPick: !feed.isPick,
+                }
+              : { ...feed },
+          ),
+        );
+
         dispatch(
           __mainMbtilist({
             userId: userId,
@@ -164,7 +203,18 @@ const MainPostCard: React.FC<Props> = ({
         );
         alert('마이페이지 찜 목록에 저장되었습니다.');
       } else {
-        dispatch(__mainFeedlist({ userId }));
+        // dispatch(__mainFeedlist({ userId }));
+        setFeeds((prev: any) =>
+          prev.map((feed: any) =>
+            feed.feed_id === feedId
+              ? {
+                  ...feed,
+                  isPick: !feed.isPick,
+                }
+              : { ...feed },
+          ),
+        );
+
         dispatch(
           __mainMbtilist({
             userId: userId,
@@ -303,7 +353,7 @@ const MainPostCard: React.FC<Props> = ({
         </div>
         <div className="post-bottom-right">
           <div className="post-bottom-thumb">
-            {isLike === 1 ? (
+            {isLike === 1 || isLike === true ? (
               <StIcon>
                 <i
                   className="ri-thumb-up-fill"
@@ -332,7 +382,7 @@ const MainPostCard: React.FC<Props> = ({
             )}
           </div>
           <div className="post-bottom-pin">
-            {isPick === 1 ? (
+            {isPick === 1 || isPick === true ? (
               <StIcon>
                 <i
                   className="ri-heart-3-fill"
@@ -476,7 +526,7 @@ const MainPostCard: React.FC<Props> = ({
                   <p>{date}</p>
                   <div style={{ display: 'flex' }}>
                     <div className="post-bottom-heart">
-                      {isLike === 1 ? (
+                      {isLike === 1 || isLike === true ? (
                         <StIcon>
                           <i
                             className="ri-thumb-up-fill"
@@ -507,7 +557,7 @@ const MainPostCard: React.FC<Props> = ({
                       )}
                     </div>
                     <div className="post-bottom-pin">
-                      {isPick === 1 ? (
+                      {isPick === 1 || isPick === true ? (
                         <StIcon>
                           <i
                             className="ri-heart-3-fill"
@@ -1045,9 +1095,21 @@ const StGroupPost = styled.div`
 
     img {
       aspect-ratio: 1/1;
-      width: 100%;
+      /* width: 100%; */
+      width: 460px;
+      height: 460px;
       background-color: #f0f0f0;
       /* filter: brightness(50%); */
+
+      @media screen and (max-width: 500px) {
+        width: 362.69px;
+        height: 362.69px;
+      }
+
+      @media screen and (max-width: 412px) {
+        width: 298.8px;
+        height: 298.8px;
+      }
     }
 
     .post-header {

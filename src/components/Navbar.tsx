@@ -47,6 +47,7 @@ const Navbar = () => {
           <img
             style={{ width: '100px' }}
             src={require('../components/images/navigation/logo.png')}
+            alt="logo-img"
           />
         </Link>
         <div className="link-container">
