@@ -80,12 +80,6 @@ const MainSlider: React.FC<props> = ({ setMbtiCheck }) => {
             >
               <div>
                 <img
-                  style={{
-                    paddingBottom: '70px',
-                    paddingLeft: '70px',
-                    aspectRatio: '450/495.125',
-                    width: '450px',
-                  }}
                   src={require(`../../src/components/images/sliderImages/${index}.webp`)}
                   alt="slider-img"
                 />
@@ -106,6 +100,28 @@ const StSwiper = styled.div`
   width: 100%;
   padding-right: 120px;
   margin-top: 13px;
+
+  .slide-style {
+    img {
+      padding-bottom: 70px;
+      padding-left: 70px;
+      padding-top: 70px;
+      width: 480px;
+      height: 495.125px;
+
+      @media screen and (max-width: 1024px) {
+        width: 385px;
+        height: 430px;
+        /* padding-top: 100px; */
+      }
+
+      @media screen and (max-width: 500px) {
+        width: 320px;
+        height: 370px;
+        /* padding-top: 100px; */
+      }
+    }
+  }
 
   @media screen and (max-width: 500px) {
     max-width: 380px;
@@ -148,29 +164,28 @@ const StSwiper = styled.div`
 
   .swiper {
     aspect-ratio: 4.5/5;
-    max-width: 460px;
-    min-width: 400px;
+    /* max-width: 460px;
+    min-width: 400px; */
+    width: 450px;
+    height: 500px;
     /* height: 500px; */
     /* width: 100%; */
     margin-right: 20%;
     transform: translate3d(0px, 0px, 0px) rotateZ(0deg) scale(1);
 
     @media screen and (max-width: 1024px) {
-      max-width: 350px;
+      width: 350px;
       margin: 30px auto;
-      width: 100%;
+      height: 400px;
     }
-
+    /* 
     @media screen and (max-width: 600px) {
-      max-width: 350px;
-      min-width: 0;
-      width: 100%;
-    }
+      width: 350px;
+    } */
 
     @media screen and (max-width: 500px) {
-      max-width: 280px;
-      min-width: 0;
-      width: 100%;
+      width: 280px;
+      height: 330px;
     }
   }
 
