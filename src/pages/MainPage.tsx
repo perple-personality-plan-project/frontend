@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router';
 import styled from 'styled-components';
 import MainSlider from '../components/MainSlider';
@@ -16,6 +16,7 @@ import { Navigation, Keyboard } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import MainEmptyShow from './subpages/MainEmptyShow';
+import nonTokenClient from '../api/noClient';
 
 export interface mainPostPreset {
   feed_id: number;
@@ -43,6 +44,11 @@ const MainPage = () => {
   const [mainPosts, setMainPosts] = useState<mainPostPreset[]>([]);
   const [savedRoutes, setsavedRoutes] = useState<{}[]>([]);
 
+  const [feeds, setFeeds] = useState<{}[]>([]);
+  const [page, setPage] = useState(1);
+  const [moreData, setMoreData] = useState(true);
+  const target = useRef(null);
+
   const userId = sessionStorage.getItem('userId');
 
   if (sessionStorage.getItem('userId') === null) {
@@ -51,15 +57,47 @@ const MainPage = () => {
 
   useEffect(() => {
     if (mbtiCheck === 'All' || mbtiCheck === '사람들') {
-      dispatch(__mainFeedlist({ userId }));
+      // dispatch(__mainFeedlist({ userId }));
+      fetchData();
     } else {
       dispatch(__mainMbtilist({ mbtiCheck, userId }));
     }
   }, [mbtiCheck]);
 
-  // console.log(savedRoutes);
+  const fetchData = async () => {
+    const { data } = await nonTokenClient.get(
+      `/api/feed?user_id=${userId}&page=${page}`,
+    );
+    setFeeds(prev => prev.concat(data.data.feed_list));
+    setPage(prev => prev + 1);
+    // console.log(data);
+
+    if (data.data.feed_count === feeds.length) {
+      setMoreData(false);
+      return;
+    }
+  };
+  // console.log(feeds, page);
+
+  useEffect(() => {
+    let observer: any;
+    if (target.current) {
+      const handleInterSect = async ([entry]: any, observer: any) => {
+        if (entry.isIntersecting) {
+          observer.unobserve(entry.target);
+          await fetchData();
+          observer.observe(entry.target);
+        }
+      };
+      observer = new IntersectionObserver(handleInterSect, { threshold: 0.6 });
+      observer.observe(target.current);
+    }
+    return () => observer && observer.disconnect();
+  }, [target, page]);
+
   const [isOpen, setIsOpen] = useState(false);
 
+  console.log(feeds);
   return (
     <Wrap>
       <Backgr>
@@ -99,7 +137,7 @@ const MainPage = () => {
 
                 {[0, 1, 2, 3, 4].map((num, index) => {
                   return (
-                    <SwiperSlide>
+                    <SwiperSlide key={index}>
                       <img
                         src={require(`../components/images/tutorial/tutorial_${
                           num + 1
@@ -147,6 +185,7 @@ const MainPage = () => {
             <MainImg>
               <img
                 src={require(`../../src/components/images/mainlogo/메인이미지.webp`)}
+                alt="main-img"
               />
             </MainImg>
           </StHeader>
@@ -155,17 +194,18 @@ const MainPage = () => {
         </TitleWrap>
       </Backgr>
       {mainMbtiList.length !== 0 ||
-      (mainFeedList.length !== 0 &&
+      (feeds.length !== 0 &&
         (mbtiCheck === '사람들' || mbtiCheck === 'All')) ? (
         <PostListContainer>
           {mbtiCheck === '사람들' || mbtiCheck === 'All'
-            ? mainFeedList?.map((post: any) => (
+            ? feeds?.map((post: any) => (
                 <MainPostCard
                   key={post.feed_id}
                   post={post}
                   mbtiCheck={mbtiCheck}
                   setsavedRoutes={setsavedRoutes}
                   savedRoutes={savedRoutes}
+                  setFeeds={setFeeds}
                 />
               ))
             : mainMbtiList?.map((post: any) => (
@@ -175,8 +215,10 @@ const MainPage = () => {
                   mbtiCheck={mbtiCheck}
                   setsavedRoutes={setsavedRoutes}
                   savedRoutes={savedRoutes}
+                  setFeeds={setFeeds}
                 />
               ))}
+          {moreData ? <div ref={target}></div> : null}
         </PostListContainer>
       ) : (
         <MainEmptyShow />

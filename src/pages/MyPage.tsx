@@ -218,6 +218,7 @@ function MyPage() {
                         : process.env.REACT_APP_IMG_SERVER +
                           profileInfo[0].background_img
                     }
+                    alt="profile-img"
                   />
                 </div>
               );
@@ -271,6 +272,7 @@ function MyPage() {
                         : process.env.REACT_APP_IMG_SERVER +
                           profileInfo[0].background_img
                     }
+                    alt="profile-img"
                   />
                 </div>
               );
@@ -314,6 +316,7 @@ function MyPage() {
                               : process.env.REACT_APP_IMG_SERVER +
                                 item.profile_img
                           }
+                          alt="profile-img"
                         />
                       </div>
                     </label>
