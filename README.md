@@ -2,7 +2,8 @@
 <a href="https://16platter.site" target="blank" ><img width="756" alt="image" src="https://user-images.githubusercontent.com/106604926/218228482-356c6716-d19e-4677-b40a-c4069cd544b7.png"></a>
 
 ## 🏠 [Home Page Link](https://16platter.site/)
-## [소개 영상](https://www.youtube.com/watch?v=hd9bLPlnSGA)
+## [프로젝트 홍보 영상 1분](https://youtu.be/Hkz3hPLqYu0)
+## [프로젝트 소개 영상 9분](https://www.youtube.com/watch?v=hd9bLPlnSGA)
 <hr>
 <br>
 
